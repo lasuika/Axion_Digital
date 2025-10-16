@@ -3,30 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Axion Digital | Unlock Your Potential</title>
+    <title>Axion Digital | Future-Ready Solutions</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- Global Styles & Dark Neon Theme --- */
+        /* --- Global Styles & Futuristic Neon Theme --- */
         :root {
-            --primary-color: #22d3ee; /* Neon Cyan */
+            --primary-color: #00f6ff; /* Neon Cyan */
+            --secondary-color: #a855f7; /* Neon Purple */
             --primary-light: #67e8f9;
             --primary-dark: #06b6d4;
             
-            --bg-dark: #0f172a; /* Main Dark Background (Slate 900) */
-            --bg-light-dark: #1e293b; /* Lighter Dark for cards/sections (Slate 800) */
+            --bg-dark: #020617; /* Deeper Navy/Black */
+            --bg-light-dark: #0f172a; /* Lighter Dark for cards/sections (Slate 900) */
 
-            --text-heading: #f8fafc; /* Bright White/Slate 50 for headings */
-            --text-body: #94a3b8;    /* Light Gray/Slate 400 for body text */
+            --text-heading: #f8fafc; /* Bright White */
+            --text-body: #94a3b8;    /* Light Gray */
             
-            --border-color: #334155; /* Slate 700 */
+            --border-color: #1e293b; /* Slate 800 */
             --border-radius: 12px;
 
-            --shadow-glow: 0 0 15px rgba(34, 211, 238, 0.2), 0 0 5px rgba(34, 211, 238, 0.1);
-            --shadow-glow-hover: 0 0 25px rgba(34, 211, 238, 0.3), 0 0 10px rgba(34, 211, 238, 0.2);
+            --shadow-glow: 0 0 20px rgba(0, 246, 255, 0.15), 0 0 8px rgba(0, 246, 255, 0.1);
+            --shadow-glow-hover: 0 0 30px rgba(0, 246, 255, 0.25), 0 0 15px rgba(0, 246, 255, 0.2);
         }
 
         * {
@@ -44,33 +45,36 @@
             line-height: 1.7;
             color: var(--text-body);
             background-color: var(--bg-dark);
+            overflow-x: hidden;
         }
 
         .container {
             max-width: 1140px;
             margin: 0 auto;
             padding: 0 20px;
+            position: relative;
+            z-index: 2;
         }
 
         h1, h2, h3 {
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: var(--text-heading);
-            font-weight: 700;
+            font-weight: 800;
             line-height: 1.2;
             margin-bottom: 1rem;
         }
 
-        h1 { font-size: 3.2rem; }
-        h2 { font-size: 2.5rem; text-align: center; margin-bottom: 1.5rem; }
+        h1 { font-size: 3.5rem; font-family: 'Orbitron', sans-serif; }
+        h2 { font-size: 2.8rem; text-align: center; margin-bottom: 1.5rem; }
         h3 { font-size: 1.5rem; }
 
         p { margin-bottom: 1.25rem; }
         a { text-decoration: none; color: var(--primary-color); }
-        section { padding: 100px 0; overflow: hidden; }
+        section { padding: 100px 0; overflow: hidden; position: relative; }
 
         .section-intro {
             max-width: 700px;
-            margin: 0 auto 50px auto;
+            margin: 0 auto 60px auto;
             text-align: center;
             font-size: 1.1rem;
         }
@@ -78,8 +82,8 @@
         /* --- Animations --- */
         .reveal {
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
         .reveal.visible {
             opacity: 1;
@@ -89,20 +93,21 @@
         /* --- Buttons --- */
         .btn {
             display: inline-block;
-            padding: 14px 28px;
+            padding: 14px 32px;
             border-radius: var(--border-radius);
             background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
-            color: var(--bg-dark);
+            color: #020617;
             font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: none;
+            border: 2px solid var(--primary-color);
             cursor: pointer;
             box-shadow: var(--shadow-glow);
         }
 
         .btn:hover {
-            transform: translateY(-3px);
+            transform: translateY(-4px) scale(1.02);
             box-shadow: var(--shadow-glow-hover);
         }
 
@@ -113,113 +118,119 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            backdrop-filter: blur(10px);
-            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            background-color: rgba(2, 6, 23, 0.8);
         }
         .navbar .container { display: flex; justify-content: space-between; align-items: center; }
-        .navbar .logo { font-size: 1.8rem; font-weight: 800; color: var(--text-heading); }
+        .navbar .logo { font-size: 1.8rem; font-weight: 700; color: var(--text-heading); font-family: 'Orbitron', sans-serif; }
         .navbar nav ul { list-style: none; display: flex; }
-        .navbar nav ul li { margin-left: 30px; }
-        .navbar nav ul li a { color: var(--text-heading); font-weight: 600; transition: color 0.3s ease; position: relative; padding-bottom: 5px; }
-        .navbar nav ul li a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--primary-color);
-            transition: width 0.3s ease;
-        }
-        .navbar nav ul li a:hover { color: var(--primary-color); }
-        .navbar nav ul li a:hover::after { width: 100%; }
+        .navbar nav ul li { margin-left: 35px; }
+        .navbar nav ul li a { color: var(--text-heading); font-weight: 600; transition: color 0.3s ease, text-shadow 0.3s ease; }
+        .navbar nav ul li a:hover { color: var(--primary-color); text-shadow: 0 0 10px var(--primary-color); }
 
         /* --- Hero Section --- */
         .hero {
-            background: var(--bg-dark);
             text-align: center;
-            padding: 120px 0;
-        }
-        .hero .sub-headline { max-width: 750px; margin: 0 auto 40px auto; font-size: 1.25rem; }
-
-        /* --- Pain Points / Challenges Section --- */
-        .challenges { background: var(--bg-light-dark); }
-        .points-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-        .point {
-            background: var(--bg-dark);
-            padding: 35px;
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
-            text-align: center;
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-        .point:hover { transform: translateY(-8px); border-color: var(--primary-color); }
-        .point .icon { margin-bottom: 20px; color: var(--primary-color); }
-        .point h3 { margin-top: 0; }
-
-        /* --- Services Section --- */
-        .services { background-color: var(--bg-dark); }
-        .service-item {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-            background: var(--bg-light-dark);
-            padding: 40px;
-            margin-bottom: 30px;
-            border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
-        }
-        .service-item:nth-child(even) { flex-direction: row-reverse; }
-        .service-item .icon-wrapper {
-            flex-shrink: 0;
-            background-color: var(--bg-dark);
-            border-radius: 50%;
-            width: 80px;
-            height: 80px;
+            padding: 140px 0;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary-color);
-            border: 1px solid var(--border-color);
+            position: relative;
         }
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .hero .sub-headline { max-width: 750px; margin: 0 auto 40px auto; font-size: 1.25rem; }
+        .glitch { color: var(--text-body); font-size: 1.25rem; animation: glitch 5s linear infinite; }
+        @keyframes glitch{ 2%,64%{ transform: translate(2px,0) skew(0deg); } 4%,60%{ transform: translate(-2px,0) skew(0deg); } 62%{ transform: translate(0,0) skew(5deg); } }
+        .glitch:before, .glitch:after{ content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); }
+        .glitch:before{ left: 2px; text-shadow: -2px 0 var(--primary-color); animation: glitch-anim 2s linear infinite reverse; }
+        .glitch:after{ left: -2px; text-shadow: -2px 0 var(--secondary-color); animation: glitch-anim-2 2s linear infinite reverse; }
+        @keyframes glitch-anim{ 0% { clip-path: polygon(0 42%, 100% 42%, 100% 48%, 0 48%); } 10% { clip-path: polygon(0 15%, 100% 15%, 100% 15%, 0 15%); } 20% { clip-path: polygon(0 88%, 100% 88%, 100% 90%, 0 90%); } 30% { clip-path: polygon(0 47%, 100% 47%, 100% 55%, 0 55%); } 40% { clip-path: polygon(0 67%, 100% 67%, 100% 70%, 0 70%); } 50% { clip-path: polygon(0 13%, 100% 13%, 100% 15%, 0 15%); } 60% { clip-path: polygon(0 92%, 100% 92%, 100% 95%, 0 95%); } 70% { clip-path: polygon(0 40%, 100% 40%, 100% 42%, 0 42%); } 80% { clip-path: polygon(0 2%, 100% 2%, 100% 5%, 0 5%); } 90% { clip-path: polygon(0 50%, 100% 50%, 100% 51%, 0 51%); } 100% { clip-path: polygon(0 20%, 100% 20%, 100% 21%, 0 21%); } }
+        @keyframes glitch-anim-2{ 0% { clip-path: polygon(0 72%, 100% 72%, 100% 78%, 0 78%); } 10% { clip-path: polygon(0 25%, 100% 25%, 100% 25%, 0 25%); } 20% { clip-path: polygon(0 58%, 100% 58%, 100% 60%, 0 60%); } 30% { clip-path: polygon(0 17%, 100% 17%, 100% 25%, 0 25%); } 40% { clip-path: polygon(0 37%, 100% 37%, 100% 40%, 0 40%); } 50% { clip-path: polygon(0 83%, 100% 83%, 100% 85%, 0 85%); } 60% { clip-path: polygon(0 42%, 100% 42%, 100% 45%, 0 45%); } 70% { clip-path: polygon(0 10%, 100% 10%, 100% 12%, 0 12%); } 80% { clip-path: polygon(0 32%, 100% 32%, 100% 35%, 0 35%); } 90% { clip-path: polygon(0 70%, 100% 70%, 100% 71%, 0 71%); } 100% { clip-path: polygon(0 30%, 100% 30%, 100% 31%, 0 31%); } }
+
+        /* --- Challenges Section --- */
+        .challenges { background: var(--bg-light-dark); }
+        .points-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .point {
+            background: var(--bg-dark); padding: 35px; border-radius: var(--border-radius);
+            border: 1px solid var(--border-color); text-align: center;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        .point:hover { transform: translateY(-8px); border-color: var(--primary-color); box-shadow: var(--shadow-glow); }
+        .point .icon { margin-bottom: 20px; color: var(--primary-color); }
+        .point h3 { margin-top: 0; }
+        
+        /* --- Methodology Section --- */
+        .methodology { background-color: var(--bg-dark); }
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .timeline::after {
+            content: ''; position: absolute; width: 3px;
+            background-color: var(--border-color); top: 0; bottom: 0; left: 50%;
+            margin-left: -1.5px;
+        }
+        .timeline-item {
+            padding: 10px 40px; position: relative;
+            background-color: inherit; width: 50%;
+        }
+        .timeline-item:nth-child(odd) { left: 0; }
+        .timeline-item:nth-child(even) { left: 50%; }
+        .timeline-item::after {
+            content: ''; position: absolute; width: 25px; height: 25px;
+            right: -14px; background-color: var(--bg-dark); border: 4px solid var(--primary-color);
+            top: 25px; border-radius: 50%; z-index: 1;
+        }
+        .timeline-item:nth-child(even)::after { left: -14px; }
+        .timeline-content {
+            padding: 30px; background-color: var(--bg-light-dark);
+            position: relative; border-radius: var(--border-radius); border: 1px solid var(--border-color);
+        }
+        .timeline-content .step-number {
+            color: var(--primary-color); font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem; margin-bottom: 10px;
+        }
+        .timeline-content h3 { color: var(--text-heading); }
+
+        /* --- Services Section --- */
+        .services { background-color: var(--bg-light-dark); }
+        .service-item {
+            background: var(--bg-dark); padding: 40px; margin-bottom: 30px;
+            border-radius: var(--border-radius); border: 1px solid var(--border-color);
+            display: grid; grid-template-columns: 80px 1fr; gap: 30px; align-items: center;
+        }
+        .service-item .icon-wrapper { color: var(--primary-color); }
         .service-item-content h3 { margin-bottom: 0.5rem; color: var(--text-heading); }
 
-        /* --- Results Section --- */
-        .results {
-            background: linear-gradient(45deg, #0f172a, #1e293b);
-            color: var(--text-heading);
-        }
-        .results h2, .results .section-intro { color: var(--text-heading); }
+        /* --- Impact Section --- */
+        .results { background: var(--bg-dark); color: var(--text-heading); }
         .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center; }
-        .result-card { background: var(--bg-dark); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border-color); }
-        .result-card .stat { font-size: 4rem; font-weight: 800; color: var(--primary-color); margin-bottom: 0.5rem; }
+        .result-card { background: var(--bg-light-dark); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border-color); }
+        .result-card .stat { font-size: 4rem; font-weight: 800; color: var(--primary-color); margin-bottom: 0.5rem; font-family: 'Orbitron', sans-serif; }
+        .result-card .stat .kerning-fix { padding: 0 0.15em; }
         .result-card p { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: var(--text-heading); }
         .result-card span { font-size: 0.9rem; opacity: 0.8; }
         
-        /* --- Promise/Testimonials Section --- */
+        /* --- Promise Section --- */
         .testimonials { background-color: var(--bg-light-dark); }
         .testimonial-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
-        .testimonial-card {
-            background-color: var(--bg-dark);
-            padding: 30px;
-            border-radius: var(--border-radius);
+        .promise-card {
+            background-color: var(--bg-dark); padding: 30px; border-radius: var(--border-radius);
             border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
+            border-left: 4px solid var(--secondary-color);
         }
-        .promise-card .icon {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-         .promise-card h3 {
-            color: var(--text-heading);
-            margin-bottom: 10px;
-        }
-        .promise-card p {
-            font-size: 1rem;
-            color: var(--text-body);
-        }
-
+        .promise-card .icon { color: var(--secondary-color); margin-bottom: 20px; }
+        .promise-card h3 { color: var(--text-heading); margin-bottom: 10px; }
 
         /* --- Contact Section --- */
         .contact { background: var(--bg-dark); }
@@ -228,6 +239,7 @@
             background: var(--bg-light-dark); border-radius: var(--border-radius);
             border: 1px solid var(--border-color);
         }
+        /* ... [Contact Form styles remain similar] ... */
         .form-group { margin-bottom: 25px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-heading); }
         .form-group input, .form-group textarea {
@@ -236,81 +248,61 @@
             background-color: var(--bg-dark);
             color: var(--text-heading);
         }
-        .form-group input::placeholder, .form-group textarea::placeholder {
-            color: var(--text-body);
-        }
         .form-group input:focus, .form-group textarea:focus {
             outline: none; border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
+            box-shadow: 0 0 0 3px rgba(0, 246, 255, 0.2);
         }
         .contact-form button { width: 100%; font-size: 1.1rem; padding: 16px; }
 
+
         /* --- Footer --- */
-        .footer {
-            background: var(--bg-light-dark);
-            color: var(--text-body);
-            padding: 60px 0;
-            border-top: 1px solid var(--border-color);
-        }
-        .footer-container {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 40px;
-            text-align: left;
-        }
-        .footer-about h4, .footer-links h4 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: var(--text-heading);
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-        }
+        .footer { background: var(--bg-dark); color: var(--text-body); padding: 60px 0; border-top: 1px solid var(--border-color); }
+        /* ... [Footer styles remain similar] ... */
+        .footer-container { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; text-align: left; }
+        .footer-about h4, .footer-links h4 { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-heading); margin-bottom: 15px; font-size: 1.2rem; }
         .footer-about p { font-size: 0.9rem; line-height: 1.8; }
-        .footer-links ul { list-style: none; }
+        .footer-links ul { list-style: none; padding: 0;}
         .footer-links ul li { margin-bottom: 10px; }
         .footer-links ul li a { color: var(--text-body); transition: color 0.3s ease; }
         .footer-links ul li a:hover { color: var(--primary-color); }
         .social-links { display: flex; gap: 15px; margin-top: 20px; }
         .social-links a { color: var(--text-heading); font-size: 1.2rem; transition: color 0.3s ease; }
         .social-links a:hover { color: var(--primary-color); }
-        .footer-bottom {
-            text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.9rem;
-        }
+        .footer-bottom { text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); font-size: 0.9rem; }
 
         /* --- Responsive Design --- */
         @media (max-width: 992px) {
             h1 { font-size: 2.8rem; }
             h2 { font-size: 2.2rem; }
             .points-grid, .testimonial-grid { grid-template-columns: 1fr; }
-            .service-item, .service-item:nth-child(even) { flex-direction: column; text-align: center; }
             .footer-container { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 768px) {
-            h1 { font-size: 2.4rem; }
-            h2 { font-size: 2rem; }
+            h1 { font-size: 2.4rem; } h2 { font-size: 2rem; }
             section { padding: 80px 0; }
             .results-grid { grid-template-columns: 1fr; }
             .navbar .container { flex-direction: column; }
             .navbar nav ul { margin-top: 15px; padding-left: 0; }
             .navbar nav ul li { margin: 5px 15px; }
+            .timeline::after { left: 12px; }
+            .timeline-item { width: 100%; padding-left: 50px; padding-right: 10px; }
+            .timeline-item:nth-child(odd), .timeline-item:nth-child(even) { left: 0; }
+            .timeline-item::after, .timeline-item:nth-child(even)::after { left: -1px; }
         }
     </style>
 </head>
 <body>
-
+    
     <!-- Navigation Bar -->
     <header class="navbar">
         <div class="container">
-            <a href="#" class="logo">Axion Digital</a>
+            <a href="#" class="logo">AXION DIGITAL</a>
             <nav>
                 <ul>
                     <li><a href="#services">Services</a></li>
-                    <li><a href="#testimonials">Our Promise</a></li>
-                    <li><a href="#results">Impact</a></li>
+                    <li><a href="#methodology">Methodology</a></li>
+                    <li><a href="#promise">Our Promise</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
@@ -320,38 +312,34 @@
     <main>
         <!-- Hero Section -->
         <section class="hero">
+            <div id="particles-js"></div>
             <div class="container">
-                <h1>Transform Your Business with Smarter Solutions</h1>
-                <p class="sub-headline">We build custom software, optimize your cloud infrastructure, and unlock data-driven insights to fuel your growth and supercharge your efficiency.</p>
-                <a href="#contact" class="btn">Schedule a Free Consultation</a>
+                <h1>AXION DIGITAL</h1>
+                <p class="sub-headline glitch" data-text="Building Tomorrow's Technology, Today.">Building Tomorrow's Technology, Today.</p>
+                <a href="#contact" class="btn">Initiate Contact</a>
             </div>
         </section>
 
         <!-- Challenges Section -->
         <section id="challenges" class="challenges">
             <div class="container reveal">
-                <h2>Are These Challenges Holding You Back?</h2>
+                <h2>Legacy Systems Holding You Back?</h2>
+                <p class="section-intro">In a rapidly evolving digital landscape, outdated processes are not just inefficient—they are a liability. We help you break free from the constraints of the past to build a more agile, scalable, and resilient future.</p>
                 <div class="points-grid">
                     <div class="point">
-                        <div class="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M208,88H152V32a8,8,0,0,0-16,0V88H80V32a8,8,0,0,0-16,0V88H48a16,16,0,0,0-16,16v80a16,16,0,0,0,16,16h16V224a8,8,0,0,0,16,0V200h56v24a8,8,0,0,0,16,0V200h56a16,16,0,0,0,16-16V104A16,16,0,0,0,208,88Zm0,96H48V104H208v80Z"></path></svg>
-                        </div>
-                        <h3>Inefficient Processes</h3>
-                        <p>Manual, repetitive tasks are draining your team's time and slowing down critical workflows.</p>
+                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M152,80H136V64a8,8,0,0,0-16,0V80H104a8,8,0,0,0,0,16h16v16a8,8,0,0,0,16,0V96h16a8,8,0,0,0,0-16Zm76,48a104,104,0,1,1-104-104A104.11,104.11,0,0,1,228,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,212,128ZM80,128a48,48,0,1,0,48-48A48.05,48.05,0,0,0,80,128Zm80,0a32,32,0,1,1-32-32A32,32,0,0,1,160,128Z"></path></svg></div>
+                        <h3>Process Bottlenecks</h3>
+                        <p>Repetitive manual tasks and disjointed systems that drain resources and inhibit strategic focus.</p>
                     </div>
                     <div class="point">
-                        <div class="icon">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M240,128a15.87,15.87,0,0,1-12.54,15.65L144.5,162.79A15.87,15.87,0,0,1,128,176a15.87,15.87,0,0,1-16.5-13.21L28.54,143.65A16,16,0,0,1,16,128a15.87,15.87,0,0,1,12.54-15.65l82.92-19.14A15.87,15.87,0,0,1,128,80a15.87,15.87,0,0,1,16.5,13.21l82.92,19.14A16,16,0,0,1,240,128Z"></path></svg>
-                        </div>
-                        <h3>Stagnant Growth</h3>
-                        <p>You're struggling to scale operations and effectively capture new market opportunities.</p>
+                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M240,112a8,8,0,0,1-8,8H137.69l-19.1,38.2A16,16,0,0,1,104,168H66.34l-8.65,14.42a8,8,0,0,1-13.38-8l32-53.33a8,8,0,0,1,6.69-4.09H112a16,16,0,0,1,14.71-9.59l19.1-38.2A16,16,0,0,1,160,64h37.69l8.65-14.42a8,8,0,1,1,13.38,8L187.66,80h28.68l8.66-14.42a8,8,0,1,1,13.38,8L224,96h8a8,8,0,0,1,0,16Z"></path></svg></div>
+                        <h3>Growth Ceilings</h3>
+                        <p>Inability to scale your operations and technology stack to meet new market demands.</p>
                     </div>
                     <div class="point">
-                        <div class="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm-8-80V80a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm20,28a12,12,0,1,1-12-12A12,12,0,0,1,140,164Z"></path></svg>
-                        </div>
-                        <h3>Data Overload</h3>
-                        <p>You're collecting vast amounts of data but lack the clear insights to make informed decisions.</p>
+                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M208,40H56A16,16,0,0,0,40,56V200a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V56A16,16,0,0,0,208,40ZM176,144a48,48,0,1,1-80-34.65V88a8,8,0,0,1,16,0v21.35A48,48,0,0,1,176,144Z"></path></svg></div>
+                        <h3>Data Obscurity</h3>
+                        <p>Valuable information is trapped in silos, making strategic, data-driven decisions impossible.</p>
                     </div>
                 </div>
             </div>
@@ -360,60 +348,91 @@
         <!-- Services Section -->
         <section id="services" class="services">
             <div class="container reveal">
-                <h2>Our Core Services</h2>
-                <p class="section-intro">We deliver end-to-end solutions to modernize your business from the inside out.</p>
-                
+                <h2>Future-Ready Services</h2>
+                <p class="section-intro">We architect and build robust digital foundations designed for performance, scale, and long-term success.</p>
                 <div class="service-item">
-                    <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" viewBox="0 0 256 256"><path d="M69.46,37.4a8,8,0,0,0-8.92,1.52L37.4,61.46a8,8,0,0,0,1.52,12.44l37,21.34a7.92,7.92,0,0,0,7.4,0l37-21.34a8,8,0,0,0,1.52-12.44L100.38,38.92A8,8,0,0,0,92,36a8.29,8.29,0,0,0-1.54.18L69.46,37.4ZM104.28,78.4,76,61.06,92,50.31l28.28,16.33Zm114.26,90-23.14-13.36a8.29,8.29,0,0,0-1.54.18,8,8,0,0,0-7.4,1.34l-37,21.34a8,8,0,0,0-3.92,6.86v42.68a8,8,0,0,0,12.44,6.92l23.14-13.36a8.29,8.29,0,0,0,1.54-.18,8,8,0,0,0,7.4-1.34l37-21.34a8,8,0,0,0,3.92-6.86V175.8A8,8,0,0,0,218.54,168.44ZM168,229.69,144,215.33v-27l24,13.86Zm56-32L195.72,214,168,197.69v-27L192,156.8v-.06l24-13.86.28-.16ZM92,116a8.29,8.29,0,0,0-1.54.18L67.32,117.4a8,8,0,0,0-5.8,5.52L38.38,185.08a8,8,0,0,0,2.86,8.78l37,21.34a7.92,7.92,0,0,0,7.4,0l37-21.34a8,8,0,0,0,2.86-8.78L102.38,122.92a8,8,0,0,0-5.8-5.52L75.58,116.18A8.29,8.29,0,0,0,73.54,116Zm-.46,64.8L64,164.46l13.14-45.74,27.54,1.12Z"></path></svg></div>
+                    <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M108,168H88a8,8,0,0,1,0-16h20a8,8,0,0,1,0,16Zm48-32H88a8,8,0,0,0,0,16h68a8,8,0,0,0,0-16Zm28-32H88a8,8,0,0,0,0,16H184a8,8,0,0,0,0-16ZM224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm-16,16V80H48V64ZM48,192V96H208V192Z"></path></svg></div>
                     <div class="service-item-content">
-                        <h3>Custom Software Development</h3>
-                        <p>We build powerful, tailor-made software that automates your unique processes, boosts productivity, and provides a measurable return on investment.</p>
+                        <h3>Custom Software & API Development</h3>
+                        <p>Bespoke applications and robust APIs engineered from the ground up to solve your unique business challenges and streamline complex operations.</p>
                     </div>
                 </div>
-
                 <div class="service-item">
-                    <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,128A101.68,101.68,0,0,0,144,32.42V26.34A105.74,105.74,0,0,1,224,128a104,104,0,0,1-208,0,105.74,105.74,0,0,1,80-101.66v6.08A101.68,101.68,0,0,0,26.34,128c0,42.58,26.24,79.34,64,94.41V174.1a52,52,0,1,1,75.32,0v48.31c37.76-15.07,64-51.83,64-94.41ZM128,156a36,36,0,1,0-36-36A36,36,0,0,0,128,156Z"></path></svg></div>
+                     <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M228.4,73.49,153.2,27.15a15.95,15.95,0,0,0-15.2-.64L76.4,49.35,36.12,25.46a8,8,0,0,0-11.45,4.39L2.33,103.18a8,8,0,0,0,4.4,10l40.28,23.89-22.84,38.63a8,8,0,0,0,2.54,11.08l25.4,15a8,8,0,0,0,8.42-.51l25-14.82,41.6,24.67a16,16,0,0,0,15.21-.65l75.2-46.34a16,16,0,0,0,8.59-21.9ZM80,64l61.6-14.71L195.2,78.8,133.6,93.51Zm-39.73-19.1L64,56,86.4,69.51,64,83.2,40.27,69.11ZM30,105.51l16-32.06,16,9.48V115Zm46.4,103.14L51,193.84l19.53-33L96,175.66Zm25.2-12.42-32-19V144l32,19Zm70-43.09,16,9.84-46.4,28.53-16-9.5V158.8Zm22.13,13.62L152,193.84,126.4,179l25.6-15.17Z"></path></svg></div>
                     <div class="service-item-content">
-                        <h3>Cloud & DevOps Strategy</h3>
-                        <p>We optimize and automate your cloud infrastructure, enabling faster deployments, enhanced security, and significant cost savings at scale.</p>
+                        <h3>Cloud Architecture & DevOps</h3>
+                        <p>Secure, scalable, and cost-efficient cloud infrastructure. We leverage automation to enable rapid deployments and maintain high-availability systems.</p>
                     </div>
                 </div>
-
                 <div class="service-item">
-                    <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" viewBox="0 0 256 256"><path d="M224,40H32A16,16,0,0,0,16,56V176a16,16,0,0,0,16,16H88v22.4a8,8,0,0,0,13.26,6l29.48-28.4H224a16,16,0,0,0,16-16V56A16,16,0,0,0,224,40ZM147.2,148a12,12,0,1,1,17,0l-1.2,1.2a12,12,0,0,1-17,0Zm-50,0a12,12,0,1,1,17,0l-1.2,1.2a12,12,0,0,1-17,0Zm-52-52a12,12,0,1,1,0,17l-1.2-1.2a12,12,0,0,1,0-17Z"></path></svg></div>
+                     <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M128,88a40,40,0,1,0,40,40A40,40,0,0,0,128,88Zm0,64a24,24,0,1,1,24-24A24,24,0,0,1,128,152ZM232,128A104.11,104.11,0,0,1,128,232c-57.38,0-104-46.85-104-104S70.62,24,128,24A104.11,104.11,0,0,1,232,128Zm-16,0A88,88,0,1,0,59.31,187.31,88,88,0,0,0,216,128Z"></path></svg></div>
                     <div class="service-item-content">
-                        <h3>Data Analytics & Insights</h3>
-                        <p>We transform your complex data into clear, actionable insights. Make smarter, data-driven decisions with interactive dashboards and predictive analytics.</p>
+                        <h3>Data Analytics & AI Integration</h3>
+                        <p>From predictive analytics to AI-powered automation, we turn your raw data into a strategic asset that drives intelligent decision-making and innovation.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-         <!-- Testimonials Section -->
-        <section id="testimonials" class="testimonials">
+        <!-- Methodology Section -->
+        <section id="methodology" class="methodology">
+            <div class="container reveal">
+                <h2>Our Methodology</h2>
+                <p class="section-intro">We follow a structured, transparent, and collaborative process to ensure every project is a success, from initial concept to final deployment and beyond.</p>
+                <div class="timeline">
+                    <div class="timeline-item reveal">
+                        <div class="timeline-content">
+                            <span class="step-number">STEP 01</span>
+                            <h3>Discovery & Strategy</h3>
+                            <p>We begin with a deep dive into your goals, challenges, and requirements to architect a data-driven strategy and project roadmap.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item reveal">
+                        <div class="timeline-content">
+                            <span class="step-number">STEP 02</span>
+                             <h3>Design & Prototyping</h3>
+                            <p>Our team designs intuitive user interfaces and builds interactive prototypes to validate the user experience before development begins.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item reveal">
+                        <div class="timeline-content">
+                            <span class="step-number">STEP 03</span>
+                             <h3>Agile Development</h3>
+                            <p>We build your solution in iterative sprints, providing regular updates and demos to ensure alignment and incorporate feedback.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item reveal">
+                        <div class="timeline-content">
+                            <span class="step-number">STEP 04</span>
+                             <h3>Deployment & Support</h3>
+                            <p>After rigorous testing, we deploy the solution to a scalable production environment and provide ongoing support and optimization.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Promise Section -->
+        <section id="promise" class="testimonials">
             <div class="container reveal">
                 <h2>Our Founding Partner Promise</h2>
                 <p class="section-intro">As a new and agile consultancy, our first partners aren't just clients—they're collaborators. We're hungry to build our reputation on your success and offer a level of dedication that larger firms can't match.</p>
                 <div class="testimonial-grid">
-                    <div class="testimonial-card promise-card">
-                        <div class="icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M234.33,114.33l-40-40A8,8,0,0,0,184,80H176V48a16,16,0,0,0-16-16H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H160a16,16,0,0,0,16-16V176h8a8,8,0,0,0,5.67-2.33l40-40a8,8,0,0,0,0-11.34ZM160,208H48V48H160V80h18.34l34.33,34.33L178.34,152H160v56Zm56-42.34L181.66,128,216,93.66Z"></path></svg>
-                        </div>
+                    <div class="promise-card">
+                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M224,96v64a8,8,0,0,1-8,8H184v24a8,8,0,0,1-16,0V168H88v24a8,8,0,0,1-16,0V168H40a8,8,0,0,1-8-8V96a8,8,0,0,1,8-8H72V64a8,8,0,0,1,16,0V88h80V64a8,8,0,0,1,16,0V88h32A8,8,0,0,1,224,96ZM152,40V24a8,8,0,0,0-16,0V40H120V24a8,8,0,0,0-16,0V40a24,24,0,0,0-24,24V88H56a24,24,0,0,0-24,24v64a24,24,0,0,0,24,24H80v16a24,24,0,0,0,24,24h48a24,24,0,0,0,24-24V200h24a24,24,0,0,0,24-24V112a24,24,0,0,0-24-24H176V64A24,24,0,0,0,152,40Z"></path></svg></div>
                         <h3>Your Project, Our Priority</h3>
-                        <p>As a founding partner, you get direct access to our core team. Your project receives our undivided attention, ensuring we are deeply invested in the outcome and can adapt instantly to your needs. We're building our legacy with your success.</p>
+                        <p>As a founding partner, your project receives our undivided attention. You get direct access to our core team, ensuring we are deeply invested in your outcome and can adapt instantly to your needs.</p>
                     </div>
-                    <div class="testimonial-card promise-card">
-                        <div class="icon">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M245.7,122.3l-39.6,39.6a8,8,0,0,1-5.7,2.3H160a8,8,0,0,1,0-16h28.7l28-28a8,8,0,1,0-11.4-11.4l-28,28V108a8,8,0,0,0-16,0v40a8,8,0,0,1-2.3,5.7l-39.6,39.6a8,8,0,0,1-11.4,0l-39.6-39.6A8,8,0,0,1,80,148V108a8,8,0,0,0-16,0v28.7l-28-28a8,8,0,1,0-11.4,11.4l28,28H24a8,8,0,0,1,0-16h40a8,8,0,0,1,5.7-2.3l39.6-39.6a8,8,0,0,1,11.4,0l39.6,39.6a8,8,0,0,1,5.7,2.3A8,8,0,0,1,168,140a8,8,0,0,1-5.7,2.3l-39.6,39.6a8,8,0,0,1-11.4,0l-39.6-39.6A8,8,0,0,1,66.3,132H48a8,8,0,0,0-8,8v40a8,8,0,0,1-2.3,5.7l-22,22A8,8,0,0,0,16,216H240a8,8,0,0,0,5.7-13.7Z"></path></svg>
-                        </div>
+                    <div class="promise-card">
+                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M160,16a80.07,80.07,0,0,0-72.3,48.1,80,80,0,1,0,0,63.8A80.07,80.07,0,1,0,160,16Zm10.1,77.5-32,32a8,8,0,0,1-11.3,0l-16-16a8,8,0,0,1,11.3-11.3L128,110.8l26.4-26.5a8,8,0,0,1,11.4,11.4Z"></path></svg></div>
                         <h3>Modern, Agile & Driven to Excel</h3>
-                        <p>We're not tied to outdated methods or legacy systems. You benefit from the latest technology and a lean, agile approach. Our motivation is to deliver exceptional results that build a powerful portfolio and a lasting partnership.</p>
+                        <p>We're not tied to outdated methods. You benefit from the latest technology and a lean, agile approach. Our motivation is to deliver exceptional results that build a powerful portfolio and a lasting partnership.</p>
                     </div>
                 </div>
             </div>
         </section>
         
-        <!-- Results Section -->
+        <!-- Impact Section -->
         <section id="results" class="results">
             <div class="container reveal">
                 <h2>Measurable Impact, Guaranteed</h2>
@@ -427,12 +446,12 @@
                     <div class="result-card">
                         <div class="stat">Agile</div>
                         <p>Methodology</p>
-                        <span>Rapid, transparent & adaptive development</span>
+                        <span>Rapid, transparent & adaptive</span>
                     </div>
                     <div class="result-card">
-                        <div class="stat">24/7</div>
+                        <div class="stat">24<span class="kerning-fix">/</span>7</div>
                         <p>Direct Support</p>
-                        <span>Constant communication, whenever you need it</span>
+                        <span>Constant communication</span>
                     </div>
                 </div>
             </div>
@@ -443,7 +462,6 @@
             <div class="container reveal">
                 <h2>Let's Build Your Future, Together</h2>
                 <p class="section-intro">Ready to overcome your challenges and unlock your business's true potential? Fill out the form below to start the conversation.</p>
-                
                 <form class="contact-form" action="https://formspree.io/f/xnngwalg" method="POST">
                     <div class="form-group">
                         <label for="name">Full Name</label>
@@ -470,17 +488,15 @@
                 <h4>Axion Digital</h4>
                 <p>We are a technology consultancy based in Mississauga, ON, dedicated to helping businesses innovate and grow through custom software, cloud solutions, and data analytics.</p>
                  <div class="social-links">
-                    <a href="#" aria-label="LinkedIn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M216,24H40A16,16,0,0,0,24,40V216a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V40A16,16,0,0,0,216,24Zm-16,176H160V148.38c0-14.94-5.41-25.13-18.75-25.13A20.53,20.53,0,0,0,121,142.23,20,20,0,0,0,120,148v52H80V112h40v16.52c5.31-8.62,15.63-20.52,35.25-20.52C200,108,200,126.26,200,144Z M56,88a16,16,0,1,1,16-16A16,16,0,0,1,56,88Z"></path></svg></a>
-                    <a href="#" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M245.66,77.66l-29.9,29.9C209.72,113.6,192,120,168,120a88.1,88.1,0,0,1-88-88c0-24,6.4-41.72,12.44-47.76l29.9-29.9A16,16,0,0,0,112,8a8,8,0,0,0-5.66,2.34L37.66,79.05A24,24,0,0,0,88,144c24,0,41.72-6.4,47.76-12.44l29.9-29.9A16,16,0,0,1,184,88a8,8,0,0,1,5.66-2.34L248.34,26.95A24,24,0,0,1,200,80c-24,0-41.72,6.4-47.76,12.44l-29.9,29.9A16,16,0,0,0,112,136a8,8,0,0,0,5.66,2.34l68.69,58.71a24,24,0,0,0,50.31-29.7Z"></path></svg></a>
-                </div>
+                 </div>
             </div>
             <div class="footer-links">
-                <h4>Quick Links</h4>
+                <h4>Navigate</h4>
                 <ul>
                     <li><a href="#services">Services</a></li>
-                    <li><a href="#testimonials">Our Promise</a></li>
-                    <li><a href="#results">Impact</a></li>
-                    <li><a href="#contact">Contact Us</a></li>
+                    <li><a href="#methodology">Methodology</a></li>
+                    <li><a href="#promise">Our Promise</a></li>
+                    <li><a href="#contact">Contact</a></li>
                 </ul>
             </div>
              <div class="footer-links">
@@ -496,25 +512,43 @@
         </div>
     </footer>
 
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script>
+    // Particle.js configuration
+    particlesJS("particles-js", {
+        "particles": {
+            "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+            "color": { "value": "#00f6ff" },
+            "shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" } },
+            "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
+            "size": { "value": 3, "random": true, "anim": { "enable": false } },
+            "line_linked": { "enable": true, "distance": 150, "color": "#00f6ff", "opacity": 0.4, "width": 1 },
+            "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+        },
+        "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+            "modes": { "repulse": { "distance": 100, "duration": 0.4 }, "push": { "particles_nb": 4 } }
+        },
+        "retina_detect": true
+    });
+
     // Simple script for scroll animations
     const revealElements = document.querySelectorAll('.reveal');
-
     const revealOnScroll = () => {
         const windowHeight = window.innerHeight;
         revealElements.forEach(el => {
             const elementTop = el.getBoundingClientRect().top;
-            if (elementTop < windowHeight - 100) { // Reveal when element is 100px from bottom
+            if (elementTop < windowHeight - 100) {
                 el.classList.add('visible');
             }
         });
     };
-
     window.addEventListener('scroll', revealOnScroll);
-    // Initial check in case elements are already in view
     document.addEventListener('DOMContentLoaded', revealOnScroll);
 </script>
 
 </body>
 </html>
+
+
+
 
