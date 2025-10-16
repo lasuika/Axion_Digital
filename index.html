@@ -196,7 +196,7 @@
         .result-card p { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: var(--text-heading); }
         .result-card span { font-size: 0.9rem; opacity: 0.8; }
         
-        /* --- Testimonials Section --- */
+        /* --- Promise/Testimonials Section --- */
         .testimonials { background-color: var(--bg-light-dark); }
         .testimonial-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
         .testimonial-card {
@@ -204,24 +204,21 @@
             padding: 30px;
             border-radius: var(--border-radius);
             border: 1px solid var(--border-color);
-            border-left: 5px solid var(--primary-color);
+            display: flex;
+            flex-direction: column;
         }
-        .testimonial-card .quote {
-            font-size: 1.1rem;
-            font-style: italic;
+        .promise-card .icon {
+            color: var(--primary-color);
             margin-bottom: 20px;
+        }
+         .promise-card h3 {
+            color: var(--text-heading);
+            margin-bottom: 10px;
+        }
+        .promise-card p {
+            font-size: 1rem;
             color: var(--text-body);
         }
-        .testimonial-author { display: flex; align-items: center; }
-        .testimonial-author img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
-            object-fit: cover;
-        }
-        .author-info strong { color: var(--text-heading); display: block; }
-        .author-info span { font-size: 0.9rem; }
 
 
         /* --- Contact Section --- */
@@ -312,8 +309,8 @@
             <nav>
                 <ul>
                     <li><a href="#services">Services</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                    <li><a href="#results">Results</a></li>
+                    <li><a href="#testimonials">Our Promise</a></li>
+                    <li><a href="#results">Impact</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
@@ -323,7 +320,7 @@
     <main>
         <!-- Hero Section -->
         <section class="hero">
-            <div class="container reveal">
+            <div class="container">
                 <h1>Transform Your Business with Smarter Solutions</h1>
                 <p class="sub-headline">We build custom software, optimize your cloud infrastructure, and unlock data-driven insights to fuel your growth and supercharge your efficiency.</p>
                 <a href="#contact" class="btn">Schedule a Free Consultation</a>
@@ -395,28 +392,22 @@
          <!-- Testimonials Section -->
         <section id="testimonials" class="testimonials">
             <div class="container reveal">
-                <h2>What Our Clients Say</h2>
-                <p class="section-intro">We're proud to build solutions that drive real success for our partners.</p>
+                <h2>Our Founding Partner Promise</h2>
+                <p class="section-intro">As a new and agile consultancy, our first partners aren't just clients—they're collaborators. We're hungry to build our reputation on your success and offer a level of dedication that larger firms can't match.</p>
                 <div class="testimonial-grid">
-                    <div class="testimonial-card">
-                        <p class="quote">"BizPro's custom software automated nearly 50% of our manual workload. The efficiency gains were immediate and significant. Their team is professional, responsive, and truly understood our needs."</p>
-                        <div class="testimonial-author">
-                            <img src="https://placehold.co/100x100/E2E8F0/4A5568?text=JS" alt="Author Jane Smith">
-                            <div class="author-info">
-                                <strong>Jane Smith</strong>
-                                <span>COO, Innovate Inc.</span>
-                            </div>
+                    <div class="testimonial-card promise-card">
+                        <div class="icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M234.33,114.33l-40-40A8,8,0,0,0,184,80H176V48a16,16,0,0,0-16-16H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H160a16,16,0,0,0,16-16V176h8a8,8,0,0,0,5.67-2.33l40-40a8,8,0,0,0,0-11.34ZM160,208H48V48H160V80h18.34l34.33,34.33L178.34,152H160v56Zm56-42.34L181.66,128,216,93.66Z"></path></svg>
                         </div>
+                        <h3>Your Project, Our Priority</h3>
+                        <p>As a founding partner, you get direct access to our core team. Your project receives our undivided attention, ensuring we are deeply invested in the outcome and can adapt instantly to your needs. We're building our legacy with your success.</p>
                     </div>
-                    <div class="testimonial-card">
-                        <p class="quote">"The data analytics dashboard they built has completely changed how we approach marketing. We can now make informed decisions in real-time, which has boosted our campaign ROI by over 35%."</p>
-                        <div class="testimonial-author">
-                           <img src="https://placehold.co/100x100/E2E8F0/4A5568?text=MD" alt="Author Michael Doe">
-                            <div class="author-info">
-                                <strong>Michael Doe</strong>
-                                <span>Marketing Director, Growth Co.</span>
-                            </div>
+                    <div class="testimonial-card promise-card">
+                        <div class="icon">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M245.7,122.3l-39.6,39.6a8,8,0,0,1-5.7,2.3H160a8,8,0,0,1,0-16h28.7l28-28a8,8,0,1,0-11.4-11.4l-28,28V108a8,8,0,0,0-16,0v40a8,8,0,0,1-2.3,5.7l-39.6,39.6a8,8,0,0,1-11.4,0l-39.6-39.6A8,8,0,0,1,80,148V108a8,8,0,0,0-16,0v28.7l-28-28a8,8,0,1,0-11.4,11.4l28,28H24a8,8,0,0,1,0-16h40a8,8,0,0,1,5.7-2.3l39.6-39.6a8,8,0,0,1,11.4,0l39.6,39.6a8,8,0,0,1,5.7,2.3A8,8,0,0,1,168,140a8,8,0,0,1-5.7,2.3l-39.6,39.6a8,8,0,0,1-11.4,0l-39.6-39.6A8,8,0,0,1,66.3,132H48a8,8,0,0,0-8,8v40a8,8,0,0,1-2.3,5.7l-22,22A8,8,0,0,0,16,216H240a8,8,0,0,0,5.7-13.7Z"></path></svg>
                         </div>
+                        <h3>Modern, Agile & Driven to Excel</h3>
+                        <p>We're not tied to outdated methods or legacy systems. You benefit from the latest technology and a lean, agile approach. Our motivation is to deliver exceptional results that build a powerful portfolio and a lasting partnership.</p>
                     </div>
                 </div>
             </div>
@@ -429,19 +420,19 @@
                 <p class="section-intro">Our solutions don't just look good—they deliver tangible, data-backed results.</p>
                 <div class="results-grid">
                     <div class="result-card">
-                        <div class="stat">45%</div>
-                        <p>Increase in Productivity</p>
-                        <span>Average client result after 6 months</span>
+                        <div class="stat">100%</div>
+                        <p>Project Dedication</p>
+                        <span>Your success is our single focus</span>
                     </div>
                     <div class="result-card">
-                        <div class="stat">30%</div>
-                        <p>Reduction in OpEx</p>
-                        <span>From automation & cloud optimization</span>
+                        <div class="stat">Agile</div>
+                        <p>Methodology</p>
+                        <span>Rapid, transparent & adaptive development</span>
                     </div>
                     <div class="result-card">
-                        <div class="stat">98%</div>
-                        <p>Client Satisfaction</p>
-                        <span>Based on our annual partner survey</span>
+                        <div class="stat">24/7</div>
+                        <p>Direct Support</p>
+                        <span>Constant communication, whenever you need it</span>
                     </div>
                 </div>
             </div>
@@ -487,8 +478,8 @@
                 <h4>Quick Links</h4>
                 <ul>
                     <li><a href="#services">Services</a></li>
-                    <li><a href="#testimonials">Testimonials</a></li>
-                    <li><a href="#results">Our Results</a></li>
+                    <li><a href="#testimonials">Our Promise</a></li>
+                    <li><a href="#results">Impact</a></li>
                     <li><a href="#contact">Contact Us</a></li>
                 </ul>
             </div>
@@ -526,3 +517,4 @@
 
 </body>
 </html>
+
