@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
         /* --- Global Styles & Futuristic Neon Theme --- */
@@ -56,7 +57,7 @@
             z-index: 2;
         }
 
-        h1, h2, h3 {
+        h1, h2, h3, h4 {
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: var(--text-heading);
             font-weight: 800;
@@ -145,17 +146,20 @@
             top: 0;
             left: 0;
             z-index: 1;
-            transform: translateZ(0); /* Hint for GPU acceleration */
         }
-        .hero .sub-headline { max-width: 750px; margin: 0 auto 40px auto; font-size: 1.25rem; }
-        .glitch { color: var(--text-body); font-size: 1.25rem; animation: glitch 5s linear infinite; }
-        @keyframes glitch{ 2%,64%{ transform: translate(2px,0) skew(0deg); } 4%,60%{ transform: translate(-2px,0) skew(0deg); } 62%{ transform: translate(0,0) skew(5deg); } }
-        .glitch:before, .glitch:after{ content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); }
-        .glitch:before{ left: 2px; text-shadow: -2px 0 var(--primary-color); animation: glitch-anim 2s linear infinite reverse; }
-        .glitch:after{ left: -2px; text-shadow: -2px 0 var(--secondary-color); animation: glitch-anim-2 2s linear infinite reverse; }
-        @keyframes glitch-anim{ 0% { clip-path: polygon(0 42%, 100% 42%, 100% 48%, 0 48%); } 10% { clip-path: polygon(0 15%, 100% 15%, 100% 15%, 0 15%); } 20% { clip-path: polygon(0 88%, 100% 88%, 100% 90%, 0 90%); } 30% { clip-path: polygon(0 47%, 100% 47%, 100% 55%, 0 55%); } 40% { clip-path: polygon(0 67%, 100% 67%, 100% 70%, 0 70%); } 50% { clip-path: polygon(0 13%, 100% 13%, 100% 15%, 0 15%); } 60% { clip-path: polygon(0 92%, 100% 92%, 100% 95%, 0 95%); } 70% { clip-path: polygon(0 40%, 100% 40%, 100% 42%, 0 42%); } 80% { clip-path: polygon(0 2%, 100% 2%, 100% 5%, 0 5%); } 90% { clip-path: polygon(0 50%, 100% 50%, 100% 51%, 0 51%); } 100% { clip-path: polygon(0 20%, 100% 20%, 100% 21%, 0 21%); } }
-        @keyframes glitch-anim-2{ 0% { clip-path: polygon(0 72%, 100% 72%, 100% 78%, 0 78%); } 10% { clip-path: polygon(0 25%, 100% 25%, 100% 25%, 0 25%); } 20% { clip-path: polygon(0 58%, 100% 58%, 100% 60%, 0 60%); } 30% { clip-path: polygon(0 17%, 100% 17%, 100% 25%, 0 25%); } 40% { clip-path: polygon(0 37%, 100% 37%, 100% 40%, 0 40%); } 50% { clip-path: polygon(0 83%, 100% 83%, 100% 85%, 0 85%); } 60% { clip-path: polygon(0 42%, 100% 42%, 100% 45%, 0 45%); } 70% { clip-path: polygon(0 10%, 100% 10%, 100% 12%, 0 12%); } 80% { clip-path: polygon(0 32%, 100% 32%, 100% 35%, 0 35%); } 90% { clip-path: polygon(0 70%, 100% 70%, 100% 71%, 0 71%); } 100% { clip-path: polygon(0 30%, 100% 30%, 100% 31%, 0 31%); } }
+        .hero .container {
+            -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+            -moz-animation: fadein 2s; /* Firefox < 16 */
+            -ms-animation: fadein 2s; /* Internet Explorer */
+            -o-animation: fadein 2s; /* Opera < 12.1 */
+            animation: fadein 2s;
+        }
+        @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+        @-moz-keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+        @-webkit-keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
 
+        .hero .sub-headline { max-width: 750px; margin: 0 auto 40px auto; font-size: 1.25rem; }
+        
         /* --- Challenges Section --- */
         .challenges { background: var(--bg-light-dark); }
         .points-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
@@ -218,7 +222,7 @@
         .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center; }
         .result-card { background: var(--bg-light-dark); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border-color); }
         .result-card .stat { font-size: 4rem; font-weight: 800; color: var(--primary-color); margin-bottom: 0.5rem; font-family: 'Orbitron', sans-serif; }
-        .result-card .stat .kerning-fix { padding: 0 0.15em; }
+        .result-card .stat-small-text { font-size: 0.9em; padding: 0 0.2em; }
         .result-card p { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: var(--text-heading); }
         .result-card span { font-size: 0.9rem; opacity: 0.8; }
         
@@ -240,7 +244,6 @@
             background: var(--bg-light-dark); border-radius: var(--border-radius);
             border: 1px solid var(--border-color);
         }
-        /* ... [Contact Form styles remain similar] ... */
         .form-group { margin-bottom: 25px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-heading); }
         .form-group input, .form-group textarea {
@@ -258,7 +261,6 @@
 
         /* --- Footer --- */
         .footer { background: var(--bg-dark); color: var(--text-body); padding: 60px 0; border-top: 1px solid var(--border-color); }
-        /* ... [Footer styles remain similar] ... */
         .footer-container { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; text-align: left; }
         .footer-about h4, .footer-links h4 { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-heading); margin-bottom: 15px; font-size: 1.2rem; }
         .footer-about p { font-size: 0.9rem; line-height: 1.8; }
@@ -266,10 +268,32 @@
         .footer-links ul li { margin-bottom: 10px; }
         .footer-links ul li a { color: var(--text-body); transition: color 0.3s ease; }
         .footer-links ul li a:hover { color: var(--primary-color); }
-        .social-links { display: flex; gap: 15px; margin-top: 20px; }
-        .social-links a { color: var(--text-heading); font-size: 1.2rem; transition: color 0.3s ease; }
-        .social-links a:hover { color: var(--primary-color); }
         .footer-bottom { text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); font-size: 0.9rem; }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            background-color: rgba(2, 6, 23, 0.9);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content h3 {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .modal-content p {
+            margin-bottom: 1rem;
+        }
+         .modal-content strong {
+            color: var(--text-heading);
+        }
+        .modal-content ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 1rem;
+        }
 
         /* --- Responsive Design --- */
         @media (max-width: 992px) {
@@ -316,7 +340,7 @@
             <div id="particles-js"></div>
             <div class="container">
                 <h1>AXION DIGITAL</h1>
-                <p class="sub-headline glitch" data-text="Building Tomorrow's Technology, Today.">Building Tomorrow's Technology, Today.</p>
+                <p class="sub-headline">I build custom automation engines that power your business growth.</p>
                 <a href="#contact" class="btn">Initiate Contact</a>
             </div>
         </section>
@@ -325,7 +349,7 @@
         <section id="challenges" class="challenges">
             <div class="container reveal">
                 <h2>Legacy Systems Holding You Back?</h2>
-                <p class="section-intro">In a rapidly evolving digital landscape, outdated processes are a liability. I help you break free from the constraints of the past to build a more agile, scalable, and resilient future.</p>
+                <p class="section-intro">In a rapidly evolving digital landscape, outdated processes are not just inefficient—they are a liability. I help you break free from the constraints of the past to build a more agile, scalable, and resilient future.</p>
                 <div class="points-grid">
                     <div class="point">
                         <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M152,80H136V64a8,8,0,0,0-16,0V80H104a8,8,0,0,0,0,16h16v16a8,8,0,0,0,16,0V96h16a8,8,0,0,0,0-16Zm76,48a104,104,0,1,1-104-104A104.11,104.11,0,0,1,228,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,212,128ZM80,128a48,48,0,1,0,48-48A48.05,48.05,0,0,0,80,128Zm80,0a32,32,0,1,1-32-32A32,32,0,0,1,160,128Z"></path></svg></div>
@@ -417,17 +441,17 @@
         <section id="promise" class="testimonials">
             <div class="container reveal">
                 <h2>My Founding Partner Promise</h2>
-                <p class="section-intro">As an independent consultant, my first partners aren't just clients—they're collaborators. I'm hungry to build my reputation on your success.</p>
+                <p class="section-intro">As an independent consultant, my first partners aren't just clients—they're collaborators. I am hungry to build my reputation on your success and offer a level of dedication that larger firms can't match.</p>
                 <div class="testimonial-grid">
                     <div class="promise-card">
                         <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M224,96v64a8,8,0,0,1-8,8H184v24a8,8,0,0,1-16,0V168H88v24a8,8,0,0,1-16,0V168H40a8,8,0,0,1-8-8V96a8,8,0,0,1,8-8H72V64a8,8,0,0,1,16,0V88h80V64a8,8,0,0,1,16,0V88h32A8,8,0,0,1,224,96ZM152,40V24a8,8,0,0,0-16,0V40H120V24a8,8,0,0,0-16,0V40a24,24,0,0,0-24,24V88H56a24,24,0,0,0-24,24v64a24,24,0,0,0,24,24H80v16a24,24,0,0,0,24,24h48a24,24,0,0,0,24-24V200h24a24,24,0,0,0,24-24V112a24,24,0,0,0-24-24H176V64A24,24,0,0,0,152,40Z"></path></svg></div>
                         <h3>Your Project, My Priority</h3>
-                        <p>As a founding partner, you work directly with me. Your project receives my undivided attention from start to finish, ensuring I am deeply invested in your outcome and can adapt instantly to your needs.</p>
+                        <p>As a founding partner, your project receives my undivided attention. You get direct access to me, ensuring I am deeply invested in your outcome and can adapt instantly to your needs.</p>
                     </div>
                     <div class="promise-card">
                         <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M160,16a80.07,80.07,0,0,0-72.3,48.1,80,80,0,1,0,0,63.8A80.07,80.07,0,1,0,160,16Zm10.1,77.5-32,32a8,8,0,0,1-11.3,0l-16-16a8,8,0,0,1,11.3-11.3L128,110.8l26.4-26.5a8,8,0,0,1,11.4,11.4Z"></path></svg></div>
-                        <h3>Direct Expertise & Modern Methods</h3>
-                        <p>You benefit from the latest technology and a lean, agile approach without the overhead of a large agency. My motivation is to deliver exceptional results that build a powerful portfolio and a lasting partnership.</p>
+                        <h3>Modern, Agile & Driven to Excel</h3>
+                        <p>I'm not tied to outdated methods. You benefit from the latest technology and a lean, agile approach. My motivation is to deliver exceptional results that build a powerful portfolio and a lasting partnership.</p>
                     </div>
                 </div>
             </div>
@@ -450,7 +474,7 @@
                         <span>Rapid, transparent & adaptive</span>
                     </div>
                     <div class="result-card">
-                        <div class="stat">24<span class="kerning-fix">/</span>7</div>
+                        <div class="stat">24<span class="stat-small-text">/</span>7</div>
                         <p>Direct Support</p>
                         <span>Constant communication</span>
                     </div>
@@ -462,7 +486,7 @@
         <section id="contact" class="contact">
             <div class="container reveal">
                 <h2>Let's Build Your Future, Together</h2>
-                <p class="section-intro">Ready to work directly with a dedicated expert to overcome your challenges? Fill out the form below to start the conversation.</p>
+                <p class="section-intro">Ready to overcome your challenges and unlock your business's true potential? Fill out the form below to start the conversation.</p>
                 <form class="contact-form" action="https://formspree.io/f/xnngwalg" method="POST">
                     <div class="form-group">
                         <label for="name">Full Name</label>
@@ -488,8 +512,6 @@
             <div class="footer-about">
                 <h4>Axion Digital</h4>
                 <p>I am an independent technology consultant based in Mississauga, ON, dedicated to helping businesses innovate and grow through custom software, cloud solutions, and data analytics.</p>
-                 <div class="social-links">
-                 </div>
             </div>
             <div class="footer-links">
                 <h4>Navigate</h4>
@@ -501,10 +523,11 @@
                 </ul>
             </div>
              <div class="footer-links">
-                <h4>Contact</h4>
+                <h4>Contact & Legal</h4>
                 <ul>
                     <li><a href="mailto:contact@axiondigital.me">contact@axiondigital.me</a></li>
                     <li><p>Mississauga, ON, Canada</p></li>
+                    <li><a href="#" id="terms-link" class="text-sm">Terms of Service</a></li>
                 </ul>
             </div>
         </div>
@@ -513,38 +536,116 @@
         </div>
     </footer>
 
+    <!-- Terms Modal -->
+    <div id="terms-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-overlay">
+        <div class="bg-slate-900 border border-slate-700 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-8 relative modal-content">
+            <button id="close-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white text-3xl font-bold">&times;</button>
+            <h2 class="text-3xl text-center mb-6">Axion Digital - Terms and Conditions of Service</h2>
+            <p class="text-sm text-center mb-6">Last Updated: October 16, 2025</p>
+
+            <p class="bg-slate-800 p-4 rounded-md border border-slate-700"><strong>IMPORTANT LEGAL NOTICE:</strong> By engaging the services of Axion Digital (“Consultant”, “I”, “My”), you (“Client”) agree to be bound by the following Terms and Conditions (“Terms”). These Terms form a legally binding agreement between you and the Consultant. Please read them carefully.</p>
+
+            <h3>1. Scope of Services</h3>
+            <p>I will provide the services (“Services”) as described in a mutually agreed upon Project Proposal or Statement of Work (“SOW”). The SOW will detail the specific deliverables, timelines, and fees for the project. Any services requested outside the scope of the SOW will require a separate written agreement.</p>
+
+            <h3>2. No Guarantees or Warranties</h3>
+            <p>All Services and deliverables are provided on an <strong>"AS IS"</strong> and <strong>"AS AVAILABLE"</strong> basis. To the fullest extent permissible by law, I expressly disclaim all warranties of any kind, whether express or implied, including, but not limited to, any implied warranties of merchantability, fitness for a particular purpose, and non-infringement. I do not warrant or guarantee that:</p>
+            <ul>
+                <li>The Services will be uninterrupted, timely, secure, or error-free.</li>
+                <li>The results obtained from the use of the Services will be accurate, reliable, or meet the Client’s specific business objectives.</li>
+                <li>Any software developed will be free of bugs, viruses, or other harmful components. The Client is responsible for implementing their own security measures.</li>
+            </ul>
+
+            <h3>3. Limitation of Liability</h3>
+            <p>This is a crucial term of our agreement. To the maximum extent permitted by applicable law, Axion Digital shall <strong>NOT be liable for any indirect, incidental, special, consequential, or punitive damages</strong>, including but not limited to: Loss of profits, revenue, or business opportunities; Loss of data, goodwill, or other intangible losses; Costs of procurement of substitute goods or services; Damages for business interruption. This limitation of liability applies regardless of the legal theory on which the claim is based, whether contract, tort (including negligence), strict liability, or otherwise, even if I have been advised of the possibility of such damages. In the event that Axion Digital is found liable for any direct damages, the <strong>total aggregate liability</strong> of Axion Digital in connection with any claim arising out of or relating to the Services provided shall <strong>not exceed the total fees paid by the Client to Axion Digital</strong> for the specific Services rendered under the SOW from which the claim arises.</p>
+
+            <h3>4. Indemnification</h3>
+            <p>The Client agrees to indemnify, defend, and hold harmless Axion Digital, its owner, and agents from and against any and all claims, liabilities, damages, losses, and expenses (including reasonable legal fees) arising out of or in any way connected with: The Client's use of the Services or deliverables; The data, content, or information provided by the Client; The Client’s breach of these Terms.</p>
+
+            <h3>5. Client Responsibilities</h3>
+            <p>The Client agrees to provide all necessary assistance, access to systems, and information required for the performance of the Services in a timely manner. The Client is solely responsible for the accuracy, legality, and security of all data provided to the Consultant. Axion Digital is not responsible for any issues or delays caused by the Client's failure to meet these responsibilities.</p>
+
+            <h3>6. Intellectual Property</h3>
+            <ul>
+                <li><strong>Client’s Ownership:</strong> Upon receipt of full and final payment for the Services, the Client will own the intellectual property rights to the final, custom-developed work product (“Deliverable”).</li>
+                <li><strong>Consultant’s Retained Rights:</strong> Axion Digital retains all rights to its pre-existing intellectual property, including its code libraries, methodologies, tools, and know-how used in the course of providing the Services.</li>
+            </ul>
+
+            <h3>7. Confidentiality</h3>
+            <p>Both parties agree not to disclose any Confidential Information of the other party to any third party without prior written consent. "Confidential Information" includes proprietary business information, technical data, trade secrets, and any other information marked as confidential.</p>
+            
+            <h3>8. Governing Law and Jurisdiction</h3>
+            <p>This Agreement shall be governed by and construed in accordance with the laws of the Province of Ontario and the federal laws of Canada applicable therein. Any legal action or proceeding arising under this Agreement will be brought exclusively in the courts located in Mississauga, Ontario.</p>
+            
+            <h3>9. Entire Agreement</h3>
+            <p>These Terms, together with the applicable SOW, constitute the entire agreement between the Client and Axion Digital and supersede all prior communications, proposals, or agreements, whether electronic, oral, or written.</p>
+        </div>
+    </div>
+
+
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script>
-    // Particle.js configuration
-    particlesJS("particles-js", {
-        "particles": {
-            "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
-            "color": { "value": "#00f6ff" },
-            "shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" } },
-            "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 0.8, "opacity_min": 0.1, "sync": false } },
-            "size": { "value": 3, "random": true, "anim": { "enable": false } },
-            "line_linked": { "enable": true, "distance": 150, "color": "#00f6ff", "opacity": 0.4, "width": 1 },
-            "move": { "enable": true, "speed": 1.5, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
-        },
-        "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
-            "modes": { "repulse": { "distance": 100, "duration": 0.4 }, "push": { "particles_nb": 4 } }
-        },
-        "retina_detect": true
-    });
+    document.addEventListener('DOMContentLoaded', function () {
+        // Particle.js configuration
+        particlesJS("particles-js", {
+            "particles": { "number": { "value": 60, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#00f6ff" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } }, "size": { "value": 3, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#00f6ff", "opacity": 0.2, "width": 1 }, "move": { "enable": true, "speed": 1, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false } },
+            "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": false }, "resize": true }, "modes": { "repulse": { "distance": 100, "duration": 0.4 } } },
+            "retina_detect": true
+        });
 
-    // Simple script for scroll animations
-    const revealElements = document.querySelectorAll('.reveal');
-    const revealOnScroll = () => {
-        const windowHeight = window.innerHeight;
-        revealElements.forEach(el => {
-            const elementTop = el.getBoundingClientRect().top;
-            if (elementTop < windowHeight - 100) {
-                el.classList.add('visible');
+        // Simple script for scroll animations
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            revealElements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) {
+                    el.classList.add('visible');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+        
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetElement = document.querySelector(this.getAttribute('href'));
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Modal functionality
+        const termsLink = document.getElementById('terms-link');
+        const termsModal = document.getElementById('terms-modal');
+        const closeModal = document.getElementById('close-modal');
+
+        const openModal = () => {
+            termsModal.classList.remove('hidden');
+            termsModal.classList.add('flex');
+        };
+
+        const hideModal = () => {
+            termsModal.classList.add('hidden');
+            termsModal.classList.remove('flex');
+        };
+
+        termsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal();
+        });
+
+        closeModal.addEventListener('click', hideModal);
+
+        termsModal.addEventListener('click', (e) => {
+            if (e.target === termsModal) {
+                hideModal();
             }
         });
-    };
-    window.addEventListener('scroll', revealOnScroll);
-    document.addEventListener('DOMContentLoaded', revealOnScroll);
+    });
 </script>
 
 </body>
