@@ -145,6 +145,7 @@
             top: 0;
             left: 0;
             z-index: 1;
+            transform: translateZ(0); /* Hint for GPU acceleration */
         }
         .hero .sub-headline { max-width: 750px; margin: 0 auto 40px auto; font-size: 1.25rem; }
         .glitch { color: var(--text-body); font-size: 1.25rem; animation: glitch 5s linear infinite; }
@@ -517,13 +518,13 @@
     // Particle.js configuration
     particlesJS("particles-js", {
         "particles": {
-            "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+            "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
             "color": { "value": "#00f6ff" },
             "shape": { "type": "circle", "stroke": { "width": 0, "color": "#000000" } },
-            "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
+            "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 0.8, "opacity_min": 0.1, "sync": false } },
             "size": { "value": 3, "random": true, "anim": { "enable": false } },
             "line_linked": { "enable": true, "distance": 150, "color": "#00f6ff", "opacity": 0.4, "width": 1 },
-            "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+            "move": { "enable": true, "speed": 1.5, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
         },
         "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
             "modes": { "repulse": { "distance": 100, "duration": 0.4 }, "push": { "particles_nb": 4 } }
