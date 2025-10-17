@@ -11,14 +11,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        /* --- Global Styles & Futuristic Neon Theme 2.0 --- */
+        /* --- Global Styles & Futuristic Neon Theme 3.0 --- */
         :root {
             --primary-color: #00f6ff; /* Neon Cyan */
             --secondary-color: #a855f7; /* Neon Purple */
             
             --bg-dark: #020617; /* Deeper Navy/Black */
-            --bg-light-dark: #0f172a; /* Lighter Dark for cards/sections */
-            --bg-grid: #080f21; /* Slightly lighter for grid background */
+            --bg-light-dark: rgba(15, 23, 42, 0.8); /* Lighter Dark for cards/sections with transparency */
+            --bg-solid-light-dark: #0f172a;
 
             --text-heading: #f8fafc; /* Bright White */
             --text-body: #94a3b8;    /* Light Gray */
@@ -41,6 +41,15 @@
             overflow-x: hidden;
         }
 
+        #background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
         .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
         h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-heading); font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
         h1 { font-size: 3.5rem; font-family: 'Orbitron', sans-serif; }
@@ -52,15 +61,6 @@
         section { padding: 120px 0; overflow: hidden; position: relative; }
 
         .section-intro { max-width: 700px; margin: 0 auto 60px auto; text-align: center; font-size: 1.1rem; }
-
-        /* --- Background Grid Effect --- */
-        .grid-background {
-            background-color: var(--bg-grid);
-            background-image:
-                linear-gradient(var(--border-color) 1px, transparent 1px),
-                linear-gradient(to right, var(--border-color) 1px, var(--bg-grid) 1px);
-            background-size: 40px 40px;
-        }
 
         /* --- Animations --- */
         .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
@@ -99,15 +99,22 @@
             text-align: center; padding: 140px 0; min-height: 100vh; display: flex;
             align-items: center; justify-content: center; position: relative;
         }
-        #particles-js { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; }
         .hero .container { animation: fadein 2s; }
         @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
         .hero .sub-headline { max-width: 750px; margin: 0 auto 40px auto; font-size: 1.25rem; }
 
+        /* --- Section Content Styling --- */
+        .content-section {
+            background-color: var(--bg-light-dark);
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid var(--border-color);
+            border-top: 1px solid var(--border-color);
+        }
+        
         /* --- Challenges Section --- */
         .points-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
         .point {
-            background: var(--bg-light-dark); padding: 35px; border-radius: var(--border-radius);
+            background: var(--bg-solid-light-dark); padding: 35px; border-radius: var(--border-radius);
             border: 1px solid var(--border-color); text-align: center;
             transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             position: relative;
@@ -131,7 +138,7 @@
 
         /* --- Portfolio Section --- */
         .case-study-card {
-            background: var(--bg-light-dark); padding: 40px; border-radius: var(--border-radius);
+            background: var(--bg-solid-light-dark); padding: 40px; border-radius: var(--border-radius);
             border: 1px solid var(--border-color); position: relative; transition: all 0.3s ease;
         }
         .case-study-card:hover { transform: translateY(-8px); box-shadow: 0 0 20px rgba(0, 246, 255, 0.15); border-color: var(--primary-color); }
@@ -165,7 +172,7 @@
         }
         .timeline-item:nth-child(even)::after { left: -14px; }
         .timeline-content {
-            padding: 30px; background-color: var(--bg-light-dark); position: relative;
+            padding: 30px; background-color: var(--bg-solid-light-dark); position: relative;
             border-radius: var(--border-radius); border: 1px solid var(--border-color);
         }
         .timeline-content .step-number {
@@ -176,7 +183,7 @@
 
         /* --- Services Section --- */
         .service-item {
-            background: var(--bg-light-dark); padding: 40px; margin-bottom: 30px;
+            background: var(--bg-solid-light-dark); padding: 40px; margin-bottom: 30px;
             border-radius: var(--border-radius); border: 1px solid var(--border-color);
             display: grid; grid-template-columns: 80px 1fr; gap: 30px; align-items: center;
         }
@@ -185,7 +192,7 @@
 
         /* --- Impact Section --- */
         .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center; }
-        .result-card { background: var(--bg-light-dark); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border-color); }
+        .result-card { background: var(--bg-solid-light-dark); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border-color); }
         .result-card .stat { 
             font-size: 4rem; font-weight: 800; color: var(--primary-color); 
             margin-bottom: 0.5rem; font-family: 'Orbitron', sans-serif; 
@@ -195,7 +202,7 @@
         
         /* --- Promise Section --- */
         .promise-card {
-            background-color: var(--bg-light-dark); padding: 40px; border-radius: var(--border-radius);
+            background-color: var(--bg-solid-light-dark); padding: 40px; border-radius: var(--border-radius);
             border: 1px solid var(--border-color); border-left: 4px solid var(--secondary-color);
         }
         .promise-card h3 { color: var(--text-heading); margin-bottom: 10px; font-size: 1.8rem; }
@@ -215,6 +222,7 @@
         .contact-form button { width: 100%; font-size: 1.1rem; padding: 16px; }
 
         /* --- Footer --- */
+        .footer { padding: 60px 0; border-top: 1px solid var(--border-color); color: var(--text-body); }
         .footer-container { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; text-align: left; }
         .footer-about h4, .footer-links h4 { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-heading); margin-bottom: 15px; font-size: 1.2rem; }
         .footer-about p { font-size: 0.9rem; line-height: 1.8; }
@@ -254,6 +262,7 @@
     </style>
 </head>
 <body>
+    <canvas id="background-canvas"></canvas>
     
     <header class="navbar">
         <div class="container">
@@ -272,7 +281,6 @@
 
     <main>
         <section class="hero">
-            <div id="particles-js"></div>
             <div class="container">
                 <h1>AXION DIGITAL</h1>
                 <p class="sub-headline">I build custom automation engines that power your business growth.</p>
@@ -280,7 +288,7 @@
             </div>
         </section>
 
-        <section id="challenges" class="challenges grid-background">
+        <section id="challenges" class="challenges content-section">
             <div class="container reveal">
                 <h2>Operational Drag Holding You Back?</h2>
                 <p class="section-intro">In a hyper-competitive market, operational friction is a critical vulnerability. Manual processes, data silos, and disjointed systems don't just slow you down—they actively prevent growth. I architect the solutions to eliminate that drag.</p>
@@ -304,7 +312,7 @@
             </div>
         </section>
 
-        <section id="services" class="services">
+        <section id="services" class="services content-section">
             <div class="container reveal">
                 <h2>My Core Services</h2>
                 <p class="section-intro">I architect and build robust digital foundations designed for performance, scale, and long-term success.</p>
@@ -332,7 +340,7 @@
             </div>
         </section>
         
-        <section id="portfolio" class="portfolio grid-background">
+        <section id="portfolio" class="portfolio content-section">
             <div class="container reveal">
                 <h2>Conceptual Case Study</h2>
                 <p class="section-intro">To demonstrate my problem-solving approach, here’s a conceptual solution for a high-complexity industry: third-party logistics (3PL) in the Greater Toronto Area.</p>
@@ -364,7 +372,7 @@
             </div>
         </section>
 
-        <section id="methodology" class="methodology">
+        <section id="methodology" class="methodology content-section">
             <div class="container reveal">
                 <h2>My Methodology</h2>
                 <p class="section-intro">I follow a structured, transparent, and collaborative process to ensure every project is a success, from initial concept to final deployment and beyond.</p>
@@ -377,7 +385,7 @@
             </div>
         </section>
 
-        <section id="about" class="about-me">
+        <section id="about" class="about-me content-section">
             <div class="container reveal">
                 <div class="about-me-grid">
                     <div class="about-me-image-wrapper">
@@ -395,7 +403,7 @@
             </div>
         </section>
 
-        <section id="promise" class="testimonials grid-background">
+        <section id="promise" class="testimonials content-section">
             <div class="container reveal">
                 <h2>My Founding Partner Promise</h2>
                 <p class="section-intro">As an independent consultant, my first partners aren't just clients—they're collaborators. I am hungry to build my reputation on your success and offer a level of dedication that larger firms can't match.</p>
@@ -412,7 +420,7 @@
             </div>
         </section>
         
-        <section id="results" class="results">
+        <section id="results" class="results content-section">
             <div class="container reveal">
                 <h2>Measurable Impact, Guaranteed</h2>
                 <p class="section-intro">My solutions don't just look good—they deliver tangible, data-backed results.</p>
@@ -424,7 +432,7 @@
             </div>
         </section>
 
-        <section id="contact" class="contact grid-background">
+        <section id="contact" class="contact content-section">
             <div class="container reveal">
                 <h2>Let's Build Your Future, Together</h2>
                 <p class="section-intro">Ready to overcome your challenges and unlock your business's true potential? Fill out the form below to start the conversation.</p>
@@ -438,7 +446,7 @@
         </section>
     </main>
     
-    <footer class="footer">
+    <footer class="footer content-section">
         <div class="container footer-container">
             <div class="footer-about"><h4>Axion Digital</h4><p>I am an independent technology consultant based in Mississauga, ON, dedicated to helping businesses innovate and grow through custom software, cloud solutions, and data analytics.</p></div>
             <div class="footer-links"><h4>Navigate</h4><ul><li><a href="#services">Services</a></li><li><a href="#portfolio">Case Study</a></li><li><a href="#about">About Me</a></li><li><a href="#methodology">Methodology</a></li><li><a href="#promise">My Promise</a></li><li><a href="#contact">Contact</a></li></ul></div>
@@ -465,15 +473,86 @@
         </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        particlesJS("particles-js", {
-            particles: { number: { value: 60, density: { enable: true, value_area: 800 } }, color: { value: "#00f6ff" }, shape: { type: "circle" }, opacity: { value: 0.5, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } }, size: { value: 3, random: true }, line_linked: { enable: true, distance: 150, color: "#00f6ff", opacity: 0.2, width: 1 }, move: { enable: true, speed: 1, direction: "none", random: false, straight: false, out_mode: "out", bounce: false } },
-            interactivity: { detect_on: "canvas", events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: false }, resize: true }, modes: { repulse: { distance: 100, duration: 0.4 } } },
-            retina_detect: true
+        const canvas = document.getElementById('background-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor(x, y, size, speedX, speedY, color) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.speedX = speedX;
+                this.speedY = speedY;
+                this.color = color;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.01;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            let numberOfParticles = (canvas.width * canvas.height) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = Math.random() * 1.5 + 0.5;
+                let x = Math.random() * canvas.width;
+                let y = Math.random() * canvas.height;
+                let speedX = (Math.random() * 0.4) - 0.2;
+                let speedY = (Math.random() * 0.4) - 0.2;
+                let color = 'rgba(0, 246, 255, ' + (Math.random() * 0.5 + 0.1) + ')';
+                particles.push(new Particle(x, y, size, speedX, speedY, color));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].y < 0 || particles[i].y > canvas.height || particles[i].x < 0 || particles[i].x > canvas.width) {
+                    particles.splice(i, 1);
+                    let size = Math.random() * 1.5 + 0.5;
+                    let y = Math.random() < 0.5 ? 0 - size : canvas.height + size;
+                    let x = Math.random() * canvas.width;
+                    let speedX = (Math.random() * 0.4) - 0.2;
+                    let speedY = (Math.random() * 0.4) - 0.2;
+                     if(y > canvas.height) { speedY = -Math.abs(speedY); } else { speedY = Math.abs(speedY); }
+                    let color = 'rgba(0, 246, 255, ' + (Math.random() * 0.5 + 0.1) + ')';
+                    particles.push(new Particle(x, y, size, speedX, speedY, color));
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
         });
 
+        resizeCanvas();
+        initParticles();
+        animate();
+
+        // Reveal animations
         const revealElements = document.querySelectorAll('.reveal');
         const revealOnScroll = () => {
             const windowHeight = window.innerHeight;
@@ -485,6 +564,7 @@
         window.addEventListener('scroll', revealOnScroll);
         revealOnScroll();
         
+        // Smooth scroll
         document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -493,6 +573,7 @@
             });
         });
 
+        // Modal functionality
         const termsLink = document.getElementById('terms-link');
         const termsModal = document.getElementById('terms-modal');
         const closeModal = document.getElementById('close-modal');
