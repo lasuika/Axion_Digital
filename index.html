@@ -89,13 +89,8 @@
             padding: 1rem 0; border-bottom: 1px solid var(--border-color); position: sticky;
             top: 0; z-index: 1000; backdrop-filter: blur(12px); background-color: rgba(2, 6, 23, 0.8);
         }
-        .navbar .container { display: flex; justify-content: space-between; align-items: center; }
         .navbar .logo { font-size: 1.8rem; font-weight: 700; color: var(--text-heading); font-family: 'Orbitron', sans-serif; }
-        .navbar nav ul { list-style: none; display: flex; }
-        .navbar nav ul li { margin-left: 35px; }
-        .navbar nav ul li a { color: var(--text-heading); font-weight: 600; transition: color 0.3s ease, text-shadow 0.3s ease; }
-        .navbar nav ul li a:hover { color: var(--primary-color); text-shadow: 0 0 10px var(--primary-color); }
-
+        
         /* --- Hero Section --- */
         .hero {
             text-align: center; padding: 140px 0; min-height: 100vh; display: flex;
@@ -114,7 +109,6 @@
         }
         
         /* --- Challenges Section --- */
-        .points-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
         .point {
             background: var(--bg-solid-light-dark); padding: 35px; border-radius: var(--border-radius);
             border: 1px solid var(--border-color); text-align: center;
@@ -126,7 +120,6 @@
         .point h3 { margin-top: 0; }
         
         /* --- About Me Section --- */
-        .about-me-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 50px; align-items: center; }
         .about-me-image-wrapper { position: relative; }
         .about-me-image-wrapper::before {
             content: ''; display: block; position: absolute; top: -15px; left: -15px;
@@ -135,7 +128,6 @@
         }
         .about-me-image-wrapper:hover::before { top: 0; left: 0; }
         .about-me-image img { border-radius: var(--border-radius); position: relative; z-index: 2; }
-        .about-me-content h2 { text-align: left; margin-bottom: 2rem; }
         .about-me-content .title { color: var(--primary-color); font-weight: 600; margin-bottom: 0.5rem; }
 
         /* --- Portfolio Section --- */
@@ -150,7 +142,6 @@
             font-weight: 700; font-size: 0.9rem; margin-bottom: 1rem;
         }
          .case-study-card h3 { font-size: 2rem; margin-bottom: 1.5rem; }
-         .case-study-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
          .case-study-grid h4 { font-size: 1.2rem; color: var(--primary-light); margin-bottom: 0.5rem; }
          .case-study-grid ul { list-style-type: none; padding-left: 0; }
          .case-study-grid li { position: relative; padding-left: 25px; margin-bottom: 10px; }
@@ -181,19 +172,15 @@
             color: var(--primary-color); font-family: 'Orbitron', sans-serif;
             font-size: 1.2rem; margin-bottom: 10px;
         }
-        .timeline-content h3 { color: var(--text-heading); }
-
+        
         /* --- Services Section --- */
         .service-item {
             background: var(--bg-solid-light-dark); padding: 40px; margin-bottom: 30px;
             border-radius: var(--border-radius); border: 1px solid var(--border-color);
-            display: grid; grid-template-columns: 80px 1fr; gap: 30px; align-items: center;
         }
         .service-item .icon-wrapper { color: var(--primary-color); }
-        .service-item-content h3 { margin-bottom: 0.5rem; color: var(--text-heading); }
-
+        
         /* --- Impact Section --- */
-        .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center; }
         .result-card { background: var(--bg-solid-light-dark); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border-color); }
         .result-card .stat { 
             font-size: 4rem; font-weight: 800; color: var(--primary-color); 
@@ -221,11 +208,9 @@
             outline: none; border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(0, 246, 255, 0.2);
         }
-        .contact-form button { width: 100%; font-size: 1.1rem; padding: 16px; }
-
+        
         /* --- Footer --- */
         .footer { padding: 60px 0; border-top: 1px solid var(--border-color); color: var(--text-body); position: relative; z-index: 1;}
-        .footer-container { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; text-align: left; }
         .footer-about h4, .footer-links h4 { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-heading); margin-bottom: 15px; font-size: 1.2rem; }
         .footer-about p { font-size: 0.9rem; line-height: 1.8; }
         .footer-links ul { list-style: none; padding: 0;}
@@ -240,37 +225,16 @@
         .modal-content p { margin-bottom: 1rem; }
         .modal-content strong { color: var(--text-heading); }
         .modal-content ul { list-style-type: disc; padding-left: 20px; margin-bottom: 1rem; }
-
-        /* --- Responsive Design --- */
-        @media (max-width: 992px) {
-            h1 { font-size: 2.8rem; } h2 { font-size: 2.2rem; }
-            .points-grid, .about-me-grid, .case-study-grid { grid-template-columns: 1fr; }
-            .about-me-image { max-width: 300px; margin: 0 auto; }
-            .about-me-content h2 { text-align: center; }
-            .footer-container { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 768px) {
-            h1 { font-size: 2.4rem; } h2 { font-size: 2rem; }
-            section { padding: 80px 0; }
-            .results-grid { grid-template-columns: 1fr; }
-            .navbar .container { flex-direction: column; }
-            .navbar nav ul { margin-top: 15px; padding-left: 0; }
-            .navbar nav ul li { margin: 5px 15px; }
-            .timeline::after { left: 12px; }
-            .timeline-item { width: 100%; padding-left: 50px; padding-right: 10px; }
-            .timeline-item:nth-child(odd), .timeline-item:nth-child(even) { left: 0; }
-            .timeline-item::after, .timeline-item:nth-child(even)::after { left: -1px; }
-        }
     </style>
 </head>
 <body>
     <canvas id="background-canvas"></canvas>
     
     <header class="navbar">
-        <div class="container">
+        <div class="container mx-auto flex justify-between items-center">
             <a href="#" class="logo">AXION DIGITAL</a>
-            <nav>
-                <ul>
+            <nav class="hidden md:flex">
+                <ul class="flex items-center space-x-8">
                     <li><a href="#services">Services</a></li>
                     <li><a href="#portfolio">Case Study</a></li>
                     <li><a href="#about">About Me</a></li>
@@ -278,6 +242,21 @@
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </div>
+         <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden">
+            <ul class="flex flex-col items-center mt-4 space-y-4">
+                <li><a href="#services">Services</a></li>
+                <li><a href="#portfolio">Case Study</a></li>
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#promise">My Promise</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
         </div>
     </header>
 
@@ -294,7 +273,7 @@
             <div class="container reveal">
                 <h2>Operational Drag Holding You Back?</h2>
                 <p class="section-intro">In a hyper-competitive market, operational friction is a critical vulnerability. Manual processes, data silos, and disjointed systems don't just slow you down—they actively prevent growth. I architect the solutions to eliminate that drag.</p>
-                <div class="points-grid">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div class="point">
                         <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M218.2,82.2a8,8,0,0,0-8.4-1.8l-56,24a8,8,0,0,0-5.8,7.4v48a8,8,0,0,0,16,0v-42l50.2-21.5A8,8,0,0,0,218.2,82.2ZM96,16a8,8,0,0,0-8,8V232a8,8,0,0,0,16,0V16A8,8,0,0,0,96,16Zm-48,40a8,8,0,0,0-8,8V200a8,8,0,0,0,16,0V64A8,8,0,0,0,48,56Z"></path></svg></div>
                         <h3>Process Bottlenecks</h3>
@@ -318,25 +297,18 @@
             <div class="container reveal">
                 <h2>My Core Services</h2>
                 <p class="section-intro">I architect and build robust digital foundations designed for performance, scale, and long-term success.</p>
-                <div class="service-item">
-                    <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M72.4,94.1a8,8,0,0,0,8.8-1.7l28-24.9a8,8,0,0,0,.6-11.3l-20-25a8,8,0,1,0-12.4,9.8L92.7,64,71.1,81.1a8,8,0,0,0-1.7,8.8l1.3,2.3A8,8,0,0,0,72.4,94.1Zm114.5-31-20,25a8,8,0,0,1-11.3-.6l-28-24.9a8,8,0,0,1,1.7-8.8l14.7-17.1-15.3-12.2a8,8,0,0,1-8.2-12.2l35-43.8a8,8,0,0,1,12.2,8.2l-12.2,15.3,17.1,14.7a8,8,0,0,1,2.3,1.3A8,8,0,0,1,186.9,63.1ZM224,128a96,96,0,1,1-96,96A96.1,96.1,0,0,1,224,128Zm-16,0a80,80,0,1,0-80,80A80.1,80.1,0,0,0,208,128Z"></path></svg></div>
-                    <div class="service-item-content">
-                        <h3>Custom Software & API Development</h3>
-                        <p>Bespoke applications and robust APIs engineered from the ground up to solve your unique business challenges and streamline complex operations.</p>
+                <div class="grid grid-cols-1 gap-8">
+                    <div class="service-item grid grid-cols-1 md:grid-cols-[80px_1fr] gap-8">
+                        <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M72.4,94.1a8,8,0,0,0,8.8-1.7l28-24.9a8,8,0,0,0,.6-11.3l-20-25a8,8,0,1,0-12.4,9.8L92.7,64,71.1,81.1a8,8,0,0,0-1.7,8.8l1.3,2.3A8,8,0,0,0,72.4,94.1Zm114.5-31-20,25a8,8,0,0,1-11.3-.6l-28-24.9a8,8,0,0,1,1.7-8.8l14.7-17.1-15.3-12.2a8,8,0,0,1-8.2-12.2l35-43.8a8,8,0,0,1,12.2,8.2l-12.2,15.3,17.1,14.7a8,8,0,0,1,2.3,1.3A8,8,0,0,1,186.9,63.1ZM224,128a96,96,0,1,1-96,96A96.1,96.1,0,0,1,224,128Zm-16,0a80,80,0,1,0-80,80A80.1,80.1,0,0,0,208,128Z"></path></svg></div>
+                        <div class="service-item-content"><h3>Custom Software & API Development</h3><p>Bespoke applications and robust APIs engineered from the ground up to solve your unique business challenges and streamline complex operations.</p></div>
                     </div>
-                </div>
-                <div class="service-item">
-                     <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M248,128a120.1,120.1,0,0,1-120,120,119.3,119.3,0,0,1-84.3-34.8,8.1,8.1,0,0,1,11.4-11.4A103.3,103.3,0,0,0,128,232a104,104,0,1,0-73.4-177.5,8,8,0,1,1-11.4-11.4A119.3,119.3,0,0,1,128,8,120.1,120.1,0,0,1,248,128ZM136,128a8,8,0,0,1-8,8H72a8,8,0,0,1,0-16h56A8,8,0,0,1,136,128Zm-8,40a8,8,0,0,1-8,8H48a8,8,0,0,1,0-16h72A8,8,0,0,1,128,168Zm80-88a8,8,0,0,1-8,8H104a8,8,0,0,1,0-16H200A8,8,0,0,1,208,80Z"></path></svg></div>
-                    <div class="service-item-content">
-                        <h3>Cloud Architecture & DevOps</h3>
-                        <p>Secure, scalable, and cost-efficient cloud infrastructure. I leverage automation to enable rapid deployments and maintain high-availability systems.</p>
+                    <div class="service-item grid grid-cols-1 md:grid-cols-[80px_1fr] gap-8">
+                        <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M248,128a120.1,120.1,0,0,1-120,120,119.3,119.3,0,0,1-84.3-34.8,8.1,8.1,0,0,1,11.4-11.4A103.3,103.3,0,0,0,128,232a104,104,0,1,0-73.4-177.5,8,8,0,1,1-11.4-11.4A119.3,119.3,0,0,1,128,8,120.1,120.1,0,0,1,248,128ZM136,128a8,8,0,0,1-8,8H72a8,8,0,0,1,0-16h56A8,8,0,0,1,136,128Zm-8,40a8,8,0,0,1-8,8H48a8,8,0,0,1,0-16h72A8,8,0,0,1,128,168Zm80-88a8,8,0,0,1-8,8H104a8,8,0,0,1,0-16H200A8,8,0,0,1,208,80Z"></path></svg></div>
+                        <div class="service-item-content"><h3>Cloud Architecture & DevOps</h3><p>Secure, scalable, and cost-efficient cloud infrastructure. I leverage automation to enable rapid deployments and maintain high-availability systems.</p></div>
                     </div>
-                </div>
-                <div class="service-item">
-                     <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M248,128a120.1,120.1,0,0,1-120,120,119.3,119.3,0,0,1-84.3-34.8,8.1,8.1,0,0,1,11.4-11.4A103.3,103.3,0,0,0,128,232a104,104,0,1,0-73.4-177.5,8,8,0,1,1-11.4-11.4A119.3,119.3,0,0,1,128,8,120.1,120.1,0,0,1,248,128ZM112,120V80a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm48-8a8,8,0,0,0-8,8v48a8,8,0,0,0,16,0V128A8,8,0,0,0,160,112Zm-88,24a8,8,0,0,0-8,8v32a8,8,0,0,0,16,0V144A8,8,0,0,0,72,136Z"></path></svg></div>
-                    <div class="service-item-content">
-                        <h3>Data Analytics & AI Integration</h3>
-                        <p>From predictive analytics to AI-powered automation, I turn your raw data into a strategic asset that drives intelligent decision-making and innovation.</p>
+                    <div class="service-item grid grid-cols-1 md:grid-cols-[80px_1fr] gap-8">
+                        <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M248,128a120.1,120.1,0,0,1-120,120,119.3,119.3,0,0,1-84.3-34.8,8.1,8.1,0,0,1,11.4-11.4A103.3,103.3,0,0,0,128,232a104,104,0,1,0-73.4-177.5,8,8,0,1,1-11.4-11.4A119.3,119.3,0,0,1,128,8,120.1,120.1,0,0,1,248,128ZM112,120V80a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm48-8a8,8,0,0,0-8,8v48a8,8,0,0,0,16,0V128A8,8,0,0,0,160,112Zm-88,24a8,8,0,0,0-8,8v32a8,8,0,0,0,16,0V144A8,8,0,0,0,72,136Z"></path></svg></div>
+                        <div class="service-item-content"><h3>Data Analytics & AI Integration</h3><p>From predictive analytics to AI-powered automation, I turn your raw data into a strategic asset that drives intelligent decision-making and innovation.</p></div>
                     </div>
                 </div>
             </div>
@@ -350,7 +322,7 @@
                     <span class="tag">Logistics & Supply Chain Automation</span>
                     <h3>Unified Logistics Command Center</h3>
                     <p class="mb-6">Analyzed the operations of a high-growth e-commerce company (like COROS) to identify key automation opportunities within their Shopify ecosystem. The goal was to reduce manual workload, eliminate errors, and unlock data-driven marketing.</p>
-                    <div class="case-study-grid">
+                    <div class="case-study-grid grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <h4>Key Challenges Identified</h4>
                             <ul>
@@ -378,26 +350,32 @@
             <div class="container reveal">
                 <h2>My Methodology</h2>
                 <p class="section-intro">I follow a structured, transparent, and collaborative process to ensure every project is a success, from initial concept to final deployment and beyond.</p>
-                <div class="timeline">
+                <div class="timeline hidden md:block">
                     <div class="timeline-item reveal"><div class="timeline-content"><span class="step-number">STEP 01</span><h3>Discovery & Strategy</h3><p>I begin with a deep dive into your goals and challenges to architect a data-driven strategy and project roadmap.</p></div></div>
                     <div class="timeline-item reveal"><div class="timeline-content"><span class="step-number">STEP 02</span><h3>Design & Prototyping</h3><p>I design intuitive interfaces and build interactive prototypes to validate the user experience before development begins.</p></div></div>
                     <div class="timeline-item reveal"><div class="timeline-content"><span class="step-number">STEP 03</span><h3>Agile Development</h3><p>I build your solution in iterative sprints, providing regular updates and demos to ensure alignment and incorporate feedback.</p></div></div>
                     <div class="timeline-item reveal"><div class="timeline-content"><span class="step-number">STEP 04</span><h3>Deployment & Support</h3><p>After rigorous testing, I deploy the solution to a scalable production environment and provide ongoing support and optimization.</p></div></div>
+                </div>
+                <div class="md:hidden space-y-8">
+                    <div class="timeline-content reveal"><span class="step-number">STEP 01</span><h3>Discovery & Strategy</h3><p>I begin with a deep dive into your goals and challenges to architect a data-driven strategy and project roadmap.</p></div>
+                    <div class="timeline-content reveal"><span class="step-number">STEP 02</span><h3>Design & Prototyping</h3><p>I design intuitive interfaces and build interactive prototypes to validate the user experience before development begins.</p></div>
+                    <div class="timeline-content reveal"><span class="step-number">STEP 03</span><h3>Agile Development</h3><p>I build your solution in iterative sprints, providing regular updates and demos to ensure alignment and incorporate feedback.</p></div>
+                    <div class="timeline-content reveal"><span class="step-number">STEP 04</span><h3>Deployment & Support</h3><p>After rigorous testing, I deploy the solution to a scalable production environment and provide ongoing support and optimization.</p></div>
                 </div>
             </div>
         </section>
 
         <section id="about" class="about-me content-section">
             <div class="container reveal">
-                <div class="about-me-grid">
-                    <div class="about-me-image-wrapper">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                    <div class="about-me-image-wrapper md:col-span-1">
                         <div class="about-me-image">
                             <img src="https://placehold.co/400x400/020617/00f6ff?text=Your+Photo" alt="Headshot of the founder of Axion Digital" class="w-full h-auto">
                         </div>
                     </div>
-                    <div class="about-me-content">
-                        <h2>Work Directly with the Architect</h2>
-                        <p class="title">David L. // Founder & Principal Technology Consultant</p>
+                    <div class="about-me-content md:col-span-2">
+                        <h2 class="text-center md:text-left">Work Directly with the Architect</h2>
+                        <p class="title text-center md:text-left">David L. // Founder & Principal Technology Consultant</p>
                         <p>My name is David, and I founded Axion Digital with a single mission: to provide growing businesses with the direct, expert-level technology partnership they need to thrive. I don't just manage projects; I architect and build the solutions myself.</p>
                         <p>With a deep passion for automation and data, I specialize in eliminating operational bottlenecks and turning complex systems into streamlined, powerful assets. When you work with Axion Digital, you work directly with me. Your success is my personal and professional commitment.</p>
                     </div>
@@ -409,7 +387,7 @@
             <div class="container reveal">
                 <h2>My Founding Partner Promise</h2>
                 <p class="section-intro">As an independent consultant, my first partners aren't just clients—they're collaborators. I am hungry to build my reputation on your success and offer a level of dedication that larger firms can't match.</p>
-                <div class="testimonial-grid">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="promise-card">
                         <h3 class="text-2xl mb-2 text-slate-200">Your Project, My Priority</h3>
                         <p>As a founding partner, your project receives my undivided attention. You get direct access to me, ensuring I am deeply invested in your outcome and can adapt instantly to your needs.</p>
@@ -426,7 +404,7 @@
             <div class="container reveal">
                 <h2>Measurable Impact, Guaranteed</h2>
                 <p class="section-intro">My solutions don't just look good—they deliver tangible, data-backed results.</p>
-                <div class="results-grid">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                     <div class="result-card"><div class="stat">100%</div><p>Project Dedication</p><span>Your success is my single focus</span></div>
                     <div class="result-card"><div class="stat">Agile</div><p>Methodology</p><span>Rapid, transparent & adaptive</span></div>
                     <div class="result-card"><div class="stat">24&nbsp;/&nbsp;7</div><p>Direct Support</p><span>Constant communication</span></div>
@@ -438,23 +416,23 @@
             <div class="container reveal">
                 <h2>Let's Build Your Future, Together</h2>
                 <p class="section-intro">Ready to overcome your challenges and unlock your business's true potential? Fill out the form below to start the conversation.</p>
-                <form class="contact-form" action="https://formspree.io/f/xnngwalg" method="POST">
+                <form class="contact-form max-w-2xl mx-auto" action="https://formspree.io/f/xnngwalg" method="POST">
                     <div class="form-group"><label for="name">Full Name</label><input type="text" id="name" name="name" required placeholder="John Doe"></div>
                     <div class="form-group"><label for="email">Email Address</label><input type="email" id="email" name="email" required placeholder="you@company.com"></div>
                     <div class="form-group"><label for="message">How can I help you achieve your goals?</label><textarea id="message" name="message" rows="5" required placeholder="Tell me about your project, challenges, or objectives..."></textarea></div>
-                    <button type="submit" class="btn">Send Inquiry</button>
+                    <button type="submit" class="btn w-full">Send Inquiry</button>
                 </form>
             </div>
         </section>
     </main>
     
     <footer class="footer content-section">
-        <div class="container footer-container">
-            <div class="footer-about"><h4>Axion Digital</h4><p>I am an independent technology consultant based in Mississauga, ON, dedicated to helping businesses innovate and grow through custom software, cloud solutions, and data analytics.</p></div>
+        <div class="container grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="footer-about md:col-span-1"><h4>Axion Digital</h4><p>I am an independent technology consultant based in Mississauga, ON, dedicated to helping businesses innovate and grow through custom software, cloud solutions, and data analytics.</p></div>
             <div class="footer-links"><h4>Navigate</h4><ul><li><a href="#services">Services</a></li><li><a href="#portfolio">Case Study</a></li><li><a href="#about">About Me</a></li><li><a href="#methodology">Methodology</a></li><li><a href="#promise">My Promise</a></li><li><a href="#contact">Contact</a></li></ul></div>
             <div class="footer-links"><h4>Contact & Legal</h4><ul><li><a href="mailto:contact@axiondigital.me">contact@axiondigital.me</a></li><li><p>Mississauga, ON, Canada</p></li><li><a href="#" id="terms-link" class="text-sm">Terms of Service</a></li></ul></div>
         </div>
-        <div class="footer-bottom">&copy; 2025 Axion Digital. All Rights Reserved.</div>
+        <div class="footer-bottom mt-12 pt-8 border-t border-slate-700 text-center">&copy; 2025 Axion Digital. All Rights Reserved.</div>
     </footer>
 
     <div id="terms-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-overlay">
@@ -488,32 +466,22 @@
 
         class Particle {
             constructor(x, y, size, speedX, speedY, color) {
-                this.x = x;
-                this.y = y;
-                this.size = size;
-                this.speedX = speedX;
-                this.speedY = speedY;
-                this.color = color;
+                this.x = x; this.y = y; this.size = size;
+                this.speedX = speedX; this.speedY = speedY; this.color = color;
             }
             update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
+                this.x += this.speedX; this.y += this.speedY;
                 if (this.size > 0.2) this.size -= 0.01;
             }
             draw() {
-                ctx.fillStyle = this.color;
-                ctx.strokeStyle = this.color;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.closePath();
-                ctx.fill();
+                ctx.fillStyle = this.color; ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
             }
         }
 
         function initParticles() {
             particles = [];
-            let numberOfParticles = (canvas.width * canvas.height) / 9000;
+            let numberOfParticles = (window.innerWidth < 768) ? 30 : 60; // Fewer particles on mobile
             for (let i = 0; i < numberOfParticles; i++) {
                 let size = Math.random() * 1.5 + 0.5;
                 let x = Math.random() * canvas.width;
@@ -527,34 +495,31 @@
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-                if (particles[i].y < 0 || particles[i].y > canvas.height || particles[i].x < 0 || particles[i].x > canvas.width) {
-                    particles.splice(i, 1);
-                    let size = Math.random() * 1.5 + 0.5;
-                    let y = Math.random() < 0.5 ? 0 - size : canvas.height + size;
-                    let x = Math.random() * canvas.width;
-                    let speedX = (Math.random() * 0.4) - 0.2;
-                    let speedY = (Math.random() * 0.4) - 0.2;
-                     if(y > canvas.height) { speedY = -Math.abs(speedY); } else { speedY = Math.abs(speedY); }
-                    let color = 'rgba(0, 246, 255, ' + (Math.random() * 0.5 + 0.1) + ')';
-                    particles.push(new Particle(x, y, size, speedX, speedY, color));
+            particles.forEach((particle, index) => {
+                particle.update();
+                particle.draw();
+                if (particle.size <= 0.2) { particles.splice(index, 1); createParticle(); }
+                if (particle.y < 0 || particle.y > canvas.height || particle.x < 0 || particle.x > canvas.width) {
+                    particles.splice(index, 1); createParticle();
                 }
-            }
+            });
             requestAnimationFrame(animate);
         }
+        
+        function createParticle() {
+             let size = Math.random() * 1.5 + 0.5;
+             let x = Math.random() * canvas.width;
+             let y = Math.random() < 0.5 ? 0 - size : canvas.height + size;
+             let speedX = (Math.random() * 0.4) - 0.2;
+             let speedY = (Math.random() * 0.4) - 0.2;
+             if(y > canvas.height) { speedY = -Math.abs(speedY); } else { speedY = Math.abs(speedY); }
+             let color = 'rgba(0, 246, 255, ' + (Math.random() * 0.5 + 0.1) + ')';
+             particles.push(new Particle(x, y, size, speedX, speedY, color));
+        }
 
-        window.addEventListener('resize', () => {
-            resizeCanvas();
-            initParticles();
-        });
+        window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+        resizeCanvas(); initParticles(); animate();
 
-        resizeCanvas();
-        initParticles();
-        animate();
-
-        // Reveal animations
         const revealElements = document.querySelectorAll('.reveal');
         const revealOnScroll = () => {
             const windowHeight = window.innerHeight;
@@ -566,16 +531,24 @@
         window.addEventListener('scroll', revealOnScroll);
         revealOnScroll();
         
-        // Smooth scroll
         document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
+                const menu = document.getElementById('mobile-menu');
+                if(!menu.classList.contains('hidden')) {
+                    menu.classList.add('hidden');
+                }
                 const targetElement = document.querySelector(this.getAttribute('href'));
                 if (targetElement) { targetElement.scrollIntoView({ behavior: 'smooth' }); }
             });
         });
 
-        // Modal functionality
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
         const termsLink = document.getElementById('terms-link');
         const termsModal = document.getElementById('terms-modal');
         const closeModal = document.getElementById('close-modal');
