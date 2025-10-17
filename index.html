@@ -11,35 +11,27 @@
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
-        /* --- Global Styles & Futuristic Neon Theme --- */
+        /* --- Global Styles & Futuristic Neon Theme 2.0 --- */
         :root {
             --primary-color: #00f6ff; /* Neon Cyan */
             --secondary-color: #a855f7; /* Neon Purple */
-            --primary-light: #67e8f9;
-            --primary-dark: #06b6d4;
             
             --bg-dark: #020617; /* Deeper Navy/Black */
-            --bg-light-dark: #0f172a; /* Lighter Dark for cards/sections (Slate 900) */
+            --bg-light-dark: #0f172a; /* Lighter Dark for cards/sections */
+            --bg-grid: #080f21; /* Slightly lighter for grid background */
 
             --text-heading: #f8fafc; /* Bright White */
             --text-body: #94a3b8;    /* Light Gray */
             
-            --border-color: #1e293b; /* Slate 800 */
+            --border-color: #1e293b; 
             --border-radius: 12px;
 
-            --shadow-glow: 0 0 20px rgba(0, 246, 255, 0.15), 0 0 8px rgba(0, 246, 255, 0.1);
-            --shadow-glow-hover: 0 0 30px rgba(0, 246, 255, 0.25), 0 0 15px rgba(0, 246, 255, 0.2);
+            --shadow-glow: 0 0 20px rgba(168, 85, 247, 0.25);
+            --shadow-glow-hover: 0 0 30px rgba(168, 85, 247, 0.4), 0 0 15px rgba(168, 85, 247, 0.3);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -49,78 +41,51 @@
             overflow-x: hidden;
         }
 
-        .container {
-            max-width: 1140px;
-            margin: 0 auto;
-            padding: 0 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        h1, h2, h3, h4 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            color: var(--text-heading);
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-        }
-
+        .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
+        h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-heading); font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
         h1 { font-size: 3.5rem; font-family: 'Orbitron', sans-serif; }
         h2 { font-size: 2.8rem; text-align: center; margin-bottom: 1.5rem; }
         h3 { font-size: 1.5rem; }
 
         p { margin-bottom: 1.25rem; }
         a { text-decoration: none; color: var(--primary-color); }
-        section { padding: 100px 0; overflow: hidden; position: relative; }
+        section { padding: 120px 0; overflow: hidden; position: relative; }
 
-        .section-intro {
-            max-width: 700px;
-            margin: 0 auto 60px auto;
-            text-align: center;
-            font-size: 1.1rem;
+        .section-intro { max-width: 700px; margin: 0 auto 60px auto; text-align: center; font-size: 1.1rem; }
+
+        /* --- Background Grid Effect --- */
+        .grid-background {
+            background-color: var(--bg-grid);
+            background-image:
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(to right, var(--border-color) 1px, var(--bg-grid) 1px);
+            background-size: 40px 40px;
         }
 
         /* --- Animations --- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
 
         /* --- Buttons --- */
         .btn {
-            display: inline-block;
-            padding: 14px 32px;
-            border-radius: var(--border-radius);
-            background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
-            color: #020617;
-            font-weight: 700;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 2px solid var(--primary-color);
-            cursor: pointer;
-            box-shadow: var(--shadow-glow);
+            display: inline-block; padding: 14px 32px; border-radius: var(--border-radius);
+            background: linear-gradient(45deg, #581c87, var(--secondary-color));
+            color: var(--text-heading); 
+            font-weight: 700; font-family: 'Plus Jakarta Sans', sans-serif; text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease; 
+            border: 2px solid var(--secondary-color);
+            cursor: pointer; box-shadow: var(--shadow-glow);
         }
-
-        .btn:hover {
-            transform: translateY(-4px) scale(1.02);
+        .btn:hover { 
+            transform: translateY(-4px) scale(1.02); 
             box-shadow: var(--shadow-glow-hover);
+            background: linear-gradient(45deg, #6b21a8, #c084fc);
         }
 
         /* --- Navigation Bar --- */
         .navbar {
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(12px);
-            background-color: rgba(2, 6, 23, 0.8);
+            padding: 1rem 0; border-bottom: 1px solid var(--border-color); position: sticky;
+            top: 0; z-index: 1000; backdrop-filter: blur(12px); background-color: rgba(2, 6, 23, 0.8);
         }
         .navbar .container { display: flex; justify-content: space-between; align-items: center; }
         .navbar .logo { font-size: 1.8rem; font-weight: 700; color: var(--text-heading); font-family: 'Orbitron', sans-serif; }
@@ -131,75 +96,77 @@
 
         /* --- Hero Section --- */
         .hero {
-            text-align: center;
-            padding: 140px 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
+            text-align: center; padding: 140px 0; min-height: 100vh; display: flex;
+            align-items: center; justify-content: center; position: relative;
         }
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
-        .hero .container {
-            -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
-            -moz-animation: fadein 2s; /* Firefox < 16 */
-            -ms-animation: fadein 2s; /* Internet Explorer */
-            -o-animation: fadein 2s; /* Opera < 12.1 */
-            animation: fadein 2s;
-        }
+        #particles-js { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; }
+        .hero .container { animation: fadein 2s; }
         @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
-        @-moz-keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
-        @-webkit-keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
-
         .hero .sub-headline { max-width: 750px; margin: 0 auto 40px auto; font-size: 1.25rem; }
-        
+
         /* --- Challenges Section --- */
-        .challenges { background: var(--bg-light-dark); }
         .points-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
         .point {
-            background: var(--bg-dark); padding: 35px; border-radius: var(--border-radius);
+            background: var(--bg-light-dark); padding: 35px; border-radius: var(--border-radius);
             border: 1px solid var(--border-color); text-align: center;
             transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             position: relative;
         }
-        .point:hover { transform: translateY(-8px); border-color: var(--primary-color); box-shadow: var(--shadow-glow); }
+        .point:hover { transform: translateY(-8px); border-color: var(--primary-color); box-shadow: 0 0 20px rgba(0, 246, 255, 0.15); }
         .point .icon { margin-bottom: 20px; color: var(--primary-color); }
         .point h3 { margin-top: 0; }
         
+        /* --- About Me Section --- */
+        .about-me-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 50px; align-items: center; }
+        .about-me-image-wrapper { position: relative; }
+        .about-me-image-wrapper::before {
+            content: ''; display: block; position: absolute; top: -15px; left: -15px;
+            width: 100%; height: 100%; border: 2px solid var(--primary-color);
+            border-radius: var(--border-radius); transition: all 0.3s ease;
+        }
+        .about-me-image-wrapper:hover::before { top: 0; left: 0; }
+        .about-me-image img { border-radius: var(--border-radius); position: relative; z-index: 2; }
+        .about-me-content h2 { text-align: left; margin-bottom: 2rem; }
+        .about-me-content .title { color: var(--primary-color); font-weight: 600; margin-bottom: 0.5rem; }
+
+        /* --- Portfolio Section --- */
+        .case-study-card {
+            background: var(--bg-light-dark); padding: 40px; border-radius: var(--border-radius);
+            border: 1px solid var(--border-color); position: relative; transition: all 0.3s ease;
+        }
+        .case-study-card:hover { transform: translateY(-8px); box-shadow: 0 0 20px rgba(0, 246, 255, 0.15); border-color: var(--primary-color); }
+        .case-study-card .tag {
+            display: inline-block; padding: 5px 15px; border-radius: 99px;
+            background-color: var(--primary-color); color: var(--bg-dark);
+            font-weight: 700; font-size: 0.9rem; margin-bottom: 1rem;
+        }
+         .case-study-card h3 { font-size: 2rem; margin-bottom: 1.5rem; }
+         .case-study-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+         .case-study-grid h4 { font-size: 1.2rem; color: var(--primary-light); margin-bottom: 0.5rem; }
+         .case-study-grid ul { list-style-type: none; padding-left: 0; }
+         .case-study-grid li { position: relative; padding-left: 25px; margin-bottom: 10px; }
+         .case-study-grid li::before {
+             content: '✓'; color: var(--primary-color); position: absolute; left: 0;
+         }
+
         /* --- Methodology Section --- */
-        .methodology { background-color: var(--bg-dark); }
-        .timeline {
-            position: relative;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
+        .timeline { position: relative; max-width: 1000px; margin: 0 auto; }
         .timeline::after {
-            content: ''; position: absolute; width: 3px;
-            background-color: var(--border-color); top: 0; bottom: 0; left: 50%;
-            margin-left: -1.5px;
+            content: ''; position: absolute; width: 3px; background-color: var(--border-color);
+            top: 0; bottom: 0; left: 50%; margin-left: -1.5px;
         }
-        .timeline-item {
-            padding: 10px 40px; position: relative;
-            background-color: inherit; width: 50%;
-        }
+        .timeline-item { padding: 10px 40px; position: relative; background-color: inherit; width: 50%; }
         .timeline-item:nth-child(odd) { left: 0; }
         .timeline-item:nth-child(even) { left: 50%; }
         .timeline-item::after {
-            content: ''; position: absolute; width: 25px; height: 25px;
-            right: -14px; background-color: var(--bg-dark); border: 4px solid var(--primary-color);
+            content: ''; position: absolute; width: 25px; height: 25px; right: -14px;
+            background-color: var(--bg-dark); border: 4px solid var(--primary-color);
             top: 25px; border-radius: 50%; z-index: 1;
         }
         .timeline-item:nth-child(even)::after { left: -14px; }
         .timeline-content {
-            padding: 30px; background-color: var(--bg-light-dark);
-            position: relative; border-radius: var(--border-radius); border: 1px solid var(--border-color);
+            padding: 30px; background-color: var(--bg-light-dark); position: relative;
+            border-radius: var(--border-radius); border: 1px solid var(--border-color);
         }
         .timeline-content .step-number {
             color: var(--primary-color); font-family: 'Orbitron', sans-serif;
@@ -208,9 +175,8 @@
         .timeline-content h3 { color: var(--text-heading); }
 
         /* --- Services Section --- */
-        .services { background-color: var(--bg-light-dark); }
         .service-item {
-            background: var(--bg-dark); padding: 40px; margin-bottom: 30px;
+            background: var(--bg-light-dark); padding: 40px; margin-bottom: 30px;
             border-radius: var(--border-radius); border: 1px solid var(--border-color);
             display: grid; grid-template-columns: 80px 1fr; gap: 30px; align-items: center;
         }
@@ -218,39 +184,29 @@
         .service-item-content h3 { margin-bottom: 0.5rem; color: var(--text-heading); }
 
         /* --- Impact Section --- */
-        .results { background: var(--bg-dark); color: var(--text-heading); }
         .results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center; }
         .result-card { background: var(--bg-light-dark); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border-color); }
-        .result-card .stat { font-size: 4rem; font-weight: 800; color: var(--primary-color); margin-bottom: 0.5rem; font-family: 'Orbitron', sans-serif; }
-        .result-card .stat-small-text { font-size: 0.9em; padding: 0 0.2em; }
+        .result-card .stat { 
+            font-size: 4rem; font-weight: 800; color: var(--primary-color); 
+            margin-bottom: 0.5rem; font-family: 'Orbitron', sans-serif; 
+        }
         .result-card p { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: var(--text-heading); }
         .result-card span { font-size: 0.9rem; opacity: 0.8; }
         
         /* --- Promise Section --- */
-        .testimonials { background-color: var(--bg-light-dark); }
-        .testimonial-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; }
         .promise-card {
-            background-color: var(--bg-dark); padding: 30px; border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
-            border-left: 4px solid var(--secondary-color);
+            background-color: var(--bg-light-dark); padding: 40px; border-radius: var(--border-radius);
+            border: 1px solid var(--border-color); border-left: 4px solid var(--secondary-color);
         }
-        .promise-card .icon { color: var(--secondary-color); margin-bottom: 20px; }
-        .promise-card h3 { color: var(--text-heading); margin-bottom: 10px; }
+        .promise-card h3 { color: var(--text-heading); margin-bottom: 10px; font-size: 1.8rem; }
 
         /* --- Contact Section --- */
-        .contact { background: var(--bg-dark); }
-        .contact-form {
-            max-width: 700px; margin: 30px auto 0 auto; padding: 50px;
-            background: var(--bg-light-dark); border-radius: var(--border-radius);
-            border: 1px solid var(--border-color);
-        }
         .form-group { margin-bottom: 25px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-heading); }
         .form-group input, .form-group textarea {
             width: 100%; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px;
             font-family: 'Inter', sans-serif; font-size: 1rem; transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            background-color: var(--bg-dark);
-            color: var(--text-heading);
+            background-color: var(--bg-dark); color: var(--text-heading);
         }
         .form-group input:focus, .form-group textarea:focus {
             outline: none; border-color: var(--primary-color);
@@ -258,9 +214,7 @@
         }
         .contact-form button { width: 100%; font-size: 1.1rem; padding: 16px; }
 
-
         /* --- Footer --- */
-        .footer { background: var(--bg-dark); color: var(--text-body); padding: 60px 0; border-top: 1px solid var(--border-color); }
         .footer-container { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; text-align: left; }
         .footer-about h4, .footer-links h4 { font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text-heading); margin-bottom: 15px; font-size: 1.2rem; }
         .footer-about p { font-size: 0.9rem; line-height: 1.8; }
@@ -271,38 +225,20 @@
         .footer-bottom { text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border-color); font-size: 0.9rem; }
         
         /* Modal Styles */
-        .modal-overlay {
-            background-color: rgba(2, 6, 23, 0.9);
-            backdrop-filter: blur(5px);
-        }
-        .modal-content h3 {
-            font-size: 1.25rem;
-            color: var(--primary-color);
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 0.5rem;
-        }
-        .modal-content p {
-            margin-bottom: 1rem;
-        }
-         .modal-content strong {
-            color: var(--text-heading);
-        }
-        .modal-content ul {
-            list-style-type: disc;
-            padding-left: 20px;
-            margin-bottom: 1rem;
-        }
+        .modal-overlay { background-color: rgba(2, 6, 23, 0.9); backdrop-filter: blur(5px); }
+        .modal-content h3 { font-size: 1.25rem; color: var(--primary-color); margin-top: 1.5rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+        .modal-content p { margin-bottom: 1rem; }
+        .modal-content strong { color: var(--text-heading); }
+        .modal-content ul { list-style-type: disc; padding-left: 20px; margin-bottom: 1rem; }
 
         /* --- Responsive Design --- */
         @media (max-width: 992px) {
-            h1 { font-size: 2.8rem; }
-            h2 { font-size: 2.2rem; }
-            .points-grid, .testimonial-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 2.8rem; } h2 { font-size: 2.2rem; }
+            .points-grid, .about-me-grid, .case-study-grid { grid-template-columns: 1fr; }
+            .about-me-image { max-width: 300px; margin: 0 auto; }
+            .about-me-content h2 { text-align: center; }
             .footer-container { grid-template-columns: 1fr; }
         }
-
         @media (max-width: 768px) {
             h1 { font-size: 2.4rem; } h2 { font-size: 2rem; }
             section { padding: 80px 0; }
@@ -319,14 +255,14 @@
 </head>
 <body>
     
-    <!-- Navigation Bar -->
     <header class="navbar">
         <div class="container">
             <a href="#" class="logo">AXION DIGITAL</a>
             <nav>
                 <ul>
                     <li><a href="#services">Services</a></li>
-                    <li><a href="#methodology">Methodology</a></li>
+                    <li><a href="#portfolio">Case Study</a></li>
+                    <li><a href="#about">About Me</a></li>
                     <li><a href="#promise">My Promise</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
@@ -335,7 +271,6 @@
     </header>
 
     <main>
-        <!-- Hero Section -->
         <section class="hero">
             <div id="particles-js"></div>
             <div class="container">
@@ -345,38 +280,36 @@
             </div>
         </section>
 
-        <!-- Challenges Section -->
-        <section id="challenges" class="challenges">
+        <section id="challenges" class="challenges grid-background">
             <div class="container reveal">
-                <h2>Legacy Systems Holding You Back?</h2>
-                <p class="section-intro">In a rapidly evolving digital landscape, outdated processes are not just inefficient—they are a liability. I help you break free from the constraints of the past to build a more agile, scalable, and resilient future.</p>
+                <h2>Operational Drag Holding You Back?</h2>
+                <p class="section-intro">In a hyper-competitive market, operational friction is a critical vulnerability. Manual processes, data silos, and disjointed systems don't just slow you down—they actively prevent growth. I architect the solutions to eliminate that drag.</p>
                 <div class="points-grid">
                     <div class="point">
-                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M152,80H136V64a8,8,0,0,0-16,0V80H104a8,8,0,0,0,0,16h16v16a8,8,0,0,0,16,0V96h16a8,8,0,0,0,0-16Zm76,48a104,104,0,1,1-104-104A104.11,104.11,0,0,1,228,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,212,128ZM80,128a48,48,0,1,0,48-48A48.05,48.05,0,0,0,80,128Zm80,0a32,32,0,1,1-32-32A32,32,0,0,1,160,128Z"></path></svg></div>
+                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M208,80H160V40a16,16,0,0,0-16-16H48A16,16,0,0,0,32,40V168a16,16,0,0,0,16,16H96v40a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,168H48V40H144V80h48v72H112a16,16,0,0,0-16,16Zm112,56H112V168a16,16,0,0,0,4.69-11.31L112,152h80Z"></path></svg></div>
                         <h3>Process Bottlenecks</h3>
-                        <p>Repetitive manual tasks and disjointed systems that drain resources and inhibit strategic focus.</p>
+                        <p>Repetitive manual tasks and legacy workflows that consume valuable time and create opportunities for error.</p>
                     </div>
                     <div class="point">
-                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M240,112a8,8,0,0,1-8,8H137.69l-19.1,38.2A16,16,0,0,1,104,168H66.34l-8.65,14.42a8,8,0,0,1-13.38-8l32-53.33a8,8,0,0,1,6.69-4.09H112a16,16,0,0,1,14.71-9.59l19.1-38.2A16,16,0,0,1,160,64h37.69l8.65-14.42a8,8,0,1,1,13.38,8L187.66,80h28.68l8.66-14.42a8,8,0,1,1,13.38,8L224,96h8a8,8,0,0,1,0,16Z"></path></svg></div>
-                        <h3>Growth Ceilings</h3>
-                        <p>Inability to scale your operations and technology stack to meet new market demands.</p>
+                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,114.34l-88-88a8,8,0,0,0-11.32,0l-88,88a8,8,0,0,0,0,11.32l88,88a8,8,0,0,0,11.32,0l88-88a8,8,0,0,0,0-11.32ZM128,204.69,51.31,128,128,51.31,204.69,128Z"></path></svg></div>
+                        <h3>Data Silos</h3>
+                        <p>Critical business intelligence is fragmented across disconnected platforms, making a unified view for strategic decisions impossible.</p>
                     </div>
                     <div class="point">
-                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M208,40H56A16,16,0,0,0,40,56V200a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V56A16,16,0,0,0,208,40ZM176,144a48,48,0,1,1-80-34.65V88a8,8,0,0,1,16,0v21.35A48,48,0,0,1,176,144Z"></path></svg></div>
-                        <h3>Data Obscurity</h3>
-                        <p>Valuable information is trapped in silos, making strategic, data-driven decisions impossible.</p>
+                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M184,64H160a8,8,0,0,0,0,16h24V95.42l-42.34-31a8,8,0,0,0-9.32,0L96,93.42l-42.34-31a8,8,0,1,0-9.32,12.84L80,100.58V192H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16H176V115.42l42.34,31a8,8,0,0,0,9.32-12.84L192,108.58V80h24a8,8,0,0,0,0-16Z"></path></svg></div>
+                        <h3>Scalability Limits</h3>
+                        <p>Your current tech stack is hitting a ceiling, preventing you from capturing new market opportunities effectively.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Services Section -->
         <section id="services" class="services">
             <div class="container reveal">
                 <h2>My Core Services</h2>
                 <p class="section-intro">I architect and build robust digital foundations designed for performance, scale, and long-term success.</p>
                 <div class="service-item">
-                    <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M108,168H88a8,8,0,0,1,0-16h20a8,8,0,0,1,0,16Zm48-32H88a8,8,0,0,0,0,16h68a8,8,0,0,0,0-16Zm28-32H88a8,8,0,0,0,0,16H184a8,8,0,0,0,0-16ZM224,48H32A16,16,0,0,0,16,64V192a16,16,0,0,0,16,16H224a16,16,0,0,0,16-16V64A16,16,0,0,0,224,48Zm-16,16V80H48V64ZM48,192V96H208V192Z"></path></svg></div>
+                    <div class="icon-wrapper"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M69.46,37.4a8,8,0,0,0-8.92,1.52L37.4,61.46a8,8,0,0,0,1.52,12.44l37,21.34a7.92,7.92,0,0,0,7.4,0l37-21.34a8,8,0,0,0,1.52-12.44L100.38,38.92A8,8,0,0,0,92,36a8.29,8.29,0,0,0-1.54.18L69.46,37.4ZM104.28,78.4,76,61.06,92,50.31l28.28,16.33Zm114.26,90-23.14-13.36a8.29,8.29,0,0,0-1.54.18,8,8,0,0,0-7.4,1.34l-37,21.34a8,8,0,0,0-3.92,6.86v42.68a8,8,0,0,0,12.44,6.92l23.14-13.36a8.29,8.29,0,0,0,1.54-.18,8,8,0,0,0,7.4-1.34l37-21.34a8,8,0,0,0,3.92-6.86V175.8A8,8,0,0,0,218.54,168.44ZM168,229.69,144,215.33v-27l24,13.86Zm56-32L195.72,214,168,197.69v-27L192,156.8v-.06l24-13.86.28-.16ZM92,116a8.29,8.29,0,0,0-1.54.18L67.32,117.4a8,8,0,0,0-5.8,5.52L38.38,185.08a8,8,0,0,0,2.86,8.78l37,21.34a7.92,7.92,0,0,0,7.4,0l37-21.34a8,8,0,0,0,2.86-8.78L102.38,122.92a8,8,0,0,0-5.8-5.52L75.58,116.18A8.29,8.29,0,0,0,73.54,116Zm-.46,64.8L64,164.46l13.14-45.74,27.54,1.12Z"></path></svg></div>
                     <div class="service-item-content">
                         <h3>Custom Software & API Development</h3>
                         <p>Bespoke applications and robust APIs engineered from the ground up to solve your unique business challenges and streamline complex operations.</p>
@@ -398,253 +331,176 @@
                 </div>
             </div>
         </section>
-
-        <!-- Methodology Section -->
-        <section id="methodology" class="methodology">
+        
+        <section id="portfolio" class="portfolio grid-background">
             <div class="container reveal">
-                <h2>My Methodology</h2>
-                <p class="section-intro">I follow a structured, transparent, and collaborative process to ensure every project is a success, from initial concept to final deployment and beyond.</p>
-                <div class="timeline">
-                    <div class="timeline-item reveal">
-                        <div class="timeline-content">
-                            <span class="step-number">STEP 01</span>
-                            <h3>Discovery & Strategy</h3>
-                            <p>I begin with a deep dive into your goals, challenges, and requirements to architect a data-driven strategy and project roadmap.</p>
+                <h2>Conceptual Case Study</h2>
+                <p class="section-intro">To demonstrate my problem-solving approach, here’s a conceptual solution for a high-complexity industry: third-party logistics (3PL) in the Greater Toronto Area.</p>
+                <div class="case-study-card">
+                    <span class="tag">Logistics & Supply Chain Automation</span>
+                    <h3>Unified Logistics Command Center</h3>
+                    <p class="mb-6">Analyzed the operations of a high-growth e-commerce company (like COROS) to identify key automation opportunities within their Shopify ecosystem. The goal was to reduce manual workload, eliminate errors, and unlock data-driven marketing.</p>
+                    <div class="case-study-grid">
+                        <div>
+                            <h4>Key Challenges Identified</h4>
+                            <ul>
+                                <li>No central view of incoming orders from multiple client channels.</li>
+                                <li>Manual data entry to bridge gaps between e-commerce platforms and shipping carrier systems.</li>
+                                <li>High error rates in inventory and shipping, leading to costly client penalties.</li>
+                                <li>Inability to provide real-time tracking data to their clients.</li>
+                            </ul>
                         </div>
-                    </div>
-                    <div class="timeline-item reveal">
-                        <div class="timeline-content">
-                            <span class="step-number">STEP 02</span>
-                             <h3>Design & Prototyping</h3>
-                            <p>I design intuitive user interfaces and build interactive prototypes to validate the user experience before development begins.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item reveal">
-                        <div class="timeline-content">
-                            <span class="step-number">STEP 03</span>
-                             <h3>Agile Development</h3>
-                            <p>I build your solution in iterative sprints, providing regular updates and demos to ensure alignment and incorporate feedback.</p>
-                        </div>
-                    </div>
-                    <div class="timeline-item reveal">
-                        <div class="timeline-content">
-                            <span class="step-number">STEP 04</span>
-                             <h3>Deployment & Support</h3>
-                            <p>After rigorous testing, I deploy the solution to a scalable production environment and provide ongoing support and optimization.</p>
+                        <div>
+                            <h4>Proposed Solution: A Central API Hub</h4>
+                            <ul>
+                                <li>Architected a central data-processing application that connects to each client's store via API.</li>
+                                <li>Built a unified "order firehose" to normalize data from all sources into a single, consistent format.</li>
+                                <li>Developed custom integrations with carrier APIs to automate shipping label generation and cost calculation.</li>
+                                <li>Created a client-facing dashboard providing real-time visibility into inventory levels, order status, and shipping analytics.</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Promise Section -->
-        <section id="promise" class="testimonials">
+        <section id="methodology" class="methodology">
+            <div class="container reveal">
+                <h2>My Methodology</h2>
+                <p class="section-intro">I follow a structured, transparent, and collaborative process to ensure every project is a success, from initial concept to final deployment and beyond.</p>
+                <div class="timeline">
+                    <div class="timeline-item reveal"><div class="timeline-content"><span class="step-number">STEP 01</span><h3>Discovery & Strategy</h3><p>I begin with a deep dive into your goals and challenges to architect a data-driven strategy and project roadmap.</p></div></div>
+                    <div class="timeline-item reveal"><div class="timeline-content"><span class="step-number">STEP 02</span><h3>Design & Prototyping</h3><p>I design intuitive interfaces and build interactive prototypes to validate the user experience before development begins.</p></div></div>
+                    <div class="timeline-item reveal"><div class="timeline-content"><span class="step-number">STEP 03</span><h3>Agile Development</h3><p>I build your solution in iterative sprints, providing regular updates and demos to ensure alignment and incorporate feedback.</p></div></div>
+                    <div class="timeline-item reveal"><div class="timeline-content"><span class="step-number">STEP 04</span><h3>Deployment & Support</h3><p>After rigorous testing, I deploy the solution to a scalable production environment and provide ongoing support and optimization.</p></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-me">
+            <div class="container reveal">
+                <div class="about-me-grid">
+                    <div class="about-me-image-wrapper">
+                        <div class="about-me-image">
+                            <img src="https://placehold.co/400x400/020617/00f6ff?text=Your+Photo" alt="Headshot of the founder of Axion Digital" class="w-full h-auto">
+                        </div>
+                    </div>
+                    <div class="about-me-content">
+                        <h2>Work Directly with the Architect</h2>
+                        <p class="title">David L. // Founder & Principal Technology Consultant</p>
+                        <p>My name is David, and I founded Axion Digital with a single mission: to provide growing businesses with the direct, expert-level technology partnership they need to thrive. I don't just manage projects; I architect and build the solutions myself.</p>
+                        <p>With a deep passion for automation and data, I specialize in eliminating operational bottlenecks and turning complex systems into streamlined, powerful assets. When you work with Axion Digital, you work directly with me. Your success is my personal and professional commitment.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="promise" class="testimonials grid-background">
             <div class="container reveal">
                 <h2>My Founding Partner Promise</h2>
                 <p class="section-intro">As an independent consultant, my first partners aren't just clients—they're collaborators. I am hungry to build my reputation on your success and offer a level of dedication that larger firms can't match.</p>
                 <div class="testimonial-grid">
                     <div class="promise-card">
-                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160ZM232,128A104.11,104.11,0,0,1,128,232c-57.38,0-104-46.85-104-104S70.62,24,128,24A104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128ZM136,32a8,8,0,0,0-16,0V56.51A111.4,111.4,0,0,0,89.5,67.17l-16-16a8,8,0,0,0-11.31,11.31l16,16A111.4,111.4,0,0,0,67.17,112H43a8,8,0,0,0,0,16H67.17a111.4,111.4,0,0,0,11.08,30.5l-16,16a8,8,0,0,0,11.31,11.31l16-16A111.4,111.4,0,0,0,120,199.49V224a8,8,0,0,0,16,0V199.49a111.4,111.4,0,0,0,30.5-11.08l16,16a8,8,0,0,0,11.31-11.31l-16-16A111.4,111.4,0,0,0,188.83,144H213a8,8,0,0,0,0-16H188.83a111.4,111.4,0,0,0-11.08-30.5l16-16a8,8,0,0,0-11.31-11.31l-16,16A111.4,111.4,0,0,0,136,56.51V32Z"></path></svg></div>
-                        <h3>Your Project, My Priority</h3>
+                        <h3 class="text-2xl mb-2 text-slate-200">Your Project, My Priority</h3>
                         <p>As a founding partner, your project receives my undivided attention. You get direct access to me, ensuring I am deeply invested in your outcome and can adapt instantly to your needs.</p>
                     </div>
                     <div class="promise-card">
-                        <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" viewBox="0 0 256 256"><path d="M160,16a80.07,80.07,0,0,0-72.3,48.1,80,80,0,1,0,0,63.8A80.07,80.07,0,1,0,160,16Zm10.1,77.5-32,32a8,8,0,0,1-11.3,0l-16-16a8,8,0,0,1,11.3-11.3L128,110.8l26.4-26.5a8,8,0,0,1,11.4,11.4Z"></path></svg></div>
-                        <h3>Modern, Agile & Driven to Excel</h3>
+                        <h3 class="text-2xl mb-2 text-slate-200">Modern, Agile & Driven to Excel</h3>
                         <p>I'm not tied to outdated methods. You benefit from the latest technology and a lean, agile approach. My motivation is to deliver exceptional results that build a powerful portfolio and a lasting partnership.</p>
                     </div>
                 </div>
             </div>
         </section>
         
-        <!-- Impact Section -->
         <section id="results" class="results">
             <div class="container reveal">
                 <h2>Measurable Impact, Guaranteed</h2>
                 <p class="section-intro">My solutions don't just look good—they deliver tangible, data-backed results.</p>
                 <div class="results-grid">
-                    <div class="result-card">
-                        <div class="stat">100%</div>
-                        <p>Project Dedication</p>
-                        <span>Your success is my single focus</span>
-                    </div>
-                    <div class="result-card">
-                        <div class="stat">Agile</div>
-                        <p>Methodology</p>
-                        <span>Rapid, transparent & adaptive</span>
-                    </div>
-                    <div class="result-card">
-                        <div class="stat">24<span class="stat-small-text"> / </span>7</div>
-                        <p>Direct Support</p>
-                        <span>Constant communication</span>
-                    </div>
+                    <div class="result-card"><div class="stat">100%</div><p>Project Dedication</p><span>Your success is my single focus</span></div>
+                    <div class="result-card"><div class="stat">Agile</div><p>Methodology</p><span>Rapid, transparent & adaptive</span></div>
+                    <div class="result-card"><div class="stat">24/7</div><p>Direct Support</p><span>Constant communication</span></div>
                 </div>
             </div>
         </section>
 
-        <!-- Contact Section -->
-        <section id="contact" class="contact">
+        <section id="contact" class="contact grid-background">
             <div class="container reveal">
                 <h2>Let's Build Your Future, Together</h2>
                 <p class="section-intro">Ready to overcome your challenges and unlock your business's true potential? Fill out the form below to start the conversation.</p>
                 <form class="contact-form" action="https://formspree.io/f/xnngwalg" method="POST">
-                    <div class="form-group">
-                        <label for="name">Full Name</label>
-                        <input type="text" id="name" name="name" required placeholder="John Doe">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" required placeholder="you@company.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="message">How can I help you achieve your goals?</label>
-                        <textarea id="message" name="message" rows="5" required placeholder="Tell me about your project, challenges, or objectives..."></textarea>
-                    </div>
+                    <div class="form-group"><label for="name">Full Name</label><input type="text" id="name" name="name" required placeholder="John Doe"></div>
+                    <div class="form-group"><label for="email">Email Address</label><input type="email" id="email" name="email" required placeholder="you@company.com"></div>
+                    <div class="form-group"><label for="message">How can I help you achieve your goals?</label><textarea id="message" name="message" rows="5" required placeholder="Tell me about your project, challenges, or objectives..."></textarea></div>
                     <button type="submit" class="btn">Send Inquiry</button>
                 </form>
             </div>
         </section>
     </main>
     
-    <!-- Footer -->
     <footer class="footer">
         <div class="container footer-container">
-            <div class="footer-about">
-                <h4>Axion Digital</h4>
-                <p>I am an independent technology consultant based in Mississauga, ON, dedicated to helping businesses innovate and grow through custom software, cloud solutions, and data analytics.</p>
-            </div>
-            <div class="footer-links">
-                <h4>Navigate</h4>
-                <ul>
-                    <li><a href="#services">Services</a></li>
-                    <li><a href="#methodology">Methodology</a></li>
-                    <li><a href="#promise">My Promise</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </div>
-             <div class="footer-links">
-                <h4>Contact & Legal</h4>
-                <ul>
-                    <li><a href="mailto:contact@axiondigital.me">contact@axiondigital.me</a></li>
-                    <li><p>Mississauga, ON, Canada</p></li>
-                    <li><a href="#" id="terms-link" class="text-sm">Terms of Service</a></li>
-                </ul>
-            </div>
+            <div class="footer-about"><h4>Axion Digital</h4><p>I am an independent technology consultant based in Mississauga, ON, dedicated to helping businesses innovate and grow through custom software, cloud solutions, and data analytics.</p></div>
+            <div class="footer-links"><h4>Navigate</h4><ul><li><a href="#services">Services</a></li><li><a href="#portfolio">Case Study</a></li><li><a href="#about">About Me</a></li><li><a href="#methodology">Methodology</a></li><li><a href="#promise">My Promise</a></li><li><a href="#contact">Contact</a></li></ul></div>
+            <div class="footer-links"><h4>Contact & Legal</h4><ul><li><a href="mailto:contact@axiondigital.me">contact@axiondigital.me</a></li><li><p>Mississauga, ON, Canada</p></li><li><a href="#" id="terms-link" class="text-sm">Terms of Service</a></li></ul></div>
         </div>
-        <div class="footer-bottom">
-            &copy; 2025 Axion Digital. All Rights Reserved.
-        </div>
+        <div class="footer-bottom">&copy; 2025 Axion Digital. All Rights Reserved.</div>
     </footer>
 
-    <!-- Terms Modal -->
     <div id="terms-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-overlay">
         <div class="bg-slate-900 border border-slate-700 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto p-8 relative modal-content">
             <button id="close-modal" class="absolute top-4 right-4 text-slate-400 hover:text-white text-3xl font-bold">&times;</button>
             <h2 class="text-3xl text-center mb-6">Axion Digital - Terms and Conditions of Service</h2>
-            <p class="text-sm text-center mb-6">Last Updated: October 16, 2025</p>
-
+            <p class="text-sm text-center mb-6">Last Updated: October 17, 2025</p>
             <p class="bg-slate-800 p-4 rounded-md border border-slate-700"><strong>IMPORTANT LEGAL NOTICE:</strong> By engaging the services of Axion Digital (“Consultant”, “I”, “My”), you (“Client”) agree to be bound by the following Terms and Conditions (“Terms”). These Terms form a legally binding agreement between you and the Consultant. Please read them carefully.</p>
-
-            <h3>1. Scope of Services</h3>
-            <p>I will provide the services (“Services”) as described in a mutually agreed upon Project Proposal or Statement of Work (“SOW”). The SOW will detail the specific deliverables, timelines, and fees for the project. Any services requested outside the scope of the SOW will require a separate written agreement.</p>
-
-            <h3>2. No Guarantees or Warranties</h3>
-            <p>All Services and deliverables are provided on an <strong>"AS IS"</strong> and <strong>"AS AVAILABLE"</strong> basis. To the fullest extent permissible by law, I expressly disclaim all warranties of any kind, whether express or implied, including, but not limited to, any implied warranties of merchantability, fitness for a particular purpose, and non-infringement. I do not warrant or guarantee that:</p>
-            <ul>
-                <li>The Services will be uninterrupted, timely, secure, or error-free.</li>
-                <li>The results obtained from the use of the Services will be accurate, reliable, or meet the Client’s specific business objectives.</li>
-                <li>Any software developed will be free of bugs, viruses, or other harmful components. The Client is responsible for implementing their own security measures.</li>
-            </ul>
-
-            <h3>3. Limitation of Liability</h3>
-            <p>This is a crucial term of our agreement. To the maximum extent permitted by applicable law, Axion Digital shall <strong>NOT be liable for any indirect, incidental, special, consequential, or punitive damages</strong>, including but not limited to: Loss of profits, revenue, or business opportunities; Loss of data, goodwill, or other intangible losses; Costs of procurement of substitute goods or services; Damages for business interruption. This limitation of liability applies regardless of the legal theory on which the claim is based, whether contract, tort (including negligence), strict liability, or otherwise, even if I have been advised of the possibility of such damages. In the event that Axion Digital is found liable for any direct damages, the <strong>total aggregate liability</strong> of Axion Digital in connection with any claim arising out of or relating to the Services provided shall <strong>not exceed the total fees paid by the Client to Axion Digital</strong> for the specific Services rendered under the SOW from which the claim arises.</p>
-
-            <h3>4. Indemnification</h3>
-            <p>The Client agrees to indemnify, defend, and hold harmless Axion Digital, its owner, and agents from and against any and all claims, liabilities, damages, losses, and expenses (including reasonable legal fees) arising out of or in any way connected with: The Client's use of the Services or deliverables; The data, content, or information provided by the Client; The Client’s breach of these Terms.</p>
-
-            <h3>5. Client Responsibilities</h3>
-            <p>The Client agrees to provide all necessary assistance, access to systems, and information required for the performance of the Services in a timely manner. The Client is solely responsible for the accuracy, legality, and security of all data provided to the Consultant. Axion Digital is not responsible for any issues or delays caused by the Client's failure to meet these responsibilities.</p>
-
-            <h3>6. Intellectual Property</h3>
-            <ul>
-                <li><strong>Client’s Ownership:</strong> Upon receipt of full and final payment for the Services, the Client will own the intellectual property rights to the final, custom-developed work product (“Deliverable”).</li>
-                <li><strong>Consultant’s Retained Rights:</strong> Axion Digital retains all rights to its pre-existing intellectual property, including its code libraries, methodologies, tools, and know-how used in the course of providing the Services.</li>
-            </ul>
-
-            <h3>7. Confidentiality</h3>
-            <p>Both parties agree not to disclose any Confidential Information of the other party to any third party without prior written consent. "Confidential Information" includes proprietary business information, technical data, trade secrets, and any other information marked as confidential.</p>
-            
-            <h3>8. Governing Law and Jurisdiction</h3>
-            <p>This Agreement shall be governed by and construed in accordance with the laws of the Province of Ontario and the federal laws of Canada applicable therein. Any legal action or proceeding arising under this Agreement will be brought exclusively in the courts located in Mississauga, Ontario.</p>
-            
-            <h3>9. Entire Agreement</h3>
-            <p>These Terms, together with the applicable SOW, constitute the entire agreement between the Client and Axion Digital and supersede all prior communications, proposals, or agreements, whether electronic, oral, or written.</p>
+            <h3>1. Scope of Services</h3><p>I will provide the services (“Services”) as described in a mutually agreed upon Project Proposal or Statement of Work (“SOW”). The SOW will detail the specific deliverables, timelines, and fees for the project. Any services requested outside the scope of the SOW will require a separate written agreement.</p>
+            <h3>2. No Guarantees or Warranties</h3><p>All Services and deliverables are provided on an <strong>"AS IS"</strong> and <strong>"AS AVAILABLE"</strong> basis. I expressly disclaim all warranties of any kind, whether express or implied, including, but not limited to, any implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
+            <h3>3. Limitation of Liability</h3><p>To the maximum extent permitted by applicable law, Axion Digital shall <strong>NOT be liable for any indirect, incidental, special, consequential, or punitive damages</strong>, including but not limited to: Loss of profits, revenue, or data. My total aggregate liability in connection with any claim arising out of or relating to the Services shall <strong>not exceed the total fees paid by the Client to Axion Digital</strong> for the specific Services rendered under the SOW from which the claim arises.</p>
+            <h3>4. Indemnification</h3><p>The Client agrees to indemnify, defend, and hold harmless Axion Digital from and against any and all claims, liabilities, and expenses arising out of or in any way connected with the Client's use of the Services or deliverables.</p>
+            <h3>5. Client Responsibilities</h3><p>The Client agrees to provide all necessary assistance, access to systems, and information required for the performance of the Services in a timely manner. The Client is solely responsible for the accuracy and legality of all data provided.</p>
+            <h3>6. Intellectual Property</h3><ul><li><strong>Client’s Ownership:</strong> Upon receipt of full and final payment, the Client will own the intellectual property rights to the final, custom-developed work product.</li><li><strong>Consultant’s Retained Rights:</strong> I retain all rights to my pre-existing intellectual property, including code libraries, methodologies, and tools.</li></ul>
+            <h3>7. Confidentiality</h3><p>Both parties agree not to disclose any Confidential Information of the other party to any third party without prior written consent.</p>
+            <h3>8. Governing Law and Jurisdiction</h3><p>This Agreement shall be governed by the laws of the Province of Ontario, Canada. Any legal action will be brought exclusively in the courts located in Mississauga, Ontario.</p>
+            <h3>9. Entire Agreement</h3><p>These Terms, together with the applicable SOW, constitute the entire agreement between the Client and Axion Digital.</p>
         </div>
     </div>
-
 
 <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Particle.js configuration
         particlesJS("particles-js", {
-            "particles": { "number": { "value": 60, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#00f6ff" }, "shape": { "type": "circle" }, "opacity": { "value": 0.5, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } }, "size": { "value": 3, "random": true }, "line_linked": { "enable": true, "distance": 150, "color": "#00f6ff", "opacity": 0.2, "width": 1 }, "move": { "enable": true, "speed": 1, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false } },
-            "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": false }, "resize": true }, "modes": { "repulse": { "distance": 100, "duration": 0.4 } } },
-            "retina_detect": true
+            particles: { number: { value: 60, density: { enable: true, value_area: 800 } }, color: { value: "#00f6ff" }, shape: { type: "circle" }, opacity: { value: 0.5, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } }, size: { value: 3, random: true }, line_linked: { enable: true, distance: 150, color: "#00f6ff", opacity: 0.2, width: 1 }, move: { enable: true, speed: 1, direction: "none", random: false, straight: false, out_mode: "out", bounce: false } },
+            interactivity: { detect_on: "canvas", events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: false }, resize: true }, modes: { repulse: { distance: 100, duration: 0.4 } } },
+            retina_detect: true
         });
 
-        // Simple script for scroll animations
         const revealElements = document.querySelectorAll('.reveal');
         const revealOnScroll = () => {
             const windowHeight = window.innerHeight;
             revealElements.forEach(el => {
                 const elementTop = el.getBoundingClientRect().top;
-                if (elementTop < windowHeight - 100) {
-                    el.classList.add('visible');
-                }
+                if (elementTop < windowHeight - 100) { el.classList.add('visible'); }
             });
         };
         window.addEventListener('scroll', revealOnScroll);
         revealOnScroll();
         
-        // Smooth scrolling for navigation
         document.querySelectorAll('a[href^="#"]:not([href="#"])').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
                 const targetElement = document.querySelector(this.getAttribute('href'));
-                if (targetElement) {
-                    targetElement.scrollIntoView({ behavior: 'smooth' });
-                }
+                if (targetElement) { targetElement.scrollIntoView({ behavior: 'smooth' }); }
             });
         });
 
-        // Modal functionality
         const termsLink = document.getElementById('terms-link');
         const termsModal = document.getElementById('terms-modal');
         const closeModal = document.getElementById('close-modal');
-
-        const openModal = () => {
-            termsModal.classList.remove('hidden');
-            termsModal.classList.add('flex');
-        };
-
-        const hideModal = () => {
-            termsModal.classList.add('hidden');
-            termsModal.classList.remove('flex');
-        };
-
-        termsLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal();
-        });
-
+        const openModal = () => { termsModal.classList.remove('hidden'); termsModal.classList.add('flex'); };
+        const hideModal = () => { termsModal.classList.add('hidden'); termsModal.classList.remove('flex'); };
+        termsLink.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
         closeModal.addEventListener('click', hideModal);
-
-        termsModal.addEventListener('click', (e) => {
-            if (e.target === termsModal) {
-                hideModal();
-            }
-        });
+        termsModal.addEventListener('click', (e) => { if (e.target === termsModal) { hideModal(); } });
     });
 </script>
 
