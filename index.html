@@ -4740,7 +4740,7 @@ document.addEventListener('keydown',e=>{
   }
   if(e.key==='Enter'&&editingId){if(editingType==='income')saveEditIncome(editingId);if(editingType==='expense')saveEditExpense(editingId);}
   const tag=document.activeElement?.tagName;
-  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||tag==='BUTTON')return;
   if(e.key==='n'){e.preventDefault();document.getElementById('incomeInput')?.focus();}
   if(e.key==='e'){e.preventDefault();document.getElementById('expDescInput')?.focus();}
   if(e.key==='b'){e.preventDefault();document.getElementById('subNameInput')?.focus();}
