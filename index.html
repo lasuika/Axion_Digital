@@ -2440,6 +2440,11 @@ tr:hover .edit-hint{opacity:1;}
         <div class="nw-total-val" id="nwTotalVal">$0</div>
       </div>
 
+        <div class="chart-card" style="margin-top:16px">
+          <h3>NET WORTH OVER TIME</h3>
+          <div class="chart-wrap" id="nwChartWrap"><canvas id="nwLineChart"></canvas></div>
+        </div>
+
       <!-- Debt Paydown Tracker -->
       <div class="debt-card" style="margin-top:20px">
         <h3>💳 Debt Paydown Tracker</h3>
@@ -3051,7 +3056,7 @@ const ACH_DEF=[
 ];
 
 // State
-let entries=[],expenses=[],subscriptions=[],goals=[],nwItems={assets:[],liabilities:[]},transfers=[],cards=[];
+let entries=[],expenses=[],subscriptions=[],goals=[],nwItems={assets:[],liabilities:[]},transfers=[],cards=[],nwHistory=[];
 const pendingDeletes = new Map(); // toastId → {timer, restoreFn, toast}
 let editingId=null,editingType=null,editingSubId=null;
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
@@ -3248,7 +3253,7 @@ async function pullData(){
     const snap=await userDoc().get();
     if(snap.exists){
       const d=snap.data();
-      entries=d.entries||[];expenses=d.expenses||[];subscriptions=d.subscriptions||[];transfers=d.transfers||[];cards=d.cards||[];
+      entries=d.entries||[];expenses=d.expenses||[];subscriptions=d.subscriptions||[];transfers=d.transfers||[];cards=d.cards||[];nwHistory=d.nwHistory||[];
       goals=(d.goals||[]).map((g,i)=>({mode:'focus',portion:0,focusRank:i,orderIndex:i,...g}));
       normaliseOrder();nwItems=d.nwItems||{assets:[],liabilities:[]};
       // Load custom buckets if saved
@@ -3290,7 +3295,7 @@ async function pushData(){
   if(!db||!currentUser)return;
   setSync('syncing','Saving...');
   try{
-    await userDoc().set({entries,expenses,subscriptions,goals,nwItems,alloc:ALLOC,allocHistory,transfers,cards},{merge:true});
+    await userDoc().set({entries,expenses,subscriptions,goals,nwItems,alloc:ALLOC,allocHistory,transfers,cards,nwHistory},{merge:true});
     setSync('ok',`Saved · ${new Date().toLocaleTimeString()}`);
   }catch(e){setSync('error','Save failed: '+e.message.slice(0,50));}
 }
@@ -4092,6 +4097,47 @@ function deleteNWItem(type,id){
   renderNetWorth();
   showUndoToast(type==='asset'?'Asset':'Liability', async()=>{if(type==='asset')nwItems.assets.push(item);else nwItems.liabilities.push(item);renderNetWorth();await pushData();}, async()=>{await pushData();});
 }
+function renderNWChart(){
+  const canvas=document.getElementById('nwLineChart');
+  const wrap=document.getElementById('nwChartWrap');
+  if(!canvas)return;
+  if(nwHistory.length<2){
+    if(wrap)wrap.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:11px;padding:20px;text-align:center">Net worth history appears here after multiple visits</div>';
+    return;
+  }
+  // Ensure canvas is in place (may have been replaced by placeholder text)
+  if(!wrap.querySelector('canvas')){
+    wrap.innerHTML='<canvas id="nwLineChart"></canvas>';
+  }
+  const cvs=document.getElementById('nwLineChart');
+  if(window._nwLineChart instanceof Chart)window._nwLineChart.destroy();
+  window._nwLineChart=new Chart(cvs,{
+    type:'line',
+    data:{
+      labels:nwHistory.map(s=>s.date),
+      datasets:[{
+        data:nwHistory.map(s=>s.netWorth),
+        borderColor:'rgba(92,184,212,0.9)',
+        backgroundColor:'rgba(92,184,212,0.08)',
+        fill:true,
+        tension:0.3,
+        pointRadius:0,
+        pointHoverRadius:4,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:(ctx)=>fmtC(ctx.raw)}}
+      },
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'rgba(255,255,255,0.4)',font:{size:9},maxTicksLimit:6}},
+        y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'rgba(255,255,255,0.5)',font:{size:10},callback:v=>fmtC(v)}},
+      }
+    }
+  });
+}
 function renderNetWorth(){
   const totalAssets = nwItems.assets.reduce((s,a) => s + parseFloat(a.val||0), 0);
   const totalLiabs  = nwItems.liabilities.reduce((s,l) => s + parseFloat(l.val||0), 0);
@@ -4123,6 +4169,15 @@ function renderNetWorth(){
   const nwEl = document.getElementById('nwTotalVal');
   nwEl.textContent  = fmtC(netWorth);
   nwEl.className    = 'nw-total-val ' + (netWorth >= 0 ? 'pos' : 'neg');
+  // Record daily snapshot
+  const _today=new Date().toISOString().slice(0,10);
+  const _last=nwHistory[nwHistory.length-1];
+  if(!_last||_last.date!==_today){
+    nwHistory.push({date:_today,netWorth});
+    if(nwHistory.length>365)nwHistory=nwHistory.slice(-365);
+    pushData().catch(()=>{});
+  }
+  renderNWChart();
 }
 
 // ─── ACHIEVEMENTS ─────────────────────────────────────────────────────────────
