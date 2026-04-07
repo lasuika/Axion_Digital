@@ -4024,7 +4024,7 @@ function deleteNWItem(type,id){
   if(type==='asset')nwItems.assets=nwItems.assets.filter(x=>x.id!==id);
   else nwItems.liabilities=nwItems.liabilities.filter(x=>x.id!==id);
   renderNetWorth();
-  showUndoToast(type==='asset'?'Asset':'Liability', ()=>{if(type==='asset')nwItems.assets.push(item);else nwItems.liabilities.push(item);renderNetWorth();}, async()=>{await pushData();});
+  showUndoToast(type==='asset'?'Asset':'Liability', async()=>{if(type==='asset')nwItems.assets.push(item);else nwItems.liabilities.push(item);renderNetWorth();await pushData();}, async()=>{await pushData();});
 }
 function renderNetWorth(){
   const totalAssets = nwItems.assets.reduce((s,a) => s + parseFloat(a.val||0), 0);
@@ -4219,7 +4219,7 @@ function deleteEntry(id){
   entries=entries.filter(e=>e.id!==id);
   if(editingId===id){editingId=null;editingType=null;}
   render();
-  showUndoToast('Income entry', ()=>{entries.push(item);}, async()=>{await pushData();});
+  showUndoToast('Income entry', async()=>{entries.push(item);render();await pushData();}, async()=>{await pushData();});
 }
 function deleteExpense(id){
   const item=expenses.find(e=>e.id===id);
@@ -4227,7 +4227,7 @@ function deleteExpense(id){
   expenses=expenses.filter(e=>e.id!==id);
   if(editingId===id){editingId=null;editingType=null;}
   render();
-  showUndoToast('Expense', ()=>{expenses.push(item);}, async()=>{await pushData();});
+  showUndoToast('Expense', async()=>{expenses.push(item);render();await pushData();}, async()=>{await pushData();});
 }
 function deleteSub(id){
   const item=subscriptions.find(s=>s.id===id);
@@ -4235,7 +4235,7 @@ function deleteSub(id){
   subscriptions=subscriptions.filter(s=>s.id!==id);
   if(editingSubId===id)editingSubId=null;
   render();
-  showUndoToast('Subscription', ()=>{subscriptions.push(item);}, async()=>{await pushData();});
+  showUndoToast('Subscription', async()=>{subscriptions.push(item);render();await pushData();}, async()=>{await pushData();});
 }
 
 // ─── INLINE EDIT ─────────────────────────────────────────────────────────────
@@ -4980,7 +4980,8 @@ function showUndoToast(label, restoreFn, commitFn) {
   const id='ud_'+(++_undoSeq);
   const toast = document.createElement('div');
   toast.id = id;
-  toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;background:var(--card);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow-md);font-size:12px;color:var(--text);min-width:220px;';
+  const bottomOffset = 80 + pendingDeletes.size * 60;
+  toast.style.cssText = `position:fixed;bottom:${bottomOffset}px;left:50%;transform:translateX(-50%);z-index:9999;background:var(--card);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow-md);font-size:12px;color:var(--text);min-width:220px;`;
   const bar = document.createElement('div');
   bar.style.cssText = 'position:absolute;bottom:0;left:0;height:3px;background:var(--accent);border-radius:0 0 var(--radius-sm) var(--radius-sm);width:100%;transition:width 5s linear;';
   toast.innerHTML = `<span style="flex:1">${label} deleted</span><button onclick="undoDelete('${id}')" style="background:rgba(var(--accent-rgb),0.15);border:1px solid rgba(var(--accent-rgb),0.3);color:var(--accent);border-radius:4px;padding:3px 9px;font-size:11px;cursor:pointer;">Undo</button>`;
@@ -5002,7 +5003,6 @@ function undoDelete(id) {
   entry.toast.remove();
   pendingDeletes.delete(id);
   entry.restoreFn();
-  render();
   showToast('↩ Restored');
 }
 
@@ -5534,7 +5534,7 @@ function deleteDebt(id){
   if(!item)return;
   debts=debts.filter(d=>d.id!==id);
   renderDebts();
-  showUndoToast('Debt', ()=>{debts.push(item);renderDebts();}, ()=>{localStorage.setItem('flowlet_debts',JSON.stringify(debts));});
+  showUndoToast('Debt', ()=>{debts.push(item);renderDebts();localStorage.setItem('flowlet_debts',JSON.stringify(debts));}, ()=>{localStorage.setItem('flowlet_debts',JSON.stringify(debts));});
 }
 function calcPayoff(balance,rate,monthly){
   if(monthly<=0)return{months:999,totalInterest:0};
