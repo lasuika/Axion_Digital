@@ -2144,6 +2144,9 @@ tr:hover .edit-hint{opacity:1;}
           <div class="ig"><label data-i18n="lblBucket">Bucket</label>
             <select id="expCatInput"></select>
           </div>
+          <div class="ig"><label>Paid with</label>
+            <select id="expCardInput"><option value="">— No card</option></select>
+          </div>
           <button class="btn-add red" id="btnExpense" onclick="addExpense()" data-i18n="btnLog">LOG</button>
           <button class="btn-sm" onclick="openSplitModal()" title="Split across buckets" style="white-space:nowrap;padding:7px 12px;background:#ff4d6d18;border-color:#ff4d6d44;color:var(--red);">⚡ Split</button>
         </div>
@@ -3499,12 +3502,13 @@ async function addExpense(){
   const txCur=document.getElementById('expCurInput').value;
   const cat=parseInt(document.getElementById('expCatInput').value);
   const date=document.getElementById('expDateInput').value;
+  const cardId=parseInt(document.getElementById('expCardInput')?.value)||null;
   if(!desc||isNaN(rawAmt)||rawAmt<=0){showToast('❌ Please enter a description and amount.','error');return;}
   // Store in USD internally
   const amount=rawAmt/(RATES[txCur]||1);
   const btn=document.getElementById('btnExpense');
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
-  expenses.push({id:Date.now(),desc,amount,txCur,txAmt:rawAmt,cat,note,date:date||new Date().toISOString().slice(0,10)});
+  expenses.push({id:Date.now(),desc,amount,txCur,txAmt:rawAmt,cat,note,date:date||new Date().toISOString().slice(0,10),cardId});
   document.getElementById('expNoteInput').value='';
   document.getElementById('expDescInput').value='';document.getElementById('expAmtInput').value='';
   render();await pushData();btn.disabled=false;btn.textContent=LANGS[lang].btnLog;
