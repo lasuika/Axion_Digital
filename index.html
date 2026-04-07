@@ -2770,6 +2770,13 @@ tr:hover .edit-hint{opacity:1;}
       </div>
     </div>
 
+    <!-- Budget Carryover -->
+    <div class="settings-section">
+      <div class="settings-section-title">🔄 Budget Carryover</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Roll unused budget from one month into the next for selected buckets.</div>
+      <div id="carryoverToggles"></div>
+    </div>
+
     <!-- Data & Privacy -->
     <div class="settings-section">
       <div class="settings-section-title">💾 Data & Privacy</div>
@@ -3149,6 +3156,8 @@ const ACH_DEF=[
 // State
 let entries=[],expenses=[],subscriptions=[],goals=[],nwItems={assets:[],liabilities:[]},transfers=[],cards=[],nwHistory=[];
 const pendingDeletes = new Map(); // toastId → {timer, restoreFn, toast}
+let carryover={}; // {bucketIdx: carryover amount}
+let _carryoverEnabled={}; // {bucketIdx: bool} — per bucket toggle
 let activeTagFilters=new Set();
 let editingId=null,editingType=null,editingSubId=null;
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
@@ -3346,6 +3355,7 @@ async function pullData(){
     if(snap.exists){
       const d=snap.data();
       entries=d.entries||[];expenses=d.expenses||[];subscriptions=d.subscriptions||[];transfers=d.transfers||[];cards=d.cards||[];nwHistory=d.nwHistory||[];
+      carryover=d.carryover||{};_carryoverEnabled=d._carryoverEnabled||{};
       goals=(d.goals||[]).map((g,i)=>({mode:'focus',portion:0,focusRank:i,orderIndex:i,...g}));
       normaliseOrder();nwItems=d.nwItems||{assets:[],liabilities:[]};
       // Load custom buckets if saved
@@ -3378,8 +3388,30 @@ async function pullData(){
         }
       }
     }
+    // Budget carryover: detect new month and apply unused budget
+    const _thisMonth=new Date().toISOString().slice(0,7);
+    const _lastCarryoverMonth=localStorage.getItem('lastCarryoverMonth');
+    if(_lastCarryoverMonth&&_lastCarryoverMonth!==_thisMonth){
+      const prevYM=_lastCarryoverMonth;
+      ALLOC.forEach((a,i)=>{
+        if(!_carryoverEnabled[i])return;
+        const prevEntries=entries.filter(e=>e.date?.startsWith(prevYM));
+        const prevTotalIn=prevEntries.reduce((s,e)=>s+parseFloat(e.income||0),0);
+        const feesPct=ALLOC[0]?.pct||0;
+        const prevNetIn=prevTotalIn*(1-feesPct);
+        const nonFeesPct=ALLOC.slice(1).reduce((s,a)=>s+a.pct,0)||1;
+        const allocated=prevNetIn*(a.pct/nonFeesPct);
+        const spent=expenses.filter(e=>e.date?.startsWith(prevYM)&&parseInt(e.cat)===i).reduce((s,e)=>s+parseFloat(e.amount||0),0);
+        const unused=Math.max(0,allocated-spent);
+        carryover[i]=(carryover[i]||0)+unused;
+      });
+      localStorage.setItem('lastCarryoverMonth',_thisMonth);
+      pushData().catch(()=>{});
+    } else if(!_lastCarryoverMonth){
+      localStorage.setItem('lastCarryoverMonth',_thisMonth);
+    }
     setSync('ok',`Synced · ${new Date().toLocaleTimeString()}`);
-    render();checkReminder();hideSkeletons();rebuildCardOptions();
+    render();checkReminder();hideSkeletons();rebuildCardOptions();renderCarryoverToggles();
   }catch(e){hideSkeletons();setSync('error','Sync failed: '+e.message.slice(0,50));}
 }
 
@@ -3387,7 +3419,7 @@ async function pushData(){
   if(!db||!currentUser)return;
   setSync('syncing','Saving...');
   try{
-    await userDoc().set({entries,expenses,subscriptions,goals,nwItems,alloc:ALLOC,allocHistory,transfers,cards,nwHistory},{merge:true});
+    await userDoc().set({entries,expenses,subscriptions,goals,nwItems,alloc:ALLOC,allocHistory,transfers,cards,nwHistory,carryover,_carryoverEnabled},{merge:true});
     setSync('ok',`Saved · ${new Date().toLocaleTimeString()}`);
   }catch(e){setSync('error','Save failed: '+e.message.slice(0,50));}
 }
@@ -3770,7 +3802,12 @@ function getTotalSavings(bucketIdx){
   const periodTransfers = getPeriodTransfers();
   const transferOut = periodTransfers.filter(t=>t.from===idx).reduce((s,t)=>s+parseFloat(t.amount||0),0);
   const transferIn  = periodTransfers.filter(t=>t.to===idx).reduce((s,t)=>s+parseFloat(t.amount||0),0);
-  return Math.max(0, bucketTotal - bucketSpent - transferOut + transferIn);
+  let available = Math.max(0, bucketTotal - bucketSpent - transferOut + transferIn);
+  // Add carryover from previous month if enabled for this bucket
+  if(bucketIdx!=null&&_carryoverEnabled[bucketIdx]){
+    available+=(carryover[bucketIdx]||0);
+  }
+  return available;
 }
 
 // ── Compute how much each goal gets from its bucket ────────────────────────
@@ -5705,6 +5742,34 @@ function onReportRangeChange(){
   }
   renderReport();
 }
+function renderCarryoverToggles(){
+  const el=document.getElementById('carryoverToggles');
+  if(!el)return;
+  el.innerHTML=ALLOC.slice(1).map((a,i)=>{
+    const idx=i+1;
+    const enabled=!!_carryoverEnabled[idx];
+    const carried=carryover[idx]||0;
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--glass-border-subtle)">
+      <span style="font-size:12px;color:var(--text)">${esc(a.short)}</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        ${carried>0?`<span style="font-size:10px;color:var(--muted)">+${fmtC(carried)} carried</span>`:''}
+        <label style="display:flex;align-items:center;gap:4px;cursor:pointer">
+          <input type="checkbox" ${enabled?'checked':''} onchange="toggleCarryover(${idx},this.checked)" style="cursor:pointer">
+          <span style="font-size:11px;color:var(--muted)">Roll over</span>
+        </label>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function toggleCarryover(idx,val){
+  _carryoverEnabled[idx]=val;
+  if(!val)delete carryover[idx]; // clear accumulated carryover if disabled
+  await pushData();
+  renderCarryoverToggles();
+  render();
+}
+
 function exportReportPDF(){
   const rv=document.getElementById('reportView');
   if(!rv||rv.style.display==='none'||rv.getAttribute('data-visible')==='false'){
@@ -6403,6 +6468,7 @@ function initSettingsPage(){
   // Account email
   const ae = document.getElementById('settingsAccountEmail');
   if(ae && auth && auth.currentUser) ae.textContent = auth.currentUser.email||'Signed in';
+  renderCarryoverToggles();
 }
 function toggleSoundSettings(){
   toggleSound();
