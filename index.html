@@ -4733,9 +4733,18 @@ async function quickLogExpense(){
 
 // ─── KEYBOARD ─────────────────────────────────────────────────────────────────
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){if(editingId)cancelEdit();if(editingSubId)cancelEditSub();closeQuickLog();}
+  if(e.key==='Escape'){
+    if(document.getElementById('quickLogModal')?.classList.contains('open')){closeQuickLog();return;}
+    if(editingId)cancelEdit();
+    if(editingSubId)cancelEditSub();
+  }
   if(e.key==='Enter'&&editingId){if(editingType==='income')saveEditIncome(editingId);if(editingType==='expense')saveEditExpense(editingId);}
-  if(e.key==='q'&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA'){openQuickLog();}
+  const tag=document.activeElement?.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+  if(e.key==='n'){e.preventDefault();document.getElementById('incomeInput')?.focus();}
+  if(e.key==='e'){e.preventDefault();document.getElementById('expDescInput')?.focus();}
+  if(e.key==='b'){e.preventDefault();document.getElementById('subNameInput')?.focus();}
+  if(e.key==='q'){e.preventDefault();openQuickLog();}
 });
 document.getElementById('incomeInput').addEventListener('keydown',e=>{if(e.key==='Enter')addEntry();});
 document.getElementById('expAmtInput').addEventListener('keydown',e=>{if(e.key==='Enter')addExpense();});
