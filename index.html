@@ -4828,7 +4828,7 @@ Keep it punchy, direct, and motivating. Use the actual numbers. Max 200 words.`;
         messages:[{role:'user',content:prompt}]
       })
     });
-    const data=await response.json();
+    const data=await response.json().catch(()=>({}));
     if(!response.ok){
       const errMsg = data?.error?.message || `API error ${response.status}`;
       out.innerHTML=`<div style="color:var(--red);font-size:11px">⚠️ ${errMsg}</div>`;
