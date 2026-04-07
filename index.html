@@ -2974,6 +2974,7 @@ const ACH_DEF=[
 
 // State
 let entries=[],expenses=[],subscriptions=[],goals=[],nwItems={assets:[],liabilities:[]},transfers=[],cards=[];
+const pendingDeletes = new Map(); // toastId → {timer, restoreFn, toast}
 let editingId=null,editingType=null,editingSubId=null;
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 let unlockedAchs=new Set(JSON.parse(localStorage.getItem('achievements')||'[]'));
@@ -3810,12 +3811,14 @@ async function addGoal(){
   showToast('🎯 Goal added!'); playSound('add'); checkAchievements();
 }
 
-async function deleteGoal(id){
-  if(!confirm('Delete this goal?')) return;
+function deleteGoal(id){
+  const item=goals.find(g=>g.id===id);
+  if(!item)return;
   goals=goals.filter(g=>g.id!==id);
   reassignFocusRanks();
   if(editingGoalId===id) editingGoalId=null;
-  renderGoals(); await pushData();
+  renderGoals();
+  showUndoToast('Goal', ()=>{goals.push(item);reassignFocusRanks();renderGoals();}, async()=>{await pushData();});
 }
 
 // ── renderGoals ────────────────────────────────────────────────────────────
@@ -4002,10 +4005,14 @@ async function addNWItem(type){
   showToast(type==='asset' ? '💚 Asset added!' : '🔴 Liability added!');
   checkAchievements();
 }
-async function deleteNWItem(type,id){
+function deleteNWItem(type,id){
+  const arr=type==='asset'?nwItems.assets:nwItems.liabilities;
+  const item=arr.find(x=>x.id===id);
+  if(!item)return;
   if(type==='asset')nwItems.assets=nwItems.assets.filter(x=>x.id!==id);
   else nwItems.liabilities=nwItems.liabilities.filter(x=>x.id!==id);
-  renderNetWorth();await pushData();
+  renderNetWorth();
+  showUndoToast(type==='asset'?'Asset':'Liability', ()=>{arr.push(item);renderNetWorth();}, async()=>{await pushData();});
 }
 function renderNetWorth(){
   const totalAssets = nwItems.assets.reduce((s,a) => s + parseFloat(a.val||0), 0);
@@ -4194,9 +4201,30 @@ function fmtDate(d){return d?d.toLocaleDateString('en-US',{month:'short',day:'nu
 function toMonthly(a,f){const v=parseFloat(a)||0;switch(f){case'daily':return v*30.44;case'weekly':return v*4.33;case'biweekly':return v*2.165;case'monthly':return v;case'yearly':return v/12;}return v;}
 
 // ─── DELETE ───────────────────────────────────────────────────────────────────
-async function deleteEntry(id){if(!confirm('Delete?'))return;entries=entries.filter(e=>e.id!==id);if(editingId===id){editingId=null;editingType=null;}render();await pushData();}
-async function deleteExpense(id){if(!confirm('Delete?'))return;expenses=expenses.filter(e=>e.id!==id);if(editingId===id){editingId=null;editingType=null;}render();await pushData();}
-async function deleteSub(id){if(!confirm('Delete subscription?'))return;subscriptions=subscriptions.filter(s=>s.id!==id);if(editingSubId===id)editingSubId=null;render();await pushData();}
+function deleteEntry(id){
+  const item=entries.find(e=>e.id===id);
+  if(!item)return;
+  entries=entries.filter(e=>e.id!==id);
+  if(editingId===id){editingId=null;editingType=null;}
+  render();
+  showUndoToast('Income entry', ()=>{entries.push(item);}, async()=>{await pushData();});
+}
+function deleteExpense(id){
+  const item=expenses.find(e=>e.id===id);
+  if(!item)return;
+  expenses=expenses.filter(e=>e.id!==id);
+  if(editingId===id){editingId=null;editingType=null;}
+  render();
+  showUndoToast('Expense', ()=>{expenses.push(item);}, async()=>{await pushData();});
+}
+function deleteSub(id){
+  const item=subscriptions.find(s=>s.id===id);
+  if(!item)return;
+  subscriptions=subscriptions.filter(s=>s.id!==id);
+  if(editingSubId===id)editingSubId=null;
+  render();
+  showUndoToast('Subscription', ()=>{subscriptions.push(item);}, async()=>{await pushData();});
+}
 
 // ─── INLINE EDIT ─────────────────────────────────────────────────────────────
 function startEdit(id,type){editingId=id;editingType=type;render();setTimeout(()=>{const fi=document.getElementById('edit-f1-'+id);if(fi){fi.focus();fi.setSelectionRange&&fi.setSelectionRange(fi.value.length,fi.value.length);}},0);}
@@ -4893,6 +4921,36 @@ Keep it punchy, direct, and motivating. Use the actual numbers. Max 200 words.`;
 }
 
 // ─── CARD MANAGEMENT ─────────────────────────────────────────────────────────
+function showUndoToast(label, restoreFn, commitFn) {
+  const id = 'ud_' + Date.now();
+  const toast = document.createElement('div');
+  toast.id = id;
+  toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;background:var(--card);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow-md);font-size:12px;color:var(--text);min-width:220px;';
+  const bar = document.createElement('div');
+  bar.style.cssText = 'position:absolute;bottom:0;left:0;height:3px;background:var(--accent);border-radius:0 0 var(--radius-sm) var(--radius-sm);width:100%;transition:width 5s linear;';
+  toast.innerHTML = `<span style="flex:1">${label} deleted</span><button onclick="undoDelete('${id}')" style="background:rgba(var(--accent-rgb),0.15);border:1px solid rgba(var(--accent-rgb),0.3);color:var(--accent);border-radius:4px;padding:3px 9px;font-size:11px;cursor:pointer;">Undo</button>`;
+  toast.appendChild(bar);
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => { bar.style.width = '0%'; });
+  const timer = setTimeout(() => {
+    toast.remove();
+    pendingDeletes.delete(id);
+    commitFn();
+  }, 5000);
+  pendingDeletes.set(id, { timer, restoreFn, toast });
+}
+
+function undoDelete(id) {
+  const entry = pendingDeletes.get(id);
+  if (!entry) return;
+  clearTimeout(entry.timer);
+  entry.toast.remove();
+  pendingDeletes.delete(id);
+  entry.restoreFn();
+  render();
+  showToast('↩ Restored');
+}
+
 function esc(s){ return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function getSelectedCardColor(){
   const sel=document.querySelector('#newCardColorPicker .card-color-swatch.selected');
@@ -5417,9 +5475,11 @@ function addDebt(){
   renderDebts(); showToast('💳 Debt added!');
 }
 function deleteDebt(id){
+  const item=debts.find(d=>d.id===id);
+  if(!item)return;
   debts=debts.filter(d=>d.id!==id);
-  localStorage.setItem('flowlet_debts',JSON.stringify(debts));
   renderDebts();
+  showUndoToast('Debt', ()=>{debts.push(item);renderDebts();}, ()=>{localStorage.setItem('flowlet_debts',JSON.stringify(debts));});
 }
 function calcPayoff(balance,rate,monthly){
   if(monthly<=0)return{months:999,totalInterest:0};
