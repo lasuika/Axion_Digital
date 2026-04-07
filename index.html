@@ -2295,6 +2295,9 @@ tr:hover .edit-hint{opacity:1;}
         </div>
       </div>
     </div>
+    <div class="charts-grid-bottom" style="margin-top:14px">
+      <div class="chart-card" id="waterfallCard"><h3>CASH FLOW WATERFALL</h3><div class="chart-wrap"><canvas id="waterfallChart"></canvas></div></div>
+    </div>
 
     <!-- History -->
     <div class="history-card">
@@ -4545,6 +4548,7 @@ function render(){
   const ss=spent[savingsIdx];let cumul=0;
   const cumulData=entries.map((e,idx)=>{cumul+=parseFloat(e.income||0)*(ALLOC[savingsIdx]?.pct||0);if(idx===entries.length-1)cumul=Math.max(0,cumul-ss);return+cumul.toFixed(2);});
   cumulChart.data.labels=entries.map(e=>e.date||e.period);cumulChart.data.datasets[0].data=cumulData;cumulChart.update();
+  renderWaterfall();
 
   checkBudgetAlerts(allocated,spent);
   renderTrendArrows(spent,allocated);
@@ -5194,6 +5198,58 @@ function populateReportMonthSelector(){
     return `<option value="${m}">${label}</option>`;
   }).join('');
   sel.value=curVal||sorted[0];
+}
+function renderWaterfall(){
+  const canvas=document.getElementById('waterfallChart');
+  if(!canvas)return;
+  const now=new Date();
+  const ym=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const mEntries=entries.filter(e=>e.date&&e.date.startsWith(ym));
+  const mExpenses=expenses.filter(e=>e.date&&e.date.startsWith(ym));
+  const mStart=new Date(now.getFullYear(),now.getMonth(),1);
+  const mEnd=new Date(now.getFullYear(),now.getMonth()+1,0);
+  const mSubsPaid=subscriptions.reduce((s,sub)=>{
+    const paid=(typeof getPastPaymentDates==='function'?getPastPaymentDates(sub.startDate,sub.freq):[])
+      .filter(d=>d>=mStart&&d<=mEnd).length;
+    return s+paid*parseFloat(sub.amount||0);
+  },0);
+  const gross=mEntries.reduce((s,e)=>s+parseFloat(e.income||0),0);
+  const feesPct=ALLOC[0]?.pct||0;
+  const fees=gross*feesPct;
+  const netIncome=gross-fees;
+  const expAmt=mExpenses.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+  const billsAmt=mSubsPaid;
+  const netSaved=netIncome-expAmt-billsAmt;
+  const steps=[
+    {label:'Gross Income',start:0,end:gross,color:'rgba(99,102,241,0.85)'},
+    {label:'− Fees',start:gross,end:gross-fees,color:'rgba(239,68,68,0.75)'},
+    {label:'− Expenses',start:gross-fees,end:gross-fees-expAmt,color:'rgba(245,158,11,0.75)'},
+    {label:'− Bills',start:gross-fees-expAmt,end:gross-fees-expAmt-billsAmt,color:'rgba(168,85,247,0.75)'},
+    {label:'Net Saved',start:0,end:netSaved,color:netSaved>=0?'rgba(16,185,129,0.85)':'rgba(239,68,68,0.85)'},
+  ];
+  if(window._waterfallChart instanceof Chart)window._waterfallChart.destroy();
+  window._waterfallChart=new Chart(canvas,{
+    type:'bar',
+    data:{
+      labels:steps.map(s=>s.label),
+      datasets:[{
+        data:steps.map(s=>[Math.min(s.start,s.end),Math.max(s.start,s.end)]),
+        backgroundColor:steps.map(s=>s.color),
+        borderRadius:4,
+        borderSkipped:false,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:(ctx)=>{
+        const [lo,hi]=ctx.raw;return fmtC(Math.abs(hi-lo));
+      }}}},
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'rgba(255,255,255,0.5)',font:{size:10}}},
+        y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'rgba(255,255,255,0.5)',font:{size:10},callback:v=>fmtC(v)}},
+      }
+    }
+  });
 }
 function renderReport(){
   populateReportMonthSelector();
