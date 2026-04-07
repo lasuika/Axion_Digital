@@ -1409,6 +1409,8 @@ tr:hover .edit-hint{opacity:1;}
   --b0:#b05858;--b1:#a87040;--b2:#7060a0;--b3:#4878a0;
   --b4:#486898;--b5:#905878;--b6:#4e7a5e;
 }
+.card-color-swatch{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color 0.15s;}
+.card-color-swatch.selected{border-color:var(--text);}
 /* Theme switcher UI */
 .theme-switcher{
   display:flex;align-items:center;gap:8px;flex-wrap:wrap;
@@ -2617,6 +2619,37 @@ tr:hover .edit-hint{opacity:1;}
             style="width:200px;font-family:monospace;font-size:11px"
             onchange="localStorage.setItem('anthropicKey', this.value.trim()); showToast('✅ API key saved')"
           />
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">💳 My Cards</div>
+      <div id="cardsListWrap" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+        <div class="ig" style="flex:2;min-width:120px"><label>Card Name</label><input type="text" id="newCardName" placeholder="Chase Sapphire"/></div>
+        <div class="ig" style="flex:1;min-width:70px"><label>Last 4</label><input type="text" id="newCardLast4" placeholder="4521" maxlength="4" style="font-family:monospace"/></div>
+        <div class="ig" style="flex:1;min-width:90px">
+          <label>Type</label>
+          <select id="newCardType" class="settings-select">
+            <option value="credit">Credit</option>
+            <option value="debit">Debit</option>
+          </select>
+        </div>
+        <div class="ig" style="flex:1;min-width:130px">
+          <label>Color</label>
+          <div id="newCardColorPicker" style="display:flex;gap:6px;align-items:center;margin-top:4px;">
+            <div class="card-color-swatch selected" data-color="#6366f1" style="background:#6366f1" onclick="selectCardColor(this)"></div>
+            <div class="card-color-swatch" data-color="#10b981" style="background:#10b981" onclick="selectCardColor(this)"></div>
+            <div class="card-color-swatch" data-color="#f59e0b" style="background:#f59e0b" onclick="selectCardColor(this)"></div>
+            <div class="card-color-swatch" data-color="#f43f5e" style="background:#f43f5e" onclick="selectCardColor(this)"></div>
+            <div class="card-color-swatch" data-color="#0ea5e9" style="background:#0ea5e9" onclick="selectCardColor(this)"></div>
+            <div class="card-color-swatch" data-color="#a855f7" style="background:#a855f7" onclick="selectCardColor(this)"></div>
+          </div>
+        </div>
+        <div class="ig">
+          <label>&nbsp;</label>
+          <button class="btn-sm green" onclick="addCard()">+ Add Card</button>
         </div>
       </div>
     </div>
@@ -4843,6 +4876,61 @@ Keep it punchy, direct, and motivating. Use the actual numbers. Max 200 words.`;
   btn.disabled=false;btn.textContent='Refresh Advice';
 }
 
+// ─── CARD MANAGEMENT ─────────────────────────────────────────────────────────
+function getSelectedCardColor(){
+  const sel=document.querySelector('#newCardColorPicker .card-color-swatch.selected');
+  return sel?sel.dataset.color:'#6366f1';
+}
+function selectCardColor(el){
+  document.querySelectorAll('#newCardColorPicker .card-color-swatch').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function renderCardsList(){
+  const wrap=document.getElementById('cardsListWrap');if(!wrap)return;
+  if(!cards.length){wrap.innerHTML=`<div style="font-size:11px;color:var(--muted);padding:4px 0;">No cards added yet.</div>`;return;}
+  wrap.innerHTML=cards.map(c=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
+      <div style="width:10px;height:10px;border-radius:50%;background:${c.color};flex-shrink:0;"></div>
+      <div style="flex:1;">
+        <div style="font-weight:600;font-size:12px;">${c.name}</div>
+        <div style="font-size:10px;color:var(--muted);">${c.type==='credit'?'Credit':'Debit'} · ···· ${c.last4||'—'}</div>
+      </div>
+      <button class="btn-del" onclick="deleteCard(${c.id})" style="font-size:10px;padding:4px 8px;">Delete</button>
+    </div>`).join('');
+}
+async function addCard(){
+  const name=document.getElementById('newCardName').value.trim();
+  const last4=document.getElementById('newCardLast4').value.trim().replace(/\D/g,'');
+  const type=document.getElementById('newCardType').value;
+  const color=getSelectedCardColor();
+  if(!name){showToast('❌ Please enter a card name.','error');return;}
+  cards.push({id:Date.now(),name,last4,type,color});
+  document.getElementById('newCardName').value='';
+  document.getElementById('newCardLast4').value='';
+  renderCardsList();
+  rebuildCardOptions();
+  await pushData();
+  showToast('✅ Card added!');
+}
+async function deleteCard(id){
+  cards=cards.filter(c=>c.id!==id);
+  renderCardsList();
+  rebuildCardOptions();
+  await pushData();
+  showToast('Card deleted');
+}
+function buildCardOptions(selectedId){
+  const none=`<option value="">— No card</option>`;
+  if(!cards.length)return none;
+  return none+cards.map(c=>`<option value="${c.id}"${c.id===selectedId?' selected':''}>${c.name} ···${c.last4}</option>`).join('');
+}
+function rebuildCardOptions(){
+  ['expCardInput','subCardInput'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){const cur=parseInt(el.value)||'';el.innerHTML=buildCardOptions(cur);}
+  });
+}
+
 // ─── MONTHLY REPORT ──────────────────────────────────────────────────────────
 function populateReportMonthSelector(){
   const sel=document.getElementById('reportMonthSel');if(!sel)return;
@@ -5409,6 +5497,7 @@ function initSettingsPage(){
   if(themeSel) themeSel.value = localStorage.getItem('flowlet_theme')||'midnight';
   const keyInp = document.getElementById('anthropicKeyInput');
   if(keyInp) keyInp.value = localStorage.getItem('anthropicKey') || '';
+  renderCardsList();
   const langSel = document.getElementById('settingsLangSel');
   if(langSel) langSel.value = lang;
   const curSel = document.getElementById('settingsCurrencySel');
