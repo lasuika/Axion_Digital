@@ -2490,7 +2490,12 @@ tr:hover .edit-hint{opacity:1;}
     <!-- Month selector -->
     <div class="report-month-selector">
       <span style="font-size:10px;color:var(--muted);letter-spacing:1px">MONTH</span>
-      <select id="reportMonthSel" onchange="renderReport()"></select>
+      <select id="reportMonthSel" onchange="onReportRangeChange()"></select>
+      <div id="reportCustomRange" style="display:none;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px">
+        <input type="date" id="reportDateFrom" onchange="renderReport()" style="background:var(--glass-surface);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:6px 8px;color:var(--text);font-size:12px">
+        <span style="color:var(--muted);font-size:12px">to</span>
+        <input type="date" id="reportDateTo" onchange="renderReport()" style="background:var(--glass-surface);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:6px 8px;color:var(--text);font-size:12px">
+      </div>
       <span style="font-size:10px;color:var(--muted)" id="reportDateRange"></span>
     </div>
 
@@ -5323,6 +5328,12 @@ function populateReportMonthSelector(){
     return `<option value="${m}">${label}</option>`;
   }).join('');
   sel.value=curVal||sorted[0];
+  // Add custom option
+  const customOpt=document.createElement('option');
+  customOpt.value='custom';customOpt.textContent='Custom range…';
+  sel.appendChild(customOpt);
+  // Restore value (including 'custom') after rebuilding options
+  if(curVal)sel.value=curVal;
 }
 function renderWaterfall(){
   const canvas=document.getElementById('waterfallChart');
@@ -5448,21 +5459,46 @@ ${paths}${leftRect}${rightRects}
 </svg>`;
 }
 
+function onReportRangeChange(){
+  const sel=document.getElementById('reportMonthSel');
+  const wrap=document.getElementById('reportCustomRange');
+  const isCustom=sel?.value==='custom';
+  if(wrap)wrap.style.display=isCustom?'flex':'none';
+  if(isCustom){
+    const now=new Date();
+    const from=document.getElementById('reportDateFrom');
+    const to=document.getElementById('reportDateTo');
+    if(from&&!from.value)from.value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;
+    if(to&&!to.value)to.value=new Date(now.getFullYear(),now.getMonth()+1,0).toISOString().slice(0,10);
+  }
+  renderReport();
+}
 function renderReport(){
   populateReportMonthSelector();
   updatePersonalityCard();
   const sel=document.getElementById('reportMonthSel');if(!sel)return;
-  const ym=sel.value||new Date().toISOString().slice(0,7);
-  const [yr,mo]=ym.split('-').map(Number);
-  const monthName=new Date(yr,mo-1,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
-  // Date range display
-  const daysInMonth=new Date(yr,mo,0).getDate();
+  const selVal=sel.value||new Date().toISOString().slice(0,7);
+  let mEntries,mExpenses,mStart,mEnd,yr,mo,monthName;
+  if(selVal==='custom'){
+    const fromVal=document.getElementById('reportDateFrom')?.value;
+    const toVal=document.getElementById('reportDateTo')?.value;
+    if(!fromVal||!toVal)return;
+    mStart=new Date(fromVal);mEnd=new Date(toVal);mEnd.setHours(23,59,59,999);
+    yr=mStart.getFullYear();mo=mStart.getMonth()+1;
+    monthName=`${fromVal} — ${toVal}`;
+    mEntries=entries.filter(e=>e.date&&new Date(e.date)>=mStart&&new Date(e.date)<=mEnd);
+    mExpenses=expenses.filter(e=>e.date&&new Date(e.date)>=mStart&&new Date(e.date)<=mEnd);
+  } else {
+    const ym=selVal;
+    const parts=ym.split('-').map(Number);yr=parts[0];mo=parts[1];
+    monthName=new Date(yr,mo-1,1).toLocaleDateString('en-US',{month:'long',year:'numeric'});
+    mStart=new Date(yr,mo-1,1);mEnd=new Date(yr,mo,0);
+    mEntries=entries.filter(e=>e.date&&e.date.startsWith(ym));
+    mExpenses=expenses.filter(e=>e.date&&e.date.startsWith(ym));
+  }
+  const daysInMonth=Math.ceil((mEnd-mStart)/(1000*60*60*24))+1;
   document.getElementById('reportDateRange').textContent=`${monthName} · ${daysInMonth} days`;
-  // Filter data
-  const mEntries=entries.filter(e=>e.date&&e.date.startsWith(ym));
-  const mExpenses=expenses.filter(e=>e.date&&e.date.startsWith(ym));
   // Count only subscriptions actually paid in this month
-  const mStart=new Date(yr,mo-1,1); const mEnd=new Date(yr,mo,0);
   const mSubsPaid=subscriptions.reduce((s,sub)=>{
     const paid=getPastPaymentDates(sub.startDate,sub.freq)
       .filter(d=>d>=mStart&&d<=mEnd).length;
