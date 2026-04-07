@@ -2928,7 +2928,7 @@ const ACH_DEF=[
 ];
 
 // State
-let entries=[],expenses=[],subscriptions=[],goals=[],nwItems={assets:[],liabilities:[]},transfers=[];
+let entries=[],expenses=[],subscriptions=[],goals=[],nwItems={assets:[],liabilities:[]},transfers=[],cards=[];
 let editingId=null,editingType=null,editingSubId=null;
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 let unlockedAchs=new Set(JSON.parse(localStorage.getItem('achievements')||'[]'));
@@ -3124,7 +3124,7 @@ async function pullData(){
     const snap=await userDoc().get();
     if(snap.exists){
       const d=snap.data();
-      entries=d.entries||[];expenses=d.expenses||[];subscriptions=d.subscriptions||[];transfers=d.transfers||[];
+      entries=d.entries||[];expenses=d.expenses||[];subscriptions=d.subscriptions||[];transfers=d.transfers||[];cards=d.cards||[];
       goals=(d.goals||[]).map((g,i)=>({mode:'focus',portion:0,focusRank:i,orderIndex:i,...g}));
       normaliseOrder();nwItems=d.nwItems||{assets:[],liabilities:[]};
       // Load custom buckets if saved
@@ -3158,7 +3158,7 @@ async function pullData(){
       }
     }
     setSync('ok',`Synced · ${new Date().toLocaleTimeString()}`);
-    render();checkReminder();hideSkeletons();
+    render();checkReminder();hideSkeletons();rebuildCardOptions();
   }catch(e){hideSkeletons();setSync('error','Sync failed: '+e.message.slice(0,50));}
 }
 
@@ -3166,7 +3166,7 @@ async function pushData(){
   if(!db||!currentUser)return;
   setSync('syncing','Saving...');
   try{
-    await userDoc().set({entries,expenses,subscriptions,goals,nwItems,alloc:ALLOC,allocHistory,transfers},{merge:true});
+    await userDoc().set({entries,expenses,subscriptions,goals,nwItems,alloc:ALLOC,allocHistory,transfers,cards},{merge:true});
     setSync('ok',`Saved · ${new Date().toLocaleTimeString()}`);
   }catch(e){setSync('error','Save failed: '+e.message.slice(0,50));}
 }
