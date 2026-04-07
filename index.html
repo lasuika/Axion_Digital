@@ -2334,6 +2334,18 @@ tr:hover .edit-hint{opacity:1;}
           <button onclick="calNext()">›</button>
         </div>
       </h2>
+      <div id="spendHeatmap" style="margin-bottom:18px">
+        <div style="font-size:9px;font-weight:600;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px">52-WEEK SPENDING</div>
+        <div id="heatmapGrid" style="display:grid;gap:2px;overflow-x:auto;padding-bottom:4px;"></div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-size:10px;color:var(--muted)">
+          <span>Less</span>
+          <div style="width:10px;height:10px;border-radius:2px;background:rgba(255,255,255,0.04)"></div>
+          <div style="width:10px;height:10px;border-radius:2px;background:rgba(16,185,129,0.3)"></div>
+          <div style="width:10px;height:10px;border-radius:2px;background:rgba(245,158,11,0.4)"></div>
+          <div style="width:10px;height:10px;border-radius:2px;background:rgba(239,68,68,0.5)"></div>
+          <span>More</span>
+        </div>
+      </div>
       <div class="calendar-grid" id="calGrid"></div>
       <div class="cal-detail" id="calDetail"></div>
     </div>
@@ -4148,7 +4160,60 @@ function renderAchievements(){
 // ─── CALENDAR ─────────────────────────────────────────────────────────────────
 function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCalendar();}
 function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCalendar();}
+function renderHeatmap(){
+  const grid=document.getElementById('heatmapGrid');
+  if(!grid)return;
+
+  // Build daily spend map from all expenses
+  const daySpend={};
+  expenses.forEach(e=>{
+    if(e.date)daySpend[e.date]=(daySpend[e.date]||0)+parseFloat(e.amount||0);
+  });
+
+  // Compute average daily spend (days that had any spend, last 180 days)
+  const now=new Date();now.setHours(0,0,0,0);
+  const cutoff=new Date(now);cutoff.setDate(cutoff.getDate()-180);
+  let totalSpend=0,daysWithSpend=0;
+  Object.entries(daySpend).forEach(([d,v])=>{
+    if(new Date(d)>=cutoff&&v>0){totalSpend+=v;daysWithSpend++;}
+  });
+  const avgDaily=daysWithSpend>0?(totalSpend/daysWithSpend):1;
+
+  // Start date: 52 weeks ago, aligned to Sunday
+  const startDate=new Date(now);
+  startDate.setDate(startDate.getDate()-364);
+  startDate.setDate(startDate.getDate()-startDate.getDay());
+
+  // Build cell HTML — column-major order (each column = 1 week, top-to-bottom = Sun-Sat)
+  const weeks=[];
+  const cur=new Date(startDate);
+  while(cur<=now){
+    const week=[];
+    for(let dow=0;dow<7;dow++){
+      const d=new Date(cur);d.setDate(d.getDate()+dow);
+      if(d<=now){
+        const key=d.toISOString().slice(0,10);
+        const spend=daySpend[key]||0;
+        let bg='rgba(255,255,255,0.04)';
+        if(spend>0){
+          const r=spend/avgDaily;
+          bg=r<0.5?'rgba(16,185,129,0.3)':r<=1.5?'rgba(245,158,11,0.4)':'rgba(239,68,68,0.5)';
+        }
+        week.push(`<div title="${key}${spend>0?' · '+fmtC(spend):''}" style="width:12px;height:12px;border-radius:2px;background:${bg}"></div>`);
+      } else {
+        week.push('<div style="width:12px;height:12px"></div>');
+      }
+    }
+    weeks.push(`<div style="display:flex;flex-direction:column;gap:2px">${week.join('')}</div>`);
+    cur.setDate(cur.getDate()+7);
+  }
+
+  grid.style.cssText='display:flex;flex-direction:row;gap:2px;overflow-x:auto;padding-bottom:4px;';
+  grid.innerHTML=weeks.join('');
+}
+
 function renderCalendar(){
+  renderHeatmap();
   const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
   document.getElementById('calMonthLabel').textContent=`${months[calMonth]} ${calYear}`;
   const grid=document.getElementById('calGrid');
