@@ -3445,7 +3445,7 @@ async function addEntry(){
   const rawAmt=parseFloat(document.getElementById('incomeInput').value);
   const txCur=document.getElementById('incomeCurInput').value;
   const date=document.getElementById('incomeDateInput').value;
-  if(!period||isNaN(rawAmt)||rawAmt<=0){alert('Please enter a description and income amount.');return;}
+  if(!period||isNaN(rawAmt)||rawAmt<=0){showToast('❌ Please enter a description and income amount.','error');return;}
   // Store in USD internally
   const income=rawAmt/(RATES[txCur]||1);
   const btn=document.getElementById('btnIncome');
@@ -3466,7 +3466,7 @@ async function addExpense(){
   const txCur=document.getElementById('expCurInput').value;
   const cat=parseInt(document.getElementById('expCatInput').value);
   const date=document.getElementById('expDateInput').value;
-  if(!desc||isNaN(rawAmt)||rawAmt<=0){alert('Please enter a description and amount.');return;}
+  if(!desc||isNaN(rawAmt)||rawAmt<=0){showToast('❌ Please enter a description and amount.','error');return;}
   // Store in USD internally
   const amount=rawAmt/(RATES[txCur]||1);
   const btn=document.getElementById('btnExpense');
@@ -3483,7 +3483,7 @@ async function addSubscription(){
   const txCur=document.getElementById('subCurInput').value;
   const freq=document.getElementById('subFreqInput').value;
   const startDate=document.getElementById('subDateInput').value;
-  if(!name||isNaN(rawAmt)||rawAmt<=0||!startDate){alert('Please fill all fields.');return;}
+  if(!name||isNaN(rawAmt)||rawAmt<=0||!startDate){showToast('❌ Please fill all subscription fields.','error');return;}
   // Store in USD internally
   const amount=rawAmt/(RATES[txCur]||1);
   const btn=document.getElementById('btnSub');
@@ -3943,7 +3943,7 @@ async function addNWItem(type){
   const name   = document.getElementById(nameInput).value.trim();
   const rawVal = parseFloat(document.getElementById(valInput).value);
   const txCur  = document.getElementById(curInput)?.value || 'USD';
-  if(!name || isNaN(rawVal) || rawVal < 0){ alert('Please enter a name and value.'); return; }
+  if(!name || isNaN(rawVal) || rawVal < 0){ showToast('❌ Please enter a name and value.','error'); return; }
   // Store value in USD internally for consistent net worth calc
   const val = rawVal / (RATES[txCur] || 1);
   const item = { id: Date.now(), name, val, txCur, txAmt: rawVal };
@@ -4157,7 +4157,7 @@ function cancelEdit(){editingId=null;editingType=null;render();}
 async function saveEditIncome(id){
   const p=document.getElementById('edit-f1-'+id)?.value.trim();
   const v=parseFloat(document.getElementById('edit-f2-'+id)?.value);
-  if(!p||isNaN(v)||v<=0){alert('Invalid.');return;}
+  if(!p||isNaN(v)||v<=0){showToast('❌ Invalid value.','error');return;}
   const e=entries.find(x=>x.id===id);e.period=p;e.income=v;
   editingId=null;editingType=null;render();await pushData();
 }
@@ -4165,7 +4165,7 @@ async function saveEditExpense(id){
   const d=document.getElementById('edit-f1-'+id)?.value.trim();
   const a=parseFloat(document.getElementById('edit-f2-'+id)?.value);
   const c=parseInt(document.getElementById('edit-f3-'+id)?.value);
-  if(!d||isNaN(a)||a<=0){alert('Invalid.');return;}
+  if(!d||isNaN(a)||a<=0){showToast('❌ Invalid amount.','error');return;}
   const e=expenses.find(x=>x.id===id);e.desc=d;e.amount=a;e.cat=c;
   editingId=null;editingType=null;render();await pushData();
 }
@@ -4176,7 +4176,7 @@ async function saveEditSub(id){
   const amount=parseFloat(document.getElementById('esub-amt-'+id)?.value);
   const freq=document.getElementById('esub-freq-'+id)?.value;
   const startDate=document.getElementById('esub-date-'+id)?.value;
-  if(!name||isNaN(amount)||amount<=0||!startDate){alert('Invalid.');return;}
+  if(!name||isNaN(amount)||amount<=0||!startDate){showToast('❌ Please fill all debt fields.','error');return;}
   const s=subscriptions.find(x=>x.id===id);s.name=name;s.amount=amount;s.freq=freq;s.startDate=startDate;
   editingSubId=null;render();await pushData();
 }
