@@ -1761,6 +1761,18 @@ tr:hover .edit-hint{opacity:1;}
   0%{background-position:200% center;}
   100%{background-position:-200% center;}
 }
+.autocomplete-dropdown{
+  position:absolute;z-index:1000;background:var(--card);border:1px solid var(--glass-border);
+  border-radius:var(--radius-sm);box-shadow:var(--shadow-md);min-width:200px;max-width:320px;
+  overflow:hidden;
+}
+.autocomplete-item{
+  padding:8px 12px;font-size:12px;color:var(--text);cursor:pointer;
+  border-bottom:1px solid var(--glass-border-subtle);
+}
+.autocomplete-item:last-child{border-bottom:none;}
+.autocomplete-item:hover,.autocomplete-item.active{background:var(--glass-surface-hover);}
+.autocomplete-item small{display:block;font-size:10px;color:var(--muted);margin-top:1px;}
 .skeleton{
   background:linear-gradient(90deg,
     rgba(255,255,255,0.04) 0%,
@@ -2122,7 +2134,7 @@ tr:hover .edit-hint{opacity:1;}
       <!-- Expense -->
       <div class="tab-panel" id="tab-expense">
         <div class="input-row">
-          <div class="ig"><label data-i18n="lblDesc">Description</label><input type="text" id="expDescInput" placeholder="Dinner, Taxi..."/></div>
+          <div class="ig" style="position:relative"><label data-i18n="lblDesc">Description</label><input type="text" id="expDescInput" placeholder="Dinner, Taxi..." autocomplete="off"/><div id="expDescDropdown" class="autocomplete-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;"></div></div>
           <!-- Emotion Tags -->
           <div class="ig emotion-selector" style="display:flex;align-items:center;gap:4px;margin-top:-2px;">
             <span style="font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">Mood</span>
@@ -4631,6 +4643,48 @@ document.addEventListener('keydown',e=>{
 });
 document.getElementById('incomeInput').addEventListener('keydown',e=>{if(e.key==='Enter')addEntry();});
 document.getElementById('expAmtInput').addEventListener('keydown',e=>{if(e.key==='Enter')addExpense();});
+
+(function(){
+  const inp=document.getElementById('expDescInput');
+  const drop=document.getElementById('expDescDropdown');
+  let activeIdx=-1;
+  function closeDropdown(){drop.style.display='none';drop.innerHTML='';activeIdx=-1;}
+  inp.addEventListener('input',()=>{
+    const q=inp.value.trim().toLowerCase();
+    if(q.length<1){closeDropdown();return;}
+    const seen=new Set();
+    const matches=expenses
+      .filter(e=>e.desc&&e.desc.toLowerCase().startsWith(q))
+      .sort((a,b)=>b.id-a.id)
+      .filter(e=>{if(seen.has(e.desc.toLowerCase()))return false;seen.add(e.desc.toLowerCase());return true;})
+      .slice(0,5);
+    if(!matches.length){closeDropdown();return;}
+    drop.innerHTML=matches.map((e,i)=>`<div class="autocomplete-item" data-idx="${i}" onclick="applyAutoComplete(${e.id})">${esc(e.desc)}<small>${fmtC(e.amount)} · ${esc(ALLOC[e.cat]?.short||'')}</small></div>`).join('');
+    drop.style.display='';
+    activeIdx=-1;
+  });
+  inp.addEventListener('keydown',e=>{
+    const items=drop.querySelectorAll('.autocomplete-item');
+    if(drop.style.display==='none'||!items.length){if(e.key==='Enter')addExpense();return;}
+    if(e.key==='ArrowDown'){e.preventDefault();activeIdx=Math.min(activeIdx+1,items.length-1);items.forEach((el,i)=>el.classList.toggle('active',i===activeIdx));}
+    else if(e.key==='ArrowUp'){e.preventDefault();activeIdx=Math.max(activeIdx-1,0);items.forEach((el,i)=>el.classList.toggle('active',i===activeIdx));}
+    else if(e.key==='Enter'&&activeIdx>=0){e.preventDefault();items[activeIdx].click();}
+    else if(e.key==='Escape'){closeDropdown();}
+    else if(e.key==='Enter'&&activeIdx<0){addExpense();}
+  });
+  document.addEventListener('click',e=>{if(!inp.contains(e.target)&&!drop.contains(e.target))closeDropdown();});
+})();
+
+function applyAutoComplete(expenseId){
+  const e=expenses.find(x=>x.id===expenseId);
+  if(!e)return;
+  document.getElementById('expDescInput').value=e.desc;
+  document.getElementById('expAmtInput').value=e.txAmt!=null?e.txAmt:e.amount;
+  const catSel=document.getElementById('expCatInput');
+  if(catSel)catSel.value=e.cat??0;
+  document.getElementById('expDescDropdown').style.display='none';
+  document.getElementById('expAmtInput').focus();
+}
 
 // ─── FINANCIAL NEWS ───────────────────────────────────────────────────────────
 const NEWS_SOURCES = [
