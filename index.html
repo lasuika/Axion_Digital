@@ -4893,6 +4893,7 @@ Keep it punchy, direct, and motivating. Use the actual numbers. Max 200 words.`;
 }
 
 // ─── CARD MANAGEMENT ─────────────────────────────────────────────────────────
+function esc(s){ return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function getSelectedCardColor(){
   const sel=document.querySelector('#newCardColorPicker .card-color-swatch.selected');
   return sel?sel.dataset.color:'#6366f1';
@@ -4908,8 +4909,8 @@ function renderCardsList(){
     <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;">
       <div style="width:10px;height:10px;border-radius:50%;background:${c.color};flex-shrink:0;"></div>
       <div style="flex:1;">
-        <div style="font-weight:600;font-size:12px;">${c.name}</div>
-        <div style="font-size:10px;color:var(--muted);">${c.type==='credit'?'Credit':'Debit'} · ···· ${c.last4||'—'}</div>
+        <div style="font-weight:600;font-size:12px;">${esc(c.name)}</div>
+        <div style="font-size:10px;color:var(--muted);">${c.type==='credit'?'Credit':'Debit'} · ···· ${esc(c.last4)||'—'}</div>
       </div>
       <button class="btn-del" onclick="deleteCard(${c.id})" style="font-size:10px;padding:4px 8px;">Delete</button>
     </div>`).join('');
@@ -4930,6 +4931,8 @@ async function addCard(){
 }
 async function deleteCard(id){
   cards=cards.filter(c=>c.id!==id);
+  expenses.forEach(e=>{ if(e.cardId===id) e.cardId=null; });
+  subscriptions.forEach(s=>{ if(s.cardId===id) s.cardId=null; });
   renderCardsList();
   rebuildCardOptions();
   await pushData();
@@ -4938,7 +4941,7 @@ async function deleteCard(id){
 function buildCardOptions(selectedId){
   const none=`<option value="">— No card</option>`;
   if(!cards.length)return none;
-  return none+cards.map(c=>`<option value="${c.id}"${c.id===selectedId?' selected':''}>${c.name} ···${c.last4}</option>`).join('');
+  return none+cards.map(c=>`<option value="${c.id}"${c.id===selectedId?' selected':''}>${esc(c.name)} ···${esc(c.last4)}</option>`).join('');
 }
 function rebuildCardOptions(){
   ['expCardInput','subCardInput'].forEach(id=>{
@@ -5077,17 +5080,18 @@ function renderCardReport(mExpenses, yr, mo){
     const cardSubs=subscriptions.filter(s=>s.cardId===card.id);
     const subTotal=cardSubs.reduce((s,sub)=>s+toMonthly(sub.amount,sub.freq),0);
     const total=expTotal+subTotal;
-    const topItems=[
-      ...cardSubs.map(s=>`🔄 ${s.name} ${fmtC(toMonthly(s.amount,s.freq))}`),
-      ...cardExps.slice().sort((a,b)=>b.amount-a.amount).slice(0,4).map(e=>`${e.desc} ${fmtC(e.amount)}`)
-    ].slice(0,5);
-    const extraCount=Math.max(0,cardExps.length+cardSubs.length-topItems.length);
+    const candidates=[
+      ...cardSubs.map(s=>`🔄 ${esc(s.name)} ${fmtC(toMonthly(s.amount,s.freq))}`),
+      ...cardExps.slice().sort((a,b)=>b.amount-a.amount).slice(0,4).map(e=>`${esc(e.desc)} ${fmtC(e.amount)}`)
+    ];
+    const topItems=candidates.slice(0,5);
+    const extraCount=Math.max(0,candidates.length-5);
     return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <div style="display:flex;align-items:center;gap:8px;">
           <div style="width:10px;height:10px;border-radius:50%;background:${card.color};"></div>
-          <span style="font-weight:600;font-size:13px;">${card.name}</span>
-          ${card.last4?`<span style="font-size:9px;color:var(--muted);">···· ${card.last4}</span>`:''}
+          <span style="font-weight:600;font-size:13px;">${esc(card.name)}</span>
+          ${card.last4?`<span style="font-size:9px;color:var(--muted);">···· ${esc(card.last4)}</span>`:''}
           <span style="font-size:9px;color:var(--muted);background:var(--card);padding:2px 6px;border-radius:4px;">${card.type==='credit'?'CREDIT':'DEBIT'}</span>
         </div>
         <span style="font-weight:700;color:${card.color};font-size:15px;">${fmtC(total)}</span>
