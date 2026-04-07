@@ -1762,7 +1762,7 @@ tr:hover .edit-hint{opacity:1;}
   100%{background-position:-200% center;}
 }
 .autocomplete-dropdown{
-  position:absolute;z-index:1000;background:var(--card);border:1px solid var(--glass-border);
+  position:absolute;z-index:300;background:var(--card);border:1px solid var(--glass-border);
   border-radius:var(--radius-sm);box-shadow:var(--shadow-md);min-width:200px;max-width:320px;
   overflow:hidden;
 }
@@ -4680,6 +4680,8 @@ function applyAutoComplete(expenseId){
   if(!e)return;
   document.getElementById('expDescInput').value=e.desc;
   document.getElementById('expAmtInput').value=e.txAmt!=null?e.txAmt:e.amount;
+  const curSel=document.getElementById('expCurInput');
+  if(curSel&&e.txCur){curSel.value=e.txCur;curSel.dispatchEvent(new Event('change'));}
   const catSel=document.getElementById('expCatInput');
   if(catSel)catSel.value=e.cat??0;
   document.getElementById('expDescDropdown').style.display='none';
