@@ -3351,7 +3351,7 @@ function getTotalSavings(bucketIdx){
   const idx = bucketIdx !== undefined ? bucketIdx : ALLOC.length - 1;
   const feesIdx = 0;
   let bucketTotal = 0;
-  entries.forEach(e => {
+  getPeriodEntries().forEach(e => {
     const gross      = parseFloat(e.income || 0);
     const entryAlloc = getAllocForDate(e.date);
     const feesPct    = entryAlloc[feesIdx]?.pct || 0;
@@ -3364,7 +3364,7 @@ function getTotalSavings(bucketIdx){
       bucketTotal += netIncome * ((entryAlloc[idx]?.pct || 0) / nonFeesPctTotal);
     }
   });
-  const bucketSpent = expenses.filter(e=>parseInt(e.cat)===idx).reduce((s,e)=>s+parseFloat(e.amount||0),0);
+  const bucketSpent = getPeriodExpenses().filter(e=>parseInt(e.cat)===idx).reduce((s,e)=>s+parseFloat(e.amount||0),0);
   return Math.max(0, bucketTotal - bucketSpent);
 }
 
@@ -3426,11 +3426,12 @@ function getGoalMonthlyRate(g){
   const bi = g.bucketIdx ?? ALLOC.length - 1;
   const bucket = ALLOC[bi];
   if(!bucket) return 0;
+  const periodEnt = getPeriodEntries();
   const todayMs = Date.now(), ninety = 90 * 86400000;
-  let win = entries.filter(e => { const d = parseLocalDate(e.date); return d && (todayMs - d.getTime()) <= ninety; });
-  if(!win.length && entries.length){
-    const latestMs = Math.max(...entries.map(e => parseLocalDate(e.date)?.getTime() || 0));
-    win = entries.filter(e => { const d = parseLocalDate(e.date); return d && (latestMs - d.getTime()) <= ninety; });
+  let win = periodEnt.filter(e => { const d = parseLocalDate(e.date); return d && (todayMs - d.getTime()) <= ninety; });
+  if(!win.length && periodEnt.length){
+    const latestMs = Math.max(...periodEnt.map(e => parseLocalDate(e.date)?.getTime() || 0));
+    win = periodEnt.filter(e => { const d = parseLocalDate(e.date); return d && (latestMs - d.getTime()) <= ninety; });
   }
   let monthlyIncome = 0;
   if(win.length >= 2){
