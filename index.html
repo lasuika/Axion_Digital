@@ -2451,6 +2451,12 @@ tr:hover .edit-hint{opacity:1;}
       <h3>Top Expenses This Month</h3>
       <div id="reportTopExp"></div>
     </div>
+
+    <!-- By Card -->
+    <div class="report-section" id="reportByCardSection" style="display:none;">
+      <h3>By Card</h3>
+      <div id="reportByCard"></div>
+    </div>
   </div>
 
 
@@ -5041,6 +5047,7 @@ function renderReport(){
   // Tax + bill split
   renderTaxEstimate();
   renderBillSplit();
+  renderCardReport(mExpenses, yr, mo);
   // Top expenses
   const top=mExpenses.slice().sort((a,b)=>b.amount-a.amount).slice(0,8);
   document.getElementById('reportTopExp').innerHTML=top.length?top.map(e=>{
@@ -5054,6 +5061,40 @@ function renderReport(){
       <div style="font-weight:700;color:var(--red)">${fmtC(e.amount)}</div>
     </div>`;
   }).join(''):`<div style="color:var(--muted);font-size:11px;text-align:center;padding:20px">No expenses this month</div>`;
+}
+
+// ─── CARD REPORT ─────────────────────────────────────────────────────────────
+function renderCardReport(mExpenses, yr, mo){
+  const section=document.getElementById('reportByCardSection');
+  const wrap=document.getElementById('reportByCard');
+  if(!section||!wrap)return;
+  if(!cards.length){section.style.display='none';return;}
+  section.style.display='';
+
+  wrap.innerHTML=cards.map(card=>{
+    const cardExps=mExpenses.filter(e=>e.cardId===card.id);
+    const expTotal=cardExps.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+    const cardSubs=subscriptions.filter(s=>s.cardId===card.id);
+    const subTotal=cardSubs.reduce((s,sub)=>s+toMonthly(sub.amount,sub.freq),0);
+    const total=expTotal+subTotal;
+    const topItems=[
+      ...cardSubs.map(s=>`🔄 ${s.name} ${fmtC(toMonthly(s.amount,s.freq))}`),
+      ...cardExps.slice().sort((a,b)=>b.amount-a.amount).slice(0,4).map(e=>`${e.desc} ${fmtC(e.amount)}`)
+    ].slice(0,5);
+    const extraCount=Math.max(0,cardExps.length+cardSubs.length-topItems.length);
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="width:10px;height:10px;border-radius:50%;background:${card.color};"></div>
+          <span style="font-weight:600;font-size:13px;">${card.name}</span>
+          ${card.last4?`<span style="font-size:9px;color:var(--muted);">···· ${card.last4}</span>`:''}
+          <span style="font-size:9px;color:var(--muted);background:var(--card);padding:2px 6px;border-radius:4px;">${card.type==='credit'?'CREDIT':'DEBIT'}</span>
+        </div>
+        <span style="font-weight:700;color:${card.color};font-size:15px;">${fmtC(total)}</span>
+      </div>
+      ${topItems.length?`<div style="font-size:11px;color:var(--muted);line-height:1.8;">${topItems.join(' · ')}${extraCount>0?` · <span style="opacity:0.5">+${extraCount} more</span>`:''}</div>`:'<div style="font-size:11px;color:var(--muted);">No charges this month</div>'}
+    </div>`;
+  }).join('');
 }
 
 // ─── BUDGET ALERTS ─────────────────────────────────────────────────────────────
