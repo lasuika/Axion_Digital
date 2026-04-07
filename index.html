@@ -2604,6 +2604,23 @@ tr:hover .edit-hint{opacity:1;}
       </div>
     </div>
 
+    <div class="settings-section">
+      <div class="settings-section-title">🤖 AI Coach</div>
+      <div class="settings-row">
+        <div class="settings-row-info">
+          <div class="settings-row-label">Anthropic API Key</div>
+          <div class="settings-row-desc">Required for AI Spending Coach. Get yours at console.anthropic.com</div>
+        </div>
+        <div class="settings-row-control">
+          <input type="password" class="settings-select" id="anthropicKeyInput"
+            placeholder="sk-ant-..."
+            style="width:200px;font-family:monospace;font-size:11px"
+            onchange="localStorage.setItem('anthropicKey', this.value); showToast('✅ API key saved')"
+          />
+        </div>
+      </div>
+    </div>
+
     <!-- Data & Privacy -->
     <div class="settings-section">
       <div class="settings-section-title">💾 Data & Privacy</div>
@@ -4790,9 +4807,20 @@ Give a personalized 3-part analysis:
 
 Keep it punchy, direct, and motivating. Use the actual numbers. Max 200 words.`;
   try{
+    const anthropicKey = localStorage.getItem('anthropicKey') || '';
+    if(!anthropicKey){
+      out.innerHTML=`<div style="color:var(--red);font-size:11px">⚠️ Add your Anthropic API key in Settings → AI Coach to use this feature.</div>`;
+      btn.disabled=false; btn.textContent='Get Advice';
+      return;
+    }
     const response=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':`Bearer ${anthropicKey}`,
+        'anthropic-dangerous-direct-browser-access':'true',
+        'anthropic-version':'2023-06-01'
+      },
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
@@ -5372,6 +5400,8 @@ function initSettingsPage(){
   // Sync all settings selects to current state
   const themeSel = document.getElementById('settingsThemeSel');
   if(themeSel) themeSel.value = localStorage.getItem('flowlet_theme')||'midnight';
+  const keyInp = document.getElementById('anthropicKeyInput');
+  if(keyInp) keyInp.value = localStorage.getItem('anthropicKey') || '';
   const langSel = document.getElementById('settingsLangSel');
   if(langSel) langSel.value = lang;
   const curSel = document.getElementById('settingsCurrencySel');
