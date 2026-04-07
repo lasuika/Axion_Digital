@@ -4706,21 +4706,29 @@ async function quickLogIncome(){
   const period=document.getElementById('qlIncDesc').value.trim();
   const rawAmt=parseFloat(document.getElementById('qlIncAmt').value);
   if(!period||isNaN(rawAmt)||rawAmt<=0){showToast('❌ Enter description and amount','error');return;}
+  const btn=document.querySelector('#qlIncomeForm .ql-btn');
+  if(btn)btn.disabled=true;
   const txCur=currency;
   const income=rawAmt/(RATES[txCur]||1);
   entries.push({id:Date.now(),period,income,txCur,txAmt:rawAmt,date:new Date().toISOString().slice(0,10)});
   document.getElementById('qlIncDesc').value='';document.getElementById('qlIncAmt').value='';
-  closeQuickLog();render();await pushData();showToast('✅ Income added');
+  closeQuickLog();render();await pushData();
+  if(btn)btn.disabled=false;
+  showToast('✅ Income added');
 }
 async function quickLogExpense(){
   const desc=document.getElementById('qlExpDesc').value.trim();
   const rawAmt=parseFloat(document.getElementById('qlExpAmt').value);
   if(!desc||isNaN(rawAmt)||rawAmt<=0){showToast('❌ Enter description and amount','error');return;}
+  const btn=document.querySelector('#qlExpForm .ql-btn');
+  if(btn)btn.disabled=true;
   const txCur=currency;
   const amount=rawAmt/(RATES[txCur]||1);
   expenses.push({id:Date.now(),desc,amount,txCur,txAmt:rawAmt,cat:0,note:'',date:new Date().toISOString().slice(0,10),cardId:null});
   document.getElementById('qlExpDesc').value='';document.getElementById('qlExpAmt').value='';
-  closeQuickLog();render();await pushData();showToast('✅ Expense added');
+  closeQuickLog();render();await pushData();
+  if(btn)btn.disabled=false;
+  showToast('✅ Expense added');
 }
 
 // ─── KEYBOARD ─────────────────────────────────────────────────────────────────
