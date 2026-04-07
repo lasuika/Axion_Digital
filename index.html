@@ -2173,6 +2173,9 @@ tr:hover .edit-hint{opacity:1;}
             </select>
           </div>
           <div class="ig"><label data-i18n="lblFirstPay">First Payment</label><input type="date" id="subDateInput"/></div>
+          <div class="ig"><label>Paid with</label>
+            <select id="subCardInput"><option value="">— No card</option></select>
+          </div>
           <button class="btn-add purp" id="btnSub" onclick="addSubscription()" data-i18n="btnAdd">ADD</button>
         </div>
         <div class="notice" data-i18n="subNotice">🟣 Deducts from <strong style="color:var(--purple)">Bills/Sub</strong> on due date only.</div>
@@ -3520,12 +3523,13 @@ async function addSubscription(){
   const txCur=document.getElementById('subCurInput').value;
   const freq=document.getElementById('subFreqInput').value;
   const startDate=document.getElementById('subDateInput').value;
+  const cardId=parseInt(document.getElementById('subCardInput')?.value)||null;
   if(!name||isNaN(rawAmt)||rawAmt<=0||!startDate){showToast('❌ Please fill all subscription fields.','error');return;}
   // Store in USD internally
   const amount=rawAmt/(RATES[txCur]||1);
   const btn=document.getElementById('btnSub');
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
-  subscriptions.push({id:Date.now(),name,amount,txCur,txAmt:rawAmt,freq,startDate});
+  subscriptions.push({id:Date.now(),name,amount,txCur,txAmt:rawAmt,freq,startDate,cardId});
   document.getElementById('subNameInput').value='';document.getElementById('subAmtInput').value='';document.getElementById('subDateInput').value='';
   render();await pushData();btn.disabled=false;btn.textContent=LANGS[lang].btnAdd;
   showToast('📋 Subscription added!');playSound('add');checkAchievements();
@@ -4213,8 +4217,9 @@ async function saveEditSub(id){
   const amount=parseFloat(document.getElementById('esub-amt-'+id)?.value);
   const freq=document.getElementById('esub-freq-'+id)?.value;
   const startDate=document.getElementById('esub-date-'+id)?.value;
+  const cardId=parseInt(document.getElementById('esub-card-'+id)?.value)||null;
   if(!name||isNaN(amount)||amount<=0||!startDate){showToast('❌ Please fill all subscription fields.','error');return;}
-  const s=subscriptions.find(x=>x.id===id);s.name=name;s.amount=amount;s.freq=freq;s.startDate=startDate;
+  const s=subscriptions.find(x=>x.id===id);s.name=name;s.amount=amount;s.freq=freq;s.startDate=startDate;s.cardId=cardId;
   editingSubId=null;render();await pushData();
 }
 
@@ -4489,6 +4494,7 @@ function renderSubEditCard(sub){
       <div class="ig"><label>Amount</label><input class="inline-input" id="esub-amt-${sub.id}" type="number" value="${sub.amount}" style="width:100%;padding:7px 9px"/></div>
       <div class="ig"><label>Freq</label><select class="inline-select" id="esub-freq-${sub.id}" style="width:100%;padding:7px 9px">${fo}</select></div>
       <div class="ig"><label>Date</label><input class="inline-input" id="esub-date-${sub.id}" type="date" value="${sub.startDate}" style="width:100%;padding:7px 9px"/></div>
+      <div class="ig"><label>Paid with</label><select class="inline-select" id="esub-card-${sub.id}" style="width:100%;padding:7px 9px">${buildCardOptions(sub.cardId)}</select></div>
     </div>
     <div style="display:flex;gap:7px;margin-top:4px;">
       <button class="btn-save" onclick="saveEditSub(${sub.id})">✓ Save</button>
