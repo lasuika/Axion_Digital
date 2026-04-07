@@ -1839,6 +1839,54 @@ tr:hover .edit-hint{opacity:1;}
   </div>
 </div>
 
+<!-- ══ BUCKET TRANSFER MODAL ══════════════════════════════════════════════════ -->
+<div class="modal-overlay hidden" id="transferModal">
+  <div class="modal-box" style="max-width:400px;">
+    <h2>↔ Transfer Between Buckets</h2>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;">Move money from one bucket to another. This adjusts the available balance without changing your income or expenses.</p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="ig">
+        <label>From Bucket</label>
+        <select id="transferFromInput" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:12px;" onchange="updateTransferBalance()"></select>
+        <div id="transferFromBalance" style="font-size:10px;color:var(--muted);margin-top:4px;"></div>
+      </div>
+      <div class="ig">
+        <label>To Bucket</label>
+        <select id="transferToInput" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:12px;" onchange="updateTransferBalance()"></select>
+        <div id="transferToBalance" style="font-size:10px;color:var(--muted);margin-top:4px;"></div>
+      </div>
+      <div class="ig">
+        <label>Amount</label>
+        <div style="display:flex;gap:6px;">
+          <select id="transferCurInput" style="width:80px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:11px;">
+            <option value="USD">USD</option><option value="HKD">HKD</option><option value="TWD">TWD</option>
+            <option value="CAD">CAD</option><option value="EUR">EUR</option><option value="GBP">GBP</option><option value="JPY">JPY</option>
+          </select>
+          <input type="number" id="transferAmountInput" placeholder="0.00" min="0.01" step="0.01" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:13px;" oninput="updateTransferBalance()"/>
+        </div>
+      </div>
+      <div class="ig">
+        <label>Date</label>
+        <input type="date" id="transferDateInput" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:12px;"/>
+      </div>
+      <div class="ig">
+        <label>Note (optional)</label>
+        <input type="text" id="transferNoteInput" placeholder="e.g. Saving up for trip" style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:12px;"/>
+      </div>
+    </div>
+    <div id="transferError" style="font-size:11px;color:var(--red);margin-top:8px;display:none;"></div>
+    <!-- Transfer history -->
+    <div id="transferHistoryWrap" style="margin-top:16px;">
+      <div style="font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">Transfer History</div>
+      <div id="transferHistoryList" style="max-height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;"></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+      <button class="btn-sm" onclick="closeTransferModal()">Cancel</button>
+      <button class="btn-sm green" onclick="saveTransfer()" style="background:var(--accent);color:var(--text);border-color:var(--accent);">↔ Transfer</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ BUCKET EDITOR MODAL ═══════════════════════════════════════════════════ -->
 <div class="modal-overlay hidden" id="bucketModal">
   <div class="modal-box">
@@ -2135,7 +2183,10 @@ tr:hover .edit-hint{opacity:1;}
         <button class="period-btn" id="periodBtnAll" onclick="setPeriodMode('all')">All Time</button>
       </div>
       <span class="period-info" id="periodInfoLabel"></span>
-      <button onclick="openBucketModal()" style="display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:5px 12px;color:var(--muted);font-family:var(--font-body);font-size:10px;cursor:pointer;margin-left:auto;" onmouseover="this.style.borderColor='rgba(44,40,37,0.18)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙ Customize</button>
+      <div style="display:flex;gap:6px;margin-left:auto;">
+        <button onclick="openTransferModal()" style="display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:5px 12px;color:var(--muted);font-family:var(--font-body);font-size:10px;cursor:pointer;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">↔ Transfer</button>
+        <button onclick="openBucketModal()" style="display:flex;align-items:center;gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:5px 12px;color:var(--muted);font-family:var(--font-body);font-size:10px;cursor:pointer;" onmouseover="this.style.borderColor='rgba(44,40,37,0.18)';this.style.color='var(--text)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">⚙ Customize</button>
+      </div>
     </div>
     <!-- Skeleton buckets -->
     <div id="skeletonBuckets">
@@ -2860,7 +2911,7 @@ const ACH_DEF=[
 ];
 
 // State
-let entries=[],expenses=[],subscriptions=[],goals=[],nwItems={assets:[],liabilities:[]};
+let entries=[],expenses=[],subscriptions=[],goals=[],nwItems={assets:[],liabilities:[]},transfers=[];
 let editingId=null,editingType=null,editingSubId=null;
 let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
 let unlockedAchs=new Set(JSON.parse(localStorage.getItem('achievements')||'[]'));
@@ -3056,7 +3107,7 @@ async function pullData(){
     const snap=await userDoc().get();
     if(snap.exists){
       const d=snap.data();
-      entries=d.entries||[];expenses=d.expenses||[];subscriptions=d.subscriptions||[];
+      entries=d.entries||[];expenses=d.expenses||[];subscriptions=d.subscriptions||[];transfers=d.transfers||[];
       goals=(d.goals||[]).map((g,i)=>({mode:'focus',portion:0,focusRank:i,orderIndex:i,...g}));
       normaliseOrder();nwItems=d.nwItems||{assets:[],liabilities:[]};
       // Load custom buckets if saved
@@ -3098,7 +3149,7 @@ async function pushData(){
   if(!db||!currentUser)return;
   setSync('syncing','Saving...');
   try{
-    await userDoc().set({entries,expenses,subscriptions,goals,nwItems,alloc:ALLOC,allocHistory},{merge:true});
+    await userDoc().set({entries,expenses,subscriptions,goals,nwItems,alloc:ALLOC,allocHistory,transfers},{merge:true});
     setSync('ok',`Saved · ${new Date().toLocaleTimeString()}`);
   }catch(e){setSync('error','Save failed: '+e.message.slice(0,50));}
 }
@@ -3107,6 +3158,93 @@ function showApp(){document.getElementById('setupScreen').style.display='none';d
 function startAutoSync(){clearInterval(syncTimer);syncTimer=setInterval(pullData,30000);}
 
 // ─── BUCKET MODAL ─────────────────────────────────────────────────────────────
+// ─── BUCKET TRANSFERS ─────────────────────────────────────────────────────────
+function openTransferModal(presetFrom){
+  // Populate dropdowns
+  const fromSel = document.getElementById('transferFromInput');
+  const toSel   = document.getElementById('transferToInput');
+  const opts = ALLOC.map((a,i)=>`<option value="${i}">${a.short}</option>`).join('');
+  fromSel.innerHTML = opts;
+  toSel.innerHTML   = opts;
+  // Default: last bucket → savings (or presetFrom if provided)
+  fromSel.value = presetFrom !== undefined ? presetFrom : ALLOC.length - 1;
+  toSel.value   = fromSel.value === '0' ? '1' : '0';
+  // Default date = today
+  document.getElementById('transferDateInput').value = new Date().toISOString().slice(0,10);
+  document.getElementById('transferAmountInput').value = '';
+  document.getElementById('transferNoteInput').value   = '';
+  document.getElementById('transferError').style.display = 'none';
+  document.getElementById('transferCurInput').value = localStorage.getItem('currency')||'USD';
+  updateTransferBalance();
+  renderTransferHistory();
+  document.getElementById('transferModal').classList.remove('hidden');
+}
+
+function closeTransferModal(){
+  document.getElementById('transferModal').classList.add('hidden');
+}
+
+function updateTransferBalance(){
+  const from = parseInt(document.getElementById('transferFromInput').value);
+  const to   = parseInt(document.getElementById('transferToInput').value);
+  const fromBal = getTotalSavings(from);
+  const toBal   = getTotalSavings(to);
+  document.getElementById('transferFromBalance').textContent = `Available: ${fmtC(fromBal)}`;
+  document.getElementById('transferToBalance').textContent   = `Current: ${fmtC(toBal)}`;
+}
+
+function renderTransferHistory(){
+  const list = document.getElementById('transferHistoryList');
+  if(!transfers.length){ list.innerHTML='<div style="font-size:10px;color:var(--muted);text-align:center;padding:8px;">No transfers yet</div>'; return; }
+  list.innerHTML = [...transfers].sort((a,b)=>b.date>a.date?1:-1).map(t=>{
+    const fromName = ALLOC[t.from]?.short || '?';
+    const toName   = ALLOC[t.to]?.short   || '?';
+    return `<div style="display:flex;justify-content:space-between;align-items:center;background:var(--surface);border-radius:6px;padding:5px 8px;font-size:10px;">
+      <span style="color:var(--muted);">${t.date}</span>
+      <span>${fromName} → ${toName}</span>
+      <span style="color:var(--accent);font-weight:600;">${t.txCur||'USD'} ${parseFloat(t.txAmt||t.amount).toFixed(2)}</span>
+      ${t.note?`<span style="color:var(--muted);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.note}</span>`:''}
+      <button onclick="deleteTransfer(${t.id})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:11px;padding:0 2px;">✕</button>
+    </div>`;
+  }).join('');
+}
+
+async function saveTransfer(){
+  const from   = parseInt(document.getElementById('transferFromInput').value);
+  const to     = parseInt(document.getElementById('transferToInput').value);
+  const cur    = document.getElementById('transferCurInput').value;
+  const txAmt  = parseFloat(document.getElementById('transferAmountInput').value);
+  const date   = document.getElementById('transferDateInput').value;
+  const note   = document.getElementById('transferNoteInput').value.trim();
+  const errEl  = document.getElementById('transferError');
+
+  if(from === to){ errEl.textContent='From and To buckets must be different.'; errEl.style.display='block'; return; }
+  if(isNaN(txAmt)||txAmt<=0){ errEl.textContent='Enter a valid amount.'; errEl.style.display='block'; return; }
+  if(!date){ errEl.textContent='Select a date.'; errEl.style.display='block'; return; }
+
+  const amountUSD = txAmt / (RATES[cur]||1);
+  const avail = getTotalSavings(from);
+  if(amountUSD > avail + 0.01){ errEl.textContent=`Not enough in ${ALLOC[from]?.short} (available: ${fmtC(avail)}).`; errEl.style.display='block'; return; }
+
+  errEl.style.display='none';
+  transfers.push({id:Date.now(), from, to, amount:amountUSD, txCur:cur, txAmt, date, note});
+  renderTransferHistory();
+  updateTransferBalance();
+  render();
+  await pushData();
+  showToast(`↔ Transferred ${fmtC(amountUSD)} from ${ALLOC[from]?.short} to ${ALLOC[to]?.short}`);
+  playSound('save');
+}
+
+async function deleteTransfer(id){
+  transfers = transfers.filter(t=>t.id!==id);
+  renderTransferHistory();
+  updateTransferBalance();
+  render();
+  await pushData();
+  showToast('Transfer deleted');
+}
+
 // Temp working copy while modal is open
 let modalBuckets=[];
 const DEFAULT_COLORS=['#c87070','#c89060','#9878b8','#5898b0','#5888a8','#b07888','#6d9e7e','#528880','#9870380','#a85848'];
@@ -3365,7 +3503,12 @@ function getTotalSavings(bucketIdx){
     }
   });
   const bucketSpent = getPeriodExpenses().filter(e=>parseInt(e.cat)===idx).reduce((s,e)=>s+parseFloat(e.amount||0),0);
-  return Math.max(0, bucketTotal - bucketSpent);
+  // Transfers: money moved out of this bucket is subtracted, money moved in is added
+  const periodStart = getPeriodEntries().length ? null : null; // just use transfers array filtered by period
+  const periodTransfers = getPeriodTransfers();
+  const transferOut = periodTransfers.filter(t=>t.from===idx).reduce((s,t)=>s+parseFloat(t.amount||0),0);
+  const transferIn  = periodTransfers.filter(t=>t.to===idx).reduce((s,t)=>s+parseFloat(t.amount||0),0);
+  return Math.max(0, bucketTotal - bucketSpent - transferOut + transferIn);
 }
 
 // ── Compute how much each goal gets from its bucket ────────────────────────
@@ -4143,6 +4286,11 @@ function render(){
   const spent=new Array(ALLOC.length).fill(0);
   periodExp.forEach(e=>{const c=parseInt(e.cat);if(c>=0&&c<ALLOC.length)spent[c]+=parseFloat(e.amount||0);});
   spent[Math.min(SUB_BUCKET,ALLOC.length-1)]+=periodSubSpent;
+  // Transfers: treat transfer-out as additional spend, transfer-in as negative spend
+  getPeriodTransfers().forEach(t=>{
+    if(t.from>=0&&t.from<ALLOC.length) spent[t.from]+=parseFloat(t.amount||0);
+    if(t.to>=0&&t.to<ALLOC.length)    spent[t.to]  -=parseFloat(t.amount||0);
+  });
 
   // ── Allocated: compute per income entry using era-correct alloc snapshot ────
   // Each income entry is allocated using the ALLOC percentages that were in
@@ -4883,6 +5031,22 @@ function getPeriodExpenses(){
     return expenses.filter(e=>e.date && e.date.startsWith(ym));
   }
   return expenses;
+}
+
+function getPeriodTransfers(){
+  if(periodMode==='all') return transfers;
+  const now = new Date();
+  if(periodMode==='week'){
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - ((now.getDay() - weekStartDay + 7) % 7));
+    startOfWeek.setHours(0,0,0,0);
+    return transfers.filter(t=>t.date && parseLocalDate(t.date)>=startOfWeek);
+  }
+  if(periodMode==='month'){
+    const ym = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    return transfers.filter(t=>t.date && t.date.startsWith(ym));
+  }
+  return transfers;
 }
 
 function getPeriodLabel(){
