@@ -1761,6 +1761,34 @@ tr:hover .edit-hint{opacity:1;}
   0%{background-position:200% center;}
   100%{background-position:-200% center;}
 }
+#quickLogFab{
+  position:fixed;bottom:80px;right:20px;z-index:500;
+  width:48px;height:48px;border-radius:var(--radius-full);
+  background:var(--accent);color:#fff;font-size:22px;
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(var(--accent-rgb),0.4);
+  transition:transform var(--fast) var(--ease),box-shadow var(--fast);
+}
+#quickLogFab:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(var(--accent-rgb),0.55);}
+#quickLogModal{
+  position:fixed;inset:0;z-index:800;display:none;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);
+  align-items:flex-end;justify-content:center;padding-bottom:80px;
+}
+#quickLogModal.open{display:flex;}
+#quickLogPanel{
+  background:var(--card);border:1px solid var(--glass-border);
+  border-radius:var(--radius-lg);padding:16px;width:min(360px,calc(100vw - 24px));
+  box-shadow:var(--shadow-lg);
+}
+.ql-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.ql-tab{flex:1;padding:7px;border-radius:var(--radius-sm);border:1px solid var(--glass-border);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;transition:background var(--fast);}
+.ql-tab.active{background:rgba(var(--accent-rgb),0.15);border-color:rgba(var(--accent-rgb),0.35);color:var(--accent);}
+.ql-row{display:flex;gap:8px;margin-bottom:10px;}
+.ql-input{flex:1;background:var(--glass-surface);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:8px 10px;color:var(--text);font-size:12px;}
+.ql-input:focus{outline:none;border-color:rgba(var(--accent-rgb),0.5);}
+.ql-btn{width:100%;padding:9px;background:rgba(var(--accent-rgb),0.2);border:1px solid rgba(var(--accent-rgb),0.35);border-radius:var(--radius-sm);color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;}
+.ql-btn:hover{background:rgba(var(--accent-rgb),0.3);}
 .autocomplete-dropdown{
   position:absolute;z-index:300;background:var(--card);border:1px solid var(--glass-border);
   border-radius:var(--radius-sm);box-shadow:var(--shadow-md);min-width:200px;max-width:320px;
@@ -2741,6 +2769,29 @@ tr:hover .edit-hint{opacity:1;}
 </div><!-- /mainApp -->
 
 <!-- Toast -->
+<button id="quickLogFab" onclick="openQuickLog()" title="Quick log (Q)">＋</button>
+<div id="quickLogModal" onclick="if(event.target===this)closeQuickLog()">
+  <div id="quickLogPanel">
+    <div class="ql-tabs">
+      <button class="ql-tab active" id="qlTabIncome" onclick="switchQLTab('income')">💰 Income</button>
+      <button class="ql-tab" id="qlTabExpense" onclick="switchQLTab('expense')">💸 Expense</button>
+    </div>
+    <div id="qlIncomeForm">
+      <div class="ql-row">
+        <input class="ql-input" id="qlIncDesc" placeholder="Source (e.g. Salary)" style="flex:2" autocomplete="off">
+        <input class="ql-input" id="qlIncAmt" placeholder="Amount" type="number" min="0" style="flex:1">
+      </div>
+      <button class="ql-btn" onclick="quickLogIncome()">Add Income</button>
+    </div>
+    <div id="qlExpForm" style="display:none">
+      <div class="ql-row">
+        <input class="ql-input" id="qlExpDesc" placeholder="Description (e.g. Grab)" style="flex:2" autocomplete="off">
+        <input class="ql-input" id="qlExpAmt" placeholder="Amount" type="number" min="0" style="flex:1">
+      </div>
+      <button class="ql-btn" onclick="quickLogExpense()">Add Expense</button>
+    </div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -4636,13 +4687,52 @@ function renderSubTable(){
     </div>`;
 }
 
+// ─── QUICK-LOG FAB ────────────────────────────────────────────────────────────
+let qlActiveTab='income';
+function openQuickLog(){
+  document.getElementById('quickLogModal').classList.add('open');
+  setTimeout(()=>document.getElementById('qlIncDesc').focus(),50);
+}
+function closeQuickLog(){document.getElementById('quickLogModal').classList.remove('open');}
+function switchQLTab(tab){
+  qlActiveTab=tab;
+  document.getElementById('qlTabIncome').classList.toggle('active',tab==='income');
+  document.getElementById('qlTabExpense').classList.toggle('active',tab==='expense');
+  document.getElementById('qlIncomeForm').style.display=tab==='income'?'':'none';
+  document.getElementById('qlExpForm').style.display=tab==='expense'?'':'none';
+  setTimeout(()=>document.getElementById(tab==='income'?'qlIncDesc':'qlExpDesc').focus(),50);
+}
+async function quickLogIncome(){
+  const period=document.getElementById('qlIncDesc').value.trim();
+  const rawAmt=parseFloat(document.getElementById('qlIncAmt').value);
+  if(!period||isNaN(rawAmt)||rawAmt<=0){showToast('❌ Enter description and amount','error');return;}
+  const txCur=currency;
+  const income=rawAmt/(RATES[txCur]||1);
+  entries.push({id:Date.now(),period,income,txCur,txAmt:rawAmt,date:new Date().toISOString().slice(0,10)});
+  document.getElementById('qlIncDesc').value='';document.getElementById('qlIncAmt').value='';
+  closeQuickLog();render();await pushData();showToast('✅ Income added');
+}
+async function quickLogExpense(){
+  const desc=document.getElementById('qlExpDesc').value.trim();
+  const rawAmt=parseFloat(document.getElementById('qlExpAmt').value);
+  if(!desc||isNaN(rawAmt)||rawAmt<=0){showToast('❌ Enter description and amount','error');return;}
+  const txCur=currency;
+  const amount=rawAmt/(RATES[txCur]||1);
+  expenses.push({id:Date.now(),desc,amount,txCur,txAmt:rawAmt,cat:0,note:'',date:new Date().toISOString().slice(0,10),cardId:null});
+  document.getElementById('qlExpDesc').value='';document.getElementById('qlExpAmt').value='';
+  closeQuickLog();render();await pushData();showToast('✅ Expense added');
+}
+
 // ─── KEYBOARD ─────────────────────────────────────────────────────────────────
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){if(editingId)cancelEdit();if(editingSubId)cancelEditSub();}
+  if(e.key==='Escape'){if(editingId)cancelEdit();if(editingSubId)cancelEditSub();closeQuickLog();}
   if(e.key==='Enter'&&editingId){if(editingType==='income')saveEditIncome(editingId);if(editingType==='expense')saveEditExpense(editingId);}
+  if(e.key==='q'&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA'){openQuickLog();}
 });
 document.getElementById('incomeInput').addEventListener('keydown',e=>{if(e.key==='Enter')addEntry();});
 document.getElementById('expAmtInput').addEventListener('keydown',e=>{if(e.key==='Enter')addExpense();});
+document.getElementById('qlIncAmt').addEventListener('keydown',e=>{if(e.key==='Enter')quickLogIncome();});
+document.getElementById('qlExpAmt').addEventListener('keydown',e=>{if(e.key==='Enter')quickLogExpense();});
 
 (function(){
   const inp=document.getElementById('expDescInput');
