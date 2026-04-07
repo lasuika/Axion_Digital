@@ -2615,7 +2615,7 @@ tr:hover .edit-hint{opacity:1;}
           <input type="password" class="settings-select" id="anthropicKeyInput"
             placeholder="sk-ant-..."
             style="width:200px;font-family:monospace;font-size:11px"
-            onchange="localStorage.setItem('anthropicKey', this.value); showToast('✅ API key saved')"
+            onchange="localStorage.setItem('anthropicKey', this.value.trim()); showToast('✅ API key saved')"
           />
         </div>
       </div>
@@ -4807,7 +4807,7 @@ Give a personalized 3-part analysis:
 
 Keep it punchy, direct, and motivating. Use the actual numbers. Max 200 words.`;
   try{
-    const anthropicKey = localStorage.getItem('anthropicKey') || '';
+    const anthropicKey = (localStorage.getItem('anthropicKey') || '').trim();
     if(!anthropicKey){
       out.innerHTML=`<div style="color:var(--red);font-size:11px">⚠️ Add your Anthropic API key in Settings → AI Coach to use this feature.</div>`;
       btn.disabled=false; btn.textContent='Get Advice';
@@ -4817,7 +4817,7 @@ Keep it punchy, direct, and motivating. Use the actual numbers. Max 200 words.`;
       method:'POST',
       headers:{
         'Content-Type':'application/json',
-        'Authorization':`Bearer ${anthropicKey}`,
+        'x-api-key': anthropicKey,
         'anthropic-dangerous-direct-browser-access':'true',
         'anthropic-version':'2023-06-01'
       },
@@ -4828,6 +4828,12 @@ Keep it punchy, direct, and motivating. Use the actual numbers. Max 200 words.`;
       })
     });
     const data=await response.json();
+    if(!response.ok){
+      const errMsg = data?.error?.message || `API error ${response.status}`;
+      out.innerHTML=`<div style="color:var(--red);font-size:11px">⚠️ ${errMsg}</div>`;
+      btn.disabled=false; btn.textContent='Get Advice';
+      return;
+    }
     const text=data.content?.[0]?.text||'Could not generate advice.';
     out.innerHTML=`<div class="ai-response">${text.replace(/\n/g,'<br>')}</div>`;
   }catch(e){
