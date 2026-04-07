@@ -2512,6 +2512,11 @@ tr:hover .edit-hint{opacity:1;}
       <div id="reportTopExp"></div>
     </div>
 
+      <div id="sankeySectionWrap" style="margin-bottom:18px">
+        <div style="font-size:9px;font-weight:600;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px">INCOME FLOW</div>
+        <div id="sankeyContainer" style="width:100%;min-height:200px;"></div>
+      </div>
+
     <!-- By Card -->
     <div class="report-section" id="reportByCardSection" style="display:none;">
       <h3>By Card</h3>
@@ -5371,6 +5376,78 @@ function renderWaterfall(){
     }
   });
 }
+function renderSankey(totalIn, spentArr){
+  const container=document.getElementById('sankeyContainer');
+  if(!container)return;
+  if(!totalIn||totalIn<=0){container.innerHTML='';return;}
+
+  const W=Math.max(container.offsetWidth||400,320);
+  const H=260;
+  const nodeW=14;
+  const leftX=50;
+  const rightX=W-70;
+
+  // Build bucket nodes (skip Fees index 0, skip zero-value buckets)
+  const buckets=ALLOC.slice(1).map((a,i)=>({
+    label:a.short,
+    value:spentArr[i+1]||0,
+    color:a.color||'#888',
+  })).filter(b=>b.value>0);
+
+  if(!buckets.length){container.innerHTML='';return;}
+
+  const totalBuckets=buckets.reduce((s,b)=>s+b.value,0)||totalIn;
+
+  // Layout right column nodes vertically
+  const usableH=H-40;
+  let ry=20;
+  const rightNodes=buckets.map(b=>{
+    const h=Math.max(6,(b.value/totalBuckets)*usableH);
+    const node={...b,y:ry,h,cy:ry+h/2};
+    ry+=h+8;
+    return node;
+  });
+
+  // Left column: single Income node, same total height as right column used
+  const leftH=ry-8-20; // total height used by right nodes
+  const leftNode={y:20,h:leftH,cy:20+leftH/2};
+
+  // Draw SVG
+  let paths='';
+  let srcY=leftNode.y;
+
+  rightNodes.forEach(rn=>{
+    const ratio=rn.value/totalBuckets;
+    const fh=Math.max(2,ratio*leftNode.h);
+    const x1=leftX+nodeW, y1a=srcY, y1b=srcY+fh;
+    const x2=rightX,       y2a=rn.y, y2b=rn.y+rn.h;
+    const cp=(x2-x1)*0.5;
+    // Parse color to rgba with low opacity
+    const fill=rn.color.startsWith('#')
+      ?`${rn.color}55`
+      :`rgba(128,128,128,0.25)`;
+    paths+=`<path d="M${x1},${y1a} C${x1+cp},${y1a} ${x2-cp},${y2a} ${x2},${y2a} L${x2},${y2b} C${x2-cp},${y2b} ${x1+cp},${y1b} ${x1},${y1b} Z" fill="${fill}"/>`;
+    srcY+=fh;
+  });
+
+  // Node rectangles
+  const leftRect=`<rect x="${leftX}" y="${leftNode.y}" width="${nodeW}" height="${leftNode.h}" rx="3" fill="rgba(99,102,241,0.8)"/>
+<text x="${leftX-6}" y="${leftNode.cy+4}" text-anchor="end" fill="rgba(255,255,255,0.7)" font-size="11" font-family="system-ui" font-weight="600">Income</text>
+<text x="${leftX-6}" y="${leftNode.cy+16}" text-anchor="end" fill="rgba(255,255,255,0.4)" font-size="9" font-family="system-ui">${fmtC(totalIn)}</text>`;
+
+  const rightRects=rightNodes.map(rn=>{
+    const hexColor=rn.color.startsWith('#')?rn.color:'#888888';
+    const shortLabel=rn.label.length>10?rn.label.slice(0,9)+'…':rn.label;
+    return `<rect x="${rightX}" y="${rn.y}" width="${nodeW}" height="${rn.h}" rx="3" fill="${hexColor}cc"/>
+<text x="${rightX+nodeW+6}" y="${rn.cy+4}" text-anchor="start" fill="rgba(255,255,255,0.7)" font-size="11" font-family="system-ui">${shortLabel}</text>
+<text x="${rightX+nodeW+6}" y="${rn.cy+16}" text-anchor="start" fill="rgba(255,255,255,0.4)" font-size="9" font-family="system-ui">${fmtC(rn.value)}</text>`;
+  }).join('');
+
+  container.innerHTML=`<svg width="${W}" height="${Math.max(H,ry+20)}" viewBox="0 0 ${W} ${Math.max(H,ry+20)}" xmlns="http://www.w3.org/2000/svg" style="width:100%;overflow:visible">
+${paths}${leftRect}${rightRects}
+</svg>`;
+}
+
 function renderReport(){
   populateReportMonthSelector();
   updatePersonalityCard();
@@ -5422,6 +5499,7 @@ function renderReport(){
   const spent=new Array(ALLOC.length).fill(0);
   mExpenses.forEach(e=>{const c=parseInt(e.cat);if(c>=0&&c<ALLOC.length)spent[c]+=parseFloat(e.amount||0);});
   spent[Math.min(SUB_BUCKET,ALLOC.length-1)]+=mSubsPaid;
+  renderSankey(totalIn, spent);
   // Non-fees buckets allocated from Net Income (after fees deducted)
   const nonFeesPctTotalReport = ALLOC.slice(1).reduce((s,a)=>s+a.pct,0)||1;
   document.getElementById('reportBucketRows').innerHTML=ALLOC.map((a,i)=>{
