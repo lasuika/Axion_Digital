@@ -4176,7 +4176,7 @@ async function saveEditSub(id){
   const amount=parseFloat(document.getElementById('esub-amt-'+id)?.value);
   const freq=document.getElementById('esub-freq-'+id)?.value;
   const startDate=document.getElementById('esub-date-'+id)?.value;
-  if(!name||isNaN(amount)||amount<=0||!startDate){showToast('❌ Please fill all debt fields.','error');return;}
+  if(!name||isNaN(amount)||amount<=0||!startDate){showToast('❌ Please fill all subscription fields.','error');return;}
   const s=subscriptions.find(x=>x.id===id);s.name=name;s.amount=amount;s.freq=freq;s.startDate=startDate;
   editingSubId=null;render();await pushData();
 }
