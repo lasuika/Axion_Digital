@@ -3534,14 +3534,17 @@ function computeGoalAllocations(){
     const splitGoals   = bGoals.filter(g=>g.mode==='split');
     const portionGoals = bGoals.filter(g=>g.mode==='portion');
 
-    // Portion goals claim their fixed slice first
-    const totalPortion = portionGoals.reduce((s,g)=>s+(g.portion||0),0)||1;
+    // Portion goals: each goal's .portion is a direct % of the bucket available
+    // e.g. portion=30 means "this goal gets 30% of the bucket balance"
+    // If portions sum > 100, they are pro-rated so total never exceeds 100%
+    const totalPortion = portionGoals.reduce((s,g)=>s+(g.portion||0),0);
+    const portionScale = totalPortion > 100 ? 100/totalPortion : 1; // pro-rate if over 100
     let portionUsed = 0;
     portionGoals.forEach(g=>{
-      const slice = available * ((g.portion||0)/Math.max(totalPortion,1));
+      const slice = available * ((g.portion||0)/100) * portionScale;
       const fill  = Math.min(slice, g.target);
       allocs[g.id] = Math.max(0, fill);
-      portionUsed += slice;
+      portionUsed += slice; // reserve the full slice even if goal is complete
     });
 
     // Split goals share what's left after portion goals
@@ -3594,9 +3597,11 @@ function getGoalMonthlyRate(g){
     const n = goals.filter(x=>(x.bucketIdx??ALLOC.length-1)===bi&&x.mode==='split').length;
     return bucketMonthly / (n || 1);
   } else {
+    // portion is a direct % of the bucket (e.g. 30 = 30% of bucket monthly)
     const totalP = goals.filter(x=>(x.bucketIdx??ALLOC.length-1)===bi&&x.mode==='portion')
-      .reduce((s,x)=>s+(x.portion||0),0) || 100;
-    return bucketMonthly * ((g.portion||0) / totalP);
+      .reduce((s,x)=>s+(x.portion||0),0);
+    const scale = totalP > 100 ? 100/totalP : 1;
+    return bucketMonthly * ((g.portion||0)/100) * scale;
   }
 }
 
