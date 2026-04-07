@@ -4012,7 +4012,7 @@ function deleteNWItem(type,id){
   if(type==='asset')nwItems.assets=nwItems.assets.filter(x=>x.id!==id);
   else nwItems.liabilities=nwItems.liabilities.filter(x=>x.id!==id);
   renderNetWorth();
-  showUndoToast(type==='asset'?'Asset':'Liability', ()=>{arr.push(item);renderNetWorth();}, async()=>{await pushData();});
+  showUndoToast(type==='asset'?'Asset':'Liability', ()=>{if(type==='asset')nwItems.assets.push(item);else nwItems.liabilities.push(item);renderNetWorth();}, async()=>{await pushData();});
 }
 function renderNetWorth(){
   const totalAssets = nwItems.assets.reduce((s,a) => s + parseFloat(a.val||0), 0);
@@ -4921,8 +4921,9 @@ Keep it punchy, direct, and motivating. Use the actual numbers. Max 200 words.`;
 }
 
 // ─── CARD MANAGEMENT ─────────────────────────────────────────────────────────
+let _undoSeq=0;
 function showUndoToast(label, restoreFn, commitFn) {
-  const id = 'ud_' + Date.now();
+  const id='ud_'+(++_undoSeq);
   const toast = document.createElement('div');
   toast.id = id;
   toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;background:var(--card);border:1px solid var(--glass-border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow-md);font-size:12px;color:var(--text);min-width:220px;';
@@ -4935,7 +4936,7 @@ function showUndoToast(label, restoreFn, commitFn) {
   const timer = setTimeout(() => {
     toast.remove();
     pendingDeletes.delete(id);
-    commitFn();
+    Promise.resolve(commitFn()).catch(err=>{console.error('Delete commit failed:',err);showToast('Save failed — please refresh','error');});
   }, 5000);
   pendingDeletes.set(id, { timer, restoreFn, toast });
 }
