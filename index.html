@@ -2160,6 +2160,7 @@ tr:hover .edit-hint{opacity:1;}
               <option value="CAD">CAD CA$</option><option value="EUR">EUR €</option><option value="GBP">GBP £</option><option value="JPY">JPY ¥</option>
             </select>
           </div>
+          <div class="ig"><label>Fee %</label><input type="number" id="incomeFeeInput" placeholder="15" min="0" max="100" step="0.1" style="width:70px"/></div>
           <div class="ig"><label data-i18n="lblDate">Date</label><input type="date" id="incomeDateInput"/></div>
           <button class="btn-add" id="btnIncome" onclick="addEntry()" data-i18n="btnAdd">ADD</button>
         </div>
@@ -3396,9 +3397,7 @@ async function pullData(){
       ALLOC.forEach((a,i)=>{
         if(!_carryoverEnabled[i])return;
         const prevEntries=entries.filter(e=>e.date?.startsWith(prevYM));
-        const prevTotalIn=prevEntries.reduce((s,e)=>s+parseFloat(e.income||0),0);
-        const feesPct=ALLOC[0]?.pct||0;
-        const prevNetIn=prevTotalIn*(1-feesPct);
+        const prevNetIn=prevEntries.reduce((s,e)=>{const gross=parseFloat(e.income||0);const fp=e.feePct??ALLOC[0]?.pct??0;return s+gross*(1-fp);},0);
         const nonFeesPct=ALLOC.slice(1).reduce((s,a)=>s+a.pct,0)||1;
         const allocated=prevNetIn*(a.pct/nonFeesPct);
         const spent=expenses.filter(e=>e.date?.startsWith(prevYM)&&parseInt(e.cat)===i).reduce((s,e)=>s+parseFloat(e.amount||0),0);
@@ -3725,8 +3724,10 @@ async function addEntry(){
   const income=rawAmt/(RATES[txCur]||1);
   const btn=document.getElementById('btnIncome');
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
-  entries.push({id:Date.now(),period,income,txCur,txAmt:rawAmt,date:date||new Date().toISOString().slice(0,10),tags:extractTags(period)});
-  document.getElementById('periodInput').value='';document.getElementById('incomeInput').value='';
+  const feeRaw=parseFloat(document.getElementById('incomeFeeInput').value);
+  const feePct=isNaN(feeRaw)?undefined:feeRaw/100;
+  entries.push({id:Date.now(),period,income,txCur,txAmt:rawAmt,date:date||new Date().toISOString().slice(0,10),tags:extractTags(period),...(feePct!==undefined&&{feePct})});
+  document.getElementById('periodInput').value='';document.getElementById('incomeInput').value='';document.getElementById('incomeFeeInput').value='';
   render();await pushData();btn.disabled=false;btn.textContent=LANGS[lang].btnAdd;
   showToast('💰 Income logged!');playSound('add');checkAchievements();
   // Flash bucket cards to signal allocation update
@@ -3786,7 +3787,7 @@ function getTotalSavings(bucketIdx){
   getPeriodEntries().forEach(e => {
     const gross      = parseFloat(e.income || 0);
     const entryAlloc = getAllocForDate(e.date);
-    const feesPct    = entryAlloc[feesIdx]?.pct || 0;
+    const feesPct    = e.feePct ?? entryAlloc[feesIdx]?.pct ?? 0;
     const feesAmt    = gross * feesPct;
     const netIncome  = gross - feesAmt;
     if(idx === feesIdx){
@@ -4569,8 +4570,11 @@ function cancelEdit(){editingId=null;editingType=null;render();}
 async function saveEditIncome(id){
   const p=document.getElementById('edit-f1-'+id)?.value.trim();
   const v=parseFloat(document.getElementById('edit-f2-'+id)?.value);
+  const feeRaw=parseFloat(document.getElementById('edit-f3-'+id)?.value);
   if(!p||isNaN(v)||v<=0){showToast('❌ Invalid value.','error');return;}
-  const e=entries.find(x=>x.id===id);e.period=p;e.income=v;
+  const e=entries.find(x=>x.id===id);
+  e.period=p;e.income=v;
+  if(!isNaN(feeRaw)&&feeRaw>=0)e.feePct=feeRaw/100;
   editingId=null;editingType=null;render();await pushData();
 }
 async function saveEditExpense(id){
@@ -4858,7 +4862,7 @@ function render(){
   periodEntries.forEach(e=>{
     const entryIncome=parseFloat(e.income||0);
     const entryAlloc=getAllocForDate(e.date);
-    const entryFeesPct=entryAlloc[feesIdx]?.pct||0;
+    const entryFeesPct=e.feePct??entryAlloc[feesIdx]?.pct??0;
     const entryFeesAmt=entryIncome*entryFeesPct;
     const entryNetIncome=entryIncome-entryFeesAmt;
     const entryNonFeesPctTotal=entryAlloc.slice(1).reduce((s,a)=>s+a.pct,0)||1;
@@ -5009,13 +5013,18 @@ function renderIncomeTbl(){
     const inc=parseFloat(e.income||0),isEd=editingId===e.id&&editingType==='income';
     const origLabel=e.txCur&&e.txCur!=='USD'?`<span style="font-size:9px;color:var(--muted);margin-left:4px">${SYMBOLS[e.txCur]||''}${parseFloat(e.txAmt||0).toFixed(2)} ${e.txCur}</span>`:'';
     const tagChipsInc=(e.tags||[]).length?`<div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:3px">${(e.tags||[]).map(t=>`<span class="tag-chip">#${esc(t)}</span>`).join('')}</div>`:'';
+    const entryFeesPct=e.feePct??getAllocForDate(e.date)[0]?.pct??0;
+    const entryFeesAmt=inc*entryFeesPct;
+    const entryNet=inc-entryFeesAmt;
+    const nonFeesPctSum=ALLOC.slice(1).reduce((s,x)=>s+x.pct,0)||1;
+    const feePctBadge=e.feePct!==undefined?`<span style="font-size:9px;background:#ff4d6d22;color:#ff4d6d;border-radius:4px;padding:1px 5px;margin-left:4px">${(e.feePct*100).toFixed(1)}%</span>`:'';
     return `<tr>
       <td>${isEd?`<input class="inline-input" id="edit-f1-${e.id}" value="${e.period.replace(/"/g,'&quot;')}" style="width:130px"/>`:
         `<span class="editable-cell" onclick="startEdit(${e.id},'income')">${e.period}</span><span class="edit-hint">✏️</span>${tagChipsInc}`}</td>
       <td>${isEd?`<input class="inline-input" id="edit-f2-${e.id}" type="number" value="${inc}" style="width:80px"/>`:
         `<span class="editable-cell" onclick="startEdit(${e.id},'income')">${fmtC(inc)}</span>${origLabel}`}</td>
-      <td style="color:var(--muted);font-size:10px">${e.date||'—'}</td>
-      ${ALLOC.map(a=>`<td style="color:${a.color}">${fmtC(inc*a.pct)}</td>`).join('')}
+      <td style="color:var(--muted);font-size:10px">${e.date||'—'}${feePctBadge}${isEd?`<br><label style="font-size:9px;color:var(--muted)">Fee %</label><input class="inline-input" id="edit-f3-${e.id}" type="number" value="${e.feePct!==undefined?(e.feePct*100).toFixed(1):''}" placeholder="${(entryFeesPct*100).toFixed(1)}" min="0" max="100" step="0.1" style="width:55px;margin-left:4px"/>`:''}</td>
+      ${ALLOC.map((a,i)=>`<td style="color:${a.color}">${i===0?fmtC(entryFeesAmt):fmtC(entryNet*(a.pct/nonFeesPctSum))}</td>`).join('')}
       <td><div class="actions">${isEd?`<button class="btn-save" onclick="saveEditIncome(${e.id})">✓</button><button class="btn-cancel-edit" onclick="cancelEdit()">✕</button>`:`<button class="btn-del" onclick="deleteEntry(${e.id})">Del</button>`}</div></td>
     </tr>`;
   }).join('');
@@ -5619,8 +5628,7 @@ function renderWaterfall(){
     return s+paid*parseFloat(sub.amount||0);
   },0);
   const gross=mEntries.reduce((s,e)=>s+parseFloat(e.income||0),0);
-  const feesPct=ALLOC[0]?.pct||0;
-  const fees=gross*feesPct;
+  const fees=mEntries.reduce((s,e)=>{const inc=parseFloat(e.income||0);const fp=e.feePct??ALLOC[0]?.pct??0;return s+inc*fp;},0);
   const netIncome=gross-fees;
   const expAmt=mExpenses.reduce((s,e)=>s+parseFloat(e.amount||0),0);
   const billsAmt=mSubsPaid;
@@ -5792,8 +5800,11 @@ function renderForecast(){
   const avg3Exp=months3.reduce((s,ym)=>
     s+expenses.filter(e=>e.date?.startsWith(ym)&&parseInt(e.cat)!==SUB_BUCKET).reduce((a,e)=>a+parseFloat(e.amount||0),0),0)/3||0;
   const monthlyBills=subscriptions.reduce((s,sub)=>s+toMonthly(sub.amount,sub.freq),0);
-  const feesPct=ALLOC[0]?.pct||0;
-  const avgNetIncome=avg3Income*(1-feesPct);
+  const avg3NetIncome=months3.reduce((s,ym)=>{
+    const mEnts=entries.filter(e=>e.date?.startsWith(ym));
+    return s+mEnts.reduce((a,e)=>{const inc=parseFloat(e.income||0);const fp=e.feePct??ALLOC[0]?.pct??0;return a+inc*(1-fp);},0);
+  },0)/3||0;
+  const avgNetIncome=avg3NetIncome;
   const avgNetSaved=avgNetIncome-avg3Exp-monthlyBills;
 
   // Project 12 months cumulative
@@ -5878,29 +5889,29 @@ function renderReport(){
   const monthlySubEq=subscriptions.reduce((s,sub)=>s+toMonthly(sub.amount,sub.freq),0);
   const totalIn=mEntries.reduce((s,e)=>s+parseFloat(e.income||0),0);
   const totalOut=mExpenses.reduce((s,e)=>s+parseFloat(e.amount||0),0)+mSubsPaid;
-  // Net Income = Gross − Fees (business cost deducted first)
-  const feesPct = ALLOC[0]?.pct || 0;
-  const reportNetIncome = totalIn * (1 - feesPct);
+  // Net Income = Gross − per-entry fees (business cost deducted first)
+  const feesDeductedReport=mEntries.reduce((s,e)=>{const inc=parseFloat(e.income||0);const fp=e.feePct??ALLOC[0]?.pct??0;return s+inc*fp;},0);
+  const reportNetIncome=totalIn-feesDeductedReport;
+  const effectiveFeesPct=totalIn>0?feesDeductedReport/totalIn:(ALLOC[0]?.pct??0);
   // Net Saved = Net Income − other expenses (fees already deducted)
   const net=reportNetIncome-totalOut;
   const savingsRate=reportNetIncome>0?((net/reportNetIncome)*100).toFixed(1):'—';
   const kpis=[
     {label:'Total Income',val:fmtC(totalIn),sub:`${mEntries.length} entries`,color:'var(--accent)'},
-    {label:'Net Income',val:fmtC(reportNetIncome),sub:`After ${(feesPct*100).toFixed(0)}% fees`,color:'#30d158'},
+    {label:'Net Income',val:fmtC(reportNetIncome),sub:`After ${(effectiveFeesPct*100).toFixed(1)}% fees (blended)`,color:'#30d158'},
     {label:'Total Spent',val:fmtC(totalOut),sub:`${mExpenses.length} expenses`,color:'var(--red)'},
     {label:'Net Saved',val:fmtC(net),sub:`${savingsRate}% save rate`,color:net>=0?'var(--teal)':'var(--red)'},
     {label:'Bills Paid',val:fmtC(mSubsPaid),sub:`${subscriptions.length} active · ≈${fmtC(monthlySubEq)}/mo`,color:'var(--purple)'},
   ];
-  const feesDeductedReport = totalIn * feesPct;
   document.getElementById('reportKPIs').innerHTML=kpis.map(k=>`
     <div class="report-card">
       <div class="rc-label">${k.label}</div>
       <div class="rc-val" style="color:${k.color}">${k.val}</div>
       <div class="rc-sub">${k.sub}</div>
-    </div>`).join('') + (feesPct>0&&totalIn>0?`
+    </div>`).join('') + (feesDeductedReport>0&&totalIn>0?`
     <div style="width:100%;display:flex;align-items:center;gap:10px;padding:8px 14px;background:#ff4d6d08;border:1px solid #ff4d6d20;border-radius:10px;font-size:11px;color:var(--muted);margin-top:2px;">
       <span style="color:var(--red);font-size:14px;">⚡</span>
-      <span><span style="color:var(--red);font-weight:700">${fmtC(feesDeductedReport)}</span> deducted as business fees (${(feesPct*100).toFixed(0)}% of gross) — not included in budget</span>
+      <span><span style="color:var(--red);font-weight:700">${fmtC(feesDeductedReport)}</span> deducted as business fees (${(effectiveFeesPct*100).toFixed(1)}% blended) — not included in budget</span>
     </div>`:'');
   // Bucket breakdown table — skip Fees (index 0) since it's a business cost not a budget
   const spent=new Array(ALLOC.length).fill(0);
